@@ -91,7 +91,7 @@ module.exports = {
     page: (params) => request.get('/daily-task/page', params),
     add: (data) => request.post('/daily-task', data),
     update: (data) => request.put('/daily-task', data),
-    complete: (id, completed) => request.put(`/daily-task/complete/${id}`, { completed }),
+    complete: (id, completed) => request.put(`/daily-task/complete/${id}?completed=${completed ? 1 : 0}`),
     remove: (id) => request.del(`/daily-task/${id}`)
   },
 

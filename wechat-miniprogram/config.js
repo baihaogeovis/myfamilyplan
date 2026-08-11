@@ -5,5 +5,5 @@
  */
 module.exports = {
   // 后端服务地址(开发环境默认本机)
-  baseUrl: 'http://localhost:8080'
+  baseUrl: 'http://192.168.31.144:8080/api'
 }
