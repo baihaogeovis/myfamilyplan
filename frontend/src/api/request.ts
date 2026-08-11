@@ -13,6 +13,11 @@ request.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
+    // 携带当前操作成员ID(后端校验其属于当前家庭)
+    const memberId = localStorage.getItem('currentMemberId')
+    if (memberId) {
+      config.headers['X-Member-Id'] = memberId
+    }
     return config
   },
   error => {
@@ -32,12 +37,15 @@ request.interceptors.response.use(
     }
   },
   error => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 || error.response?.status === 403) {
       localStorage.removeItem('token')
       localStorage.removeItem('userInfo')
+      localStorage.removeItem('currentMemberId')
+      ElMessage.error('登录已过期，请重新登录')
       window.location.href = '/login'
+      return Promise.reject(error)
     }
-    ElMessage.error(error.message || '网络异常')
+    ElMessage.error(error.response?.data?.message || error.message || '网络异常')
     return Promise.reject(error)
   }
 )

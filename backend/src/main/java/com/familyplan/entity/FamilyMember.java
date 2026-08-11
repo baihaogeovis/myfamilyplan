@@ -13,7 +13,11 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = true)
 @TableName("family_member")
 public class FamilyMember extends BaseEntity {
-    
+
+    /** 所属家庭ID */
+    private Long familyId;
+
+    /** 关联用户ID(兼容保留) */
     private Long userId;
     
     private String memberName;

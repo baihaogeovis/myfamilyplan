@@ -20,9 +20,9 @@ import java.time.LocalDateTime;
 public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Notification> implements INotificationService {
 
     @Override
-    public IPage<Notification> pageQuery(Long userId, Integer page, Integer size, Integer isRead) {
+    public IPage<Notification> pageQuery(Long familyId, Integer page, Integer size, Integer isRead) {
         LambdaQueryWrapper<Notification> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Notification::getUserId, userId);
+        wrapper.eq(Notification::getFamilyId, familyId);
         if (isRead != null) {
             wrapper.eq(Notification::getIsRead, isRead);
         }
@@ -39,7 +39,7 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
             notification.setCreateTime(LocalDateTime.now());
         }
         baseMapper.insert(notification);
-        log.info("添加提醒成功: 用户={}", notification.getUserId());
+        log.info("添加提醒成功: 家庭={}", notification.getFamilyId());
     }
 
     @Override
@@ -52,9 +52,9 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
     }
 
     @Override
-    public void markAllRead(Long userId) {
+    public void markAllRead(Long familyId) {
         LambdaQueryWrapper<Notification> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Notification::getUserId, userId).eq(Notification::getIsRead, 0);
+        wrapper.eq(Notification::getFamilyId, familyId).eq(Notification::getIsRead, 0);
         Notification entity = new Notification();
         entity.setIsRead(1);
         baseMapper.update(entity, wrapper);
@@ -67,9 +67,9 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
     }
 
     @Override
-    public long unreadCount(Long userId) {
+    public long unreadCount(Long familyId) {
         LambdaQueryWrapper<Notification> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Notification::getUserId, userId).eq(Notification::getIsRead, 0);
+        wrapper.eq(Notification::getFamilyId, familyId).eq(Notification::getIsRead, 0);
         return baseMapper.selectCount(wrapper);
     }
 }

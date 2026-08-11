@@ -13,7 +13,10 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @TableName("notification")
 public class Notification extends BaseEntity {
-    
+
+    /** 所属家庭ID */
+    private Long familyId;
+
     private Long userId;
     
     private String title;

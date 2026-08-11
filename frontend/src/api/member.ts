@@ -2,7 +2,8 @@ import request from './request'
 
 export interface FamilyMember {
   id?: number
-  userId: number
+  familyId?: number
+  userId?: number
   memberName: string
   relation?: string
   gender?: string
@@ -14,8 +15,8 @@ export interface FamilyMember {
   remark?: string
 }
 
-export function getMemberList(userId: number) {
-  return request.get('/member/list', { params: { userId } })
+export function getMemberList() {
+  return request.get('/member/list')
 }
 
 export function addMember(data: FamilyMember) {

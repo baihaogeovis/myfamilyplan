@@ -24,7 +24,7 @@
     <!-- 资金统计卡片 -->
     <div class="stat-cards">
       <div class="stat-card income">
-        <div class="stat-icon"><el-icon><TrendCharts /></el-icon></div>
+        <div class="stat-icon"><el-icon><LineChart /></el-icon></div>
         <div class="stat-body">
           <div class="stat-label">本月收入</div>
           <div class="stat-value">+¥{{ fmt(overview.monthIncome) }}</div>
@@ -32,7 +32,7 @@
         </div>
       </div>
       <div class="stat-card expense">
-        <div class="stat-icon"><el-icon><Coin /></el-icon></div>
+        <div class="stat-icon"><el-icon><Coins /></el-icon></div>
         <div class="stat-body">
           <div class="stat-label">本月支出</div>
           <div class="stat-value">-¥{{ fmt(overview.monthExpense) }}</div>
@@ -141,7 +141,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
-import { Plus, Info, TrendCharts, Coin, Wallet, PiggyBank } from 'lucide-vue-next'
+import { Plus, Info, LineChart, Coins, Wallet, PiggyBank } from 'lucide-vue-next'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   getFinanceOverview,
@@ -209,6 +209,7 @@ const fmt = (v: number) =>
   (v ?? 0).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 const load = async () => {
+  await memberStore.ensureLoaded()
   if (!memberStore.currentMemberId) {
     ElMessage.warning('请先在「成员管理」中添加家庭成员')
     return
@@ -224,7 +225,8 @@ const load = async () => {
   }
 }
 
-const openAdd = () => {
+const openAdd = async () => {
+  await memberStore.ensureLoaded()
   if (!memberStore.currentMemberId) {
     ElMessage.warning('请先在「成员管理」中添加家庭成员')
     return

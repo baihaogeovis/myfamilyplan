@@ -3,8 +3,10 @@ package com.familyplan.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.familyplan.common.BusinessException;
+import com.familyplan.entity.Family;
 import com.familyplan.entity.UserInfo;
 import com.familyplan.mapper.UserMapper;
+import com.familyplan.service.IFamilyService;
 import com.familyplan.service.IUserInfoService;
 import com.familyplan.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserMapper, UserInfo> imple
     
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private IFamilyService familyService;
     
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -94,24 +99,25 @@ public class UserInfoServiceImpl extends ServiceImpl<UserMapper, UserInfo> imple
     
     /**
      * Spring Security用户详情加载
+     * 多家庭改造: 登录账号为"家庭账号", 从 family 表加载
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserInfo user = getUserByUsername(username);
-        
-        if (user == null) {
-            log.error("用户不存在: {}", username);
-            throw new UsernameNotFoundException("用户不存在: " + username);
+        Family family = familyService.getByUsername(username);
+
+        if (family == null) {
+            log.error("家庭账号不存在: {}", username);
+            throw new UsernameNotFoundException("家庭账号不存在: " + username);
         }
-        
-        if (user.getStatus() != null && user.getStatus() == 0) {
-            throw new UsernameNotFoundException("用户已被禁用");
+
+        if (family.getStatus() != null && family.getStatus() == 0) {
+            throw new UsernameNotFoundException("家庭账号已被禁用");
         }
-        
+
         return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole()))
+                family.getUsername(),
+                family.getPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"))
         );
     }
 }

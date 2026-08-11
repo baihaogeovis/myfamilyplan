@@ -23,14 +23,14 @@ export interface RecentTransaction {
   remark?: string
 }
 
-export function getDashboardOverview(userId: number) {
-  return request.get('/dashboard/overview', { params: { userId } })
+export function getDashboardOverview() {
+  return request.get('/dashboard/overview')
 }
 
-export function getDashboardTrend(userId: number, month?: string) {
-  return request.get('/dashboard/trend', { params: { userId, month } })
+export function getDashboardTrend(month?: string) {
+  return request.get('/dashboard/trend', { params: { month } })
 }
 
-export function getDashboardRecent(userId: number, limit = 10) {
-  return request.get('/dashboard/recent', { params: { userId, limit } })
+export function getDashboardRecent(limit = 10) {
+  return request.get('/dashboard/recent', { params: { limit } })
 }

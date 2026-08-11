@@ -16,10 +16,10 @@ export interface MonthlyStat {
   expense: number
 }
 
-export function getCategoryStat(userId: number, month?: string) {
-  return request.get('/statistics/category', { params: { userId, month } })
+export function getCategoryStat(month?: string) {
+  return request.get('/statistics/category', { params: { month } })
 }
 
-export function getMonthlyStat(userId: number, year?: number) {
-  return request.get('/statistics/monthly', { params: { userId, year } })
+export function getMonthlyStat(year?: number) {
+  return request.get('/statistics/monthly', { params: { year } })
 }

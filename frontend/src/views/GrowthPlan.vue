@@ -266,6 +266,7 @@ const remove = async (goal: GrowthPlan) => {
 }
 
 onMounted(async () => {
+  await memberStore.ensureLoaded()
   if (memberStore.members.length === 0 && memberStore.currentMemberId) {
     // 兜底：使用当前成员作为默认孩子
     childId.value = memberStore.currentMemberId

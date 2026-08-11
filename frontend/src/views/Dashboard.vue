@@ -101,11 +101,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import * as echarts from 'echarts'
 import { Wallet, ShoppingCart, TrendingUp, Bell } from 'lucide-vue-next'
-import { useUserStore } from '@/stores/user'
 import { useMemberStore } from '@/stores/member'
 import {
   getDashboardOverview,
@@ -118,9 +117,7 @@ import {
 import { getApprovalPage, type ApprovalRecord } from '@/api/approval'
 
 const router = useRouter()
-const userStore = useUserStore()
 const memberStore = useMemberStore()
-const userId = computed(() => userStore.userInfo?.userId)
 
 const overview = ref<DashboardOverview>({
   monthIncome: 0,
@@ -141,13 +138,11 @@ const formatMoney = (v: number) =>
   (v ?? 0).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 const loadOverview = async () => {
-  if (!userId.value) return
-  overview.value = await getDashboardOverview(userId.value)
+  overview.value = await getDashboardOverview()
 }
 
 const loadTrend = async () => {
-  if (!userId.value) return
-  trendPoints.value = await getDashboardTrend(userId.value, currentMonth.value)
+  trendPoints.value = await getDashboardTrend(currentMonth.value)
   await nextTick()
   renderTrend()
 }
@@ -169,8 +164,7 @@ const renderTrend = () => {
 }
 
 const loadRecent = async () => {
-  if (!userId.value) return
-  recent.value = await getDashboardRecent(userId.value, 8)
+  recent.value = await getDashboardRecent(8)
 }
 
 const loadPending = async () => {
@@ -193,7 +187,7 @@ const goApproval = () => router.push('/approval')
 const handleResize = () => chart?.resize()
 
 onMounted(async () => {
-  if (!userId.value) return
+  await memberStore.ensureLoaded()
   await Promise.all([loadOverview(), loadTrend(), loadRecent(), loadPending()])
   window.addEventListener('resize', handleResize)
 })

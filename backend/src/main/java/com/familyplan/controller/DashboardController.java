@@ -38,9 +38,13 @@ public class DashboardController {
     @Autowired
     private IApprovalService approvalService;
 
-    private List<Long> memberIdsOf(Long userId) {
+    /**
+     * 当前家庭下的全部成员ID(仪表盘展示整个家庭的数据)
+     */
+    private List<Long> memberIdsOfFamily() {
+        Long familyId = com.familyplan.security.SecurityUtil.getRequiredFamilyId();
         LambdaQueryWrapper<FamilyMember> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(FamilyMember::getUserId, userId);
+        wrapper.eq(FamilyMember::getFamilyId, familyId);
         return familyMemberService.list(wrapper).stream()
                 .map(FamilyMember::getId).collect(Collectors.toList());
     }
@@ -49,11 +53,11 @@ public class DashboardController {
      * 概览数据
      */
     @GetMapping("/overview")
-    public Result<DashboardOverview> overview(@RequestParam Long userId) {
+    public Result<DashboardOverview> overview() {
         LocalDate now = LocalDate.now();
         LocalDate first = now.withDayOfMonth(1);
         LocalDate last = now.withDayOfMonth(now.lengthOfMonth());
-        List<Long> memberIds = memberIdsOf(userId);
+        List<Long> memberIds = memberIdsOfFamily();
 
         DashboardOverview overview = new DashboardOverview();
 
@@ -100,8 +104,7 @@ public class DashboardController {
      * 当月收支趋势
      */
     @GetMapping("/trend")
-    public Result<List<TrendPoint>> trend(@RequestParam Long userId,
-                                           @RequestParam(required = false) String month) {
+    public Result<List<TrendPoint>> trend(@RequestParam(required = false) String month) {
         LocalDate now;
         if (month != null && !month.trim().isEmpty()) {
             String m = month.trim();
@@ -112,7 +115,7 @@ public class DashboardController {
         }
         LocalDate first = now.withDayOfMonth(1);
         LocalDate last = now.withDayOfMonth(now.lengthOfMonth());
-        List<Long> memberIds = memberIdsOf(userId);
+        List<Long> memberIds = memberIdsOfFamily();
         if (memberIds.isEmpty()) {
             return Result.success(new ArrayList<>());
         }
@@ -141,12 +144,11 @@ public class DashboardController {
      * 最近流水
      */
     @GetMapping("/recent")
-    public Result<List<RecentTransaction>> recent(@RequestParam Long userId,
-                                                  @RequestParam(defaultValue = "10") Integer limit) {
+    public Result<List<RecentTransaction>> recent(@RequestParam(defaultValue = "10") Integer limit) {
         LocalDate now = LocalDate.now();
         LocalDate first = now.withDayOfMonth(1);
         LocalDate last = now.withDayOfMonth(now.lengthOfMonth());
-        List<Long> memberIds = memberIdsOf(userId);
+        List<Long> memberIds = memberIdsOfFamily();
         if (memberIds.isEmpty()) {
             return Result.success(new ArrayList<>());
         }

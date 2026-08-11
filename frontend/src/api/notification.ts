@@ -2,7 +2,8 @@ import request from './request'
 
 export interface Notification {
   id?: number
-  userId: number
+  familyId?: number
+  userId?: number
   title: string
   content?: string
   type?: string
@@ -11,7 +12,6 @@ export interface Notification {
 }
 
 export function getNotificationList(params: {
-  userId: number
   page?: number
   size?: number
   isRead?: number
@@ -27,14 +27,14 @@ export function markRead(id: number) {
   return request.put(`/notification/${id}/read`)
 }
 
-export function markAllRead(userId: number) {
-  return request.post('/notification/read/all', null, { params: { userId } })
+export function markAllRead() {
+  return request.post('/notification/read/all')
 }
 
 export function deleteNotification(id: number) {
   return request.delete(`/notification/${id}`)
 }
 
-export function getUnreadCount(userId: number) {
-  return request.get('/notification/unread/count', { params: { userId } })
+export function getUnreadCount() {
+  return request.get('/notification/unread/count')
 }

@@ -10,9 +10,9 @@ import com.familyplan.entity.Notification;
 public interface INotificationService extends IService<Notification> {
 
     /**
-     * 分页查询提醒
+     * 分页查询提醒(按家庭)
      */
-    IPage<Notification> pageQuery(Long userId, Integer page, Integer size, Integer isRead);
+    IPage<Notification> pageQuery(Long familyId, Integer page, Integer size, Integer isRead);
 
     /**
      * 添加提醒
@@ -25,9 +25,9 @@ public interface INotificationService extends IService<Notification> {
     void markRead(Long id);
 
     /**
-     * 全部已读
+     * 全部已读(按家庭)
      */
-    void markAllRead(Long userId);
+    void markAllRead(Long familyId);
 
     /**
      * 删除提醒
@@ -35,7 +35,7 @@ public interface INotificationService extends IService<Notification> {
     void delete(Long id);
 
     /**
-     * 未读数量
+     * 未读数量(按家庭)
      */
-    long unreadCount(Long userId);
+    long unreadCount(Long familyId);
 }

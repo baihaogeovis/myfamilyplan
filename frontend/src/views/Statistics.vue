@@ -94,16 +94,12 @@ import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import * as echarts from 'echarts'
 import { RefreshCw } from 'lucide-vue-next'
 import { ElMessage } from 'element-plus'
-import { useUserStore } from '@/stores/user'
 import {
   getMonthlyStat,
   getCategoryStat,
   type MonthlyStat,
   type CategoryStatResponse
 } from '@/api/statistics'
-
-const userStore = useUserStore()
-const userId = computed(() => userStore.userInfo?.userId)
 
 const year = ref(String(new Date().getFullYear()))
 const month = ref(`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`)
@@ -177,9 +173,8 @@ const renderPie = (el: HTMLElement | undefined, chart: echarts.ECharts | null, d
 }
 
 const loadMonthly = async () => {
-  if (!userId.value) return
   try {
-    monthlyData.value = await getMonthlyStat(userId.value, Number(year.value))
+    monthlyData.value = await getMonthlyStat(Number(year.value))
     await nextTick()
     renderMonthly()
   } catch {
@@ -188,9 +183,8 @@ const loadMonthly = async () => {
 }
 
 const loadCategory = async () => {
-  if (!userId.value) return
   try {
-    categoryData.value = await getCategoryStat(userId.value, month.value)
+    categoryData.value = await getCategoryStat(month.value)
     await nextTick()
     eChart = renderPie(expensePie.value, eChart, categoryData.value.expense, '支出分类') as any
     iChart = renderPie(incomePie.value, iChart, categoryData.value.income, '收入分类') as any

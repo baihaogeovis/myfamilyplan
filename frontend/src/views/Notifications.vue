@@ -75,10 +75,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { CheckCheck } from 'lucide-vue-next'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { useUserStore } from '@/stores/user'
 import {
   getNotificationList,
   markRead,
@@ -87,9 +86,6 @@ import {
   getUnreadCount,
   type Notification
 } from '@/api/notification'
-
-const userStore = useUserStore()
-const userId = computed(() => userStore.userInfo?.userId)
 
 const loading = ref(false)
 const tableData = ref<Notification[]>([])
@@ -100,12 +96,10 @@ const size = ref(10)
 const filterRead = ref<string>('all')
 
 const load = async () => {
-  if (!userId.value) return
   loading.value = true
   try {
     const isRead = filterRead.value === 'all' ? undefined : Number(filterRead.value)
     const res = await getNotificationList({
-      userId: userId.value,
       page: page.value,
       size: size.value,
       isRead
@@ -119,9 +113,8 @@ const load = async () => {
 }
 
 const refreshUnread = async () => {
-  if (!userId.value) return
   try {
-    const data = await getUnreadCount(userId.value)
+    const data = await getUnreadCount()
     unread.value = data.count || 0
   } catch {
     // ignore
@@ -139,10 +132,9 @@ const markOne = async (row: Notification) => {
 }
 
 const markAll = async () => {
-  if (!userId.value) return
   try {
     await ElMessageBox.confirm('确定将所有提醒标记为已读?', '提示', { type: 'warning' })
-    await markAllRead(userId.value)
+    await markAllRead()
     ElMessage.success('已全部标记为已读')
     load()
   } catch {

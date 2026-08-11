@@ -1,6 +1,13 @@
 import request from '@/api/request'
 
-export const login = (data: { username: string; password: string }) => {
+export interface LoginParams {
+  username: string
+  password: string
+  /** 当前操作成员ID(可选: 指定后后端校验该成员属于该家庭) */
+  memberId?: number
+}
+
+export const login = (data: LoginParams) => {
   return request.post('/auth/login', data)
 }
 

@@ -128,6 +128,7 @@ const statusText = (s?: string) =>
   s === 'APPROVED' ? '已通过' : s === 'REJECTED' ? '已驳回' : '待审批'
 
 const load = async () => {
+  await memberStore.ensureLoaded()
   if (!memberStore.currentMemberId) {
     ElMessage.warning('请先在「成员管理」中添加家庭成员')
     return
@@ -149,7 +150,8 @@ const load = async () => {
   }
 }
 
-const openAdd = () => {
+const openAdd = async () => {
+  await memberStore.ensureLoaded()
   if (!memberStore.currentMemberId) {
     ElMessage.warning('请先在「成员管理」中添加家庭成员')
     return

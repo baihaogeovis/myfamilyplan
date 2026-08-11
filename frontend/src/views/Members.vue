@@ -82,10 +82,8 @@ import { Plus } from 'lucide-vue-next'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { addMember, updateMember, deleteMember, type FamilyMember } from '@/api/member'
 import { useMemberStore } from '@/stores/member'
-import { useUserStore } from '@/stores/user'
 
 const memberStore = useMemberStore()
-const userStore = useUserStore()
 const loading = ref(false)
 
 const currentName = computed(() => {
@@ -106,7 +104,6 @@ const relationText = (val?: string) => {
 
 const dialogVisible = ref(false)
 const form = reactive<FamilyMember>({
-  userId: 0,
   memberName: '',
   relation: '',
   gender: '',
@@ -115,11 +112,9 @@ const form = reactive<FamilyMember>({
 })
 
 const load = async () => {
-  const userId = userStore.userInfo?.userId
-  if (!userId) return
   loading.value = true
   try {
-    await memberStore.loadMembers(userId)
+    await memberStore.loadMembers()
   } finally {
     loading.value = false
   }
@@ -131,14 +126,8 @@ const setCurrent = (row: FamilyMember) => {
 }
 
 const openAdd = () => {
-  const userId = userStore.userInfo?.userId
-  if (!userId) {
-    ElMessage.warning('未获取到用户信息')
-    return
-  }
   Object.assign(form, {
     id: undefined,
-    userId,
     memberName: '',
     relation: '',
     gender: '',

@@ -18,6 +18,18 @@ export default defineConfig({
         target: 'http://localhost:8080',
         changeOrigin: true
       }
+    },
+    // 误把 API 地址当页面访问(GET /api/approval 根路径)时, 重定向到前端审批页, 避免直接暴露 403/404
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        if (req.method === 'GET' && req.url === '/api/approval') {
+          res.statusCode = 302
+          res.setHeader('Location', '/approval')
+          res.end()
+          return
+        }
+        next()
+      })
     }
   },
   allowedHosts: true

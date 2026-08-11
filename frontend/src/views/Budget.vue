@@ -143,6 +143,7 @@ const onYearChange = () => {
 }
 
 const load = async () => {
+  await memberStore.ensureLoaded()
   if (!memberStore.currentMemberId) {
     ElMessage.warning('请先在「成员管理」中添加家庭成员')
     return
@@ -174,7 +175,8 @@ const resetFilters = () => {
   load()
 }
 
-const openAdd = () => {
+const openAdd = async () => {
+  await memberStore.ensureLoaded()
   if (!memberStore.currentMemberId) {
     ElMessage.warning('请先在「成员管理」中添加家庭成员')
     return

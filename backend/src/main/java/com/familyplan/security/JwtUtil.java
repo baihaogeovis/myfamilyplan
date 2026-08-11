@@ -40,6 +40,13 @@ public class JwtUtil {
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
+
+    /**
+     * 从token中提取家庭ID
+     */
+    public Long extractFamilyId(String token) {
+        return extractClaim(token, claims -> claims.get("familyId", Long.class));
+    }
     
     /**
      * 从token中提取过期时间
@@ -59,7 +66,7 @@ public class JwtUtil {
     /**
      * 提取所有声明
      */
-    private Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()

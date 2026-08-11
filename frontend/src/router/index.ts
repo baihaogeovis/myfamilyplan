@@ -67,6 +67,12 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '资金审批', requiresAuth: true }
       },
       {
+        path: 'family',
+        name: 'Family',
+        component: () => import('@/views/Family.vue'),
+        meta: { title: '家庭管理', requiresAuth: true }
+      },
+      {
         path: 'members',
         name: 'Members',
         component: () => import('@/views/Members.vue'),

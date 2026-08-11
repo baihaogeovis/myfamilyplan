@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,9 +35,13 @@ public class StatisticsController {
     @Autowired
     private IExpenseService expenseService;
 
-    private List<Long> memberIdsOf(Long userId) {
+    /**
+     * 当前家庭下的全部成员ID(统计展示整个家庭的数据)
+     */
+    private List<Long> memberIdsOfFamily() {
+        Long familyId = com.familyplan.security.SecurityUtil.getRequiredFamilyId();
         LambdaQueryWrapper<FamilyMember> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(FamilyMember::getUserId, userId);
+        wrapper.eq(FamilyMember::getFamilyId, familyId);
         return familyMemberService.list(wrapper).stream()
                 .map(FamilyMember::getId).collect(Collectors.toList());
     }
@@ -45,12 +50,11 @@ public class StatisticsController {
      * 分类统计：当月收入/支出按分类汇总
      */
     @GetMapping("/category")
-    public Result<CategoryStatResponse> category(@RequestParam Long userId,
-                                                  @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate month) {
-        LocalDate now = month != null ? month : LocalDate.now();
-        LocalDate first = now.withDayOfMonth(1);
-        LocalDate last = now.withDayOfMonth(now.lengthOfMonth());
-        List<Long> memberIds = memberIdsOf(userId);
+    public Result<CategoryStatResponse> category(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM") YearMonth month) {
+        YearMonth ym = month != null ? month : YearMonth.now();
+        LocalDate first = ym.atDay(1);
+        LocalDate last = ym.atEndOfMonth();
+        List<Long> memberIds = memberIdsOfFamily();
 
         CategoryStatResponse response = new CategoryStatResponse();
         if (memberIds.isEmpty()) {
@@ -89,12 +93,11 @@ public class StatisticsController {
      * 年度月度趋势：当年每月的收入/支出合计
      */
     @GetMapping("/monthly")
-    public Result<List<MonthlyStat>> monthly(@RequestParam Long userId,
-                                              @RequestParam(required = false) Integer year) {
+    public Result<List<MonthlyStat>> monthly(@RequestParam(required = false) Integer year) {
         int y = year != null ? year : LocalDate.now().getYear();
         LocalDate first = LocalDate.of(y, 1, 1);
         LocalDate last = LocalDate.of(y, 12, 31);
-        List<Long> memberIds = memberIdsOf(userId);
+        List<Long> memberIds = memberIdsOfFamily();
 
         List<MonthlyStat> stats = new ArrayList<>();
         if (memberIds.isEmpty()) {

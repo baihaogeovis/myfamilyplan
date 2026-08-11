@@ -11,7 +11,7 @@
         </div>
       </div>
       <div class="stat-card completed">
-        <div class="stat-icon"><el-icon><CircleCheck /></el-icon></div>
+        <div class="stat-icon"><el-icon><CheckCircle /></el-icon></div>
         <div class="stat-body">
           <div class="stat-label">已完成</div>
           <div class="stat-value">{{ completedCount }}</div>
@@ -122,7 +122,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, watch } from 'vue'
-import { Plus, Calendar, CircleCheck, Wallet, Tv, Plane } from 'lucide-vue-next'
+import { Plus, Calendar, CheckCircle, Wallet, Tv, Plane } from 'lucide-vue-next'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   getLifePlanList,
@@ -175,6 +175,7 @@ const form = reactive<LifePlan>({
 })
 
 const load = async () => {
+  await memberStore.ensureLoaded()
   if (!memberStore.currentMemberId) {
     ElMessage.warning('请先在「成员管理」中添加家庭成员')
     return
@@ -187,7 +188,8 @@ const load = async () => {
   }
 }
 
-const openAdd = () => {
+const openAdd = async () => {
+  await memberStore.ensureLoaded()
   if (!memberStore.currentMemberId) {
     ElMessage.warning('请先在「成员管理」中添加家庭成员')
     return

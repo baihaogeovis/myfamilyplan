@@ -54,6 +54,7 @@
             <Settings />
             <span>系统管理</span>
           </template>
+          <el-menu-item index="/family">家庭管理</el-menu-item>
           <el-menu-item index="/approval">资金审批</el-menu-item>
           <el-menu-item index="/members">成员管理</el-menu-item>
           <el-menu-item index="/notifications">提醒中心</el-menu-item>
@@ -70,6 +71,27 @@
         </div>
         
         <div class="header-right">
+          <!-- 当前操作成员切换 -->
+          <el-dropdown v-if="memberStore.members.length > 0" @command="switchMember">
+            <span class="member-info">
+              <el-tag effect="plain" type="warning">当前成员</el-tag>
+              <span class="username">{{ currentMemberName || '请选择成员' }}</span>
+              <el-icon class="el-icon--right"><ArrowDown /></el-icon>
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item
+                  v-for="m in memberStore.members"
+                  :key="m.id"
+                  :command="m.id"
+                  :disabled="m.id === memberStore.currentMemberId"
+                >
+                  {{ m.memberName }}（{{ relationText(m.relation) }}）
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+
           <el-dropdown @command="handleCommand">
             <span class="user-info">
               <el-avatar :size="32" :src="userStore.userInfo?.avatar" />
@@ -94,20 +116,47 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
-  Home, Wallet, ClipboardCheck, Sparkles, Baby, Settings
+  Home, Wallet, ClipboardCheck, Sparkles, Baby, Settings, ArrowDown
 } from 'lucide-vue-next'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/stores/user'
+import { useMemberStore } from '@/stores/member'
 import { logout } from '@/api/auth'
 
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
+const memberStore = useMemberStore()
 
 const activeMenu = computed(() => route.path)
+
+const currentMemberName = computed(() => {
+  const m = memberStore.members.find((x) => x.id === memberStore.currentMemberId)
+  return m ? m.memberName : ''
+})
+
+const relationText = (relation?: string) => {
+  const map: Record<string, string> = {
+    OWNER: '户主',
+    SPOUSE: '配偶',
+    CHILD: '子女',
+    PARENT: '父母',
+    OTHER: '其他'
+  }
+  return relation ? map[relation] || relation : '其他'
+}
+
+/** 切换当前操作成员(刷新页面使各模块按新成员重新加载) */
+const switchMember = async (memberId: string | number) => {
+  const id = Number(memberId)
+  memberStore.setCurrentMember(id)
+  ElMessage.success('已切换操作成员')
+  // 刷新当前页, 让数据按新成员重新加载
+  window.location.reload()
+}
 
 const currentPageTitle = computed(() => {
   const titles: Record<string, string> = {
@@ -120,6 +169,7 @@ const currentPageTitle = computed(() => {
     '/life-plan': '美好生活计划',
     '/growth-plan': '儿童成长计划',
     '/approval': '资金审批',
+    '/family': '家庭管理',
     '/members': '成员管理',
     '/statistics': '统计报表',
     '/notifications': '提醒中心'
@@ -145,6 +195,11 @@ const handleCommand = async (command: string) => {
     }
   }
 }
+
+onMounted(() => {
+  // 刷新后恢复成员列表, 供顶栏切换当前操作成员
+  memberStore.ensureLoaded().catch(() => {})
+})
 </script>
 
 <style scoped>
@@ -216,6 +271,15 @@ const handleCommand = async (command: string) => {
 .header-right {
   display: flex;
   align-items: center;
+  gap: 20px;
+}
+
+.member-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #606266;
 }
 
 .user-info {

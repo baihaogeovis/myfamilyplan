@@ -3,7 +3,22 @@ CREATE DATABASE IF NOT EXISTS family_plan DEFAULT CHARACTER SET utf8mb4 COLLATE 
 
 USE family_plan;
 
--- 用户表
+-- 家庭表(家庭账号:一个家庭一个登录账号,家庭成员共用该账号登录)
+CREATE TABLE IF NOT EXISTS family (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '家庭ID',
+    family_name VARCHAR(100) NOT NULL COMMENT '家庭名称',
+    username VARCHAR(50) NOT NULL UNIQUE COMMENT '家庭登录账号',
+    password VARCHAR(200) NOT NULL COMMENT '密码(加密)',
+    avatar VARCHAR(255) COMMENT '家庭头像URL',
+    remark VARCHAR(500) COMMENT '备注',
+    status TINYINT DEFAULT 1 COMMENT '状态(0-禁用,1-启用)',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    deleted TINYINT DEFAULT 0 COMMENT '逻辑删除(0-未删除,1-已删除)',
+    INDEX idx_family_username (username)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='家庭表';
+
+-- 用户表(保留兼容历史数据,新系统以家庭账号登录)
 CREATE TABLE IF NOT EXISTS user_info (
     id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '用户ID',
     username VARCHAR(50) NOT NULL UNIQUE COMMENT '用户名',
@@ -16,12 +31,13 @@ CREATE TABLE IF NOT EXISTS user_info (
     update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     deleted TINYINT DEFAULT 0 COMMENT '逻辑删除(0-未删除,1-已删除)',
     INDEX idx_username (username)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表(兼容保留)';
 
 -- 家庭成员表
 CREATE TABLE IF NOT EXISTS family_member (
     id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '成员ID',
-    user_id BIGINT NOT NULL COMMENT '用户ID',
+    family_id BIGINT NOT NULL COMMENT '所属家庭ID',
+    user_id BIGINT COMMENT '关联用户ID(兼容保留)',
     member_name VARCHAR(50) NOT NULL COMMENT '成员姓名',
     relation VARCHAR(20) NOT NULL COMMENT '关系(OWNER-户主,SPOUSE-配偶,CHILD-子女,PARENT-父母,OTHER-其他)',
     gender VARCHAR(10) COMMENT '性别(男/女)',
@@ -35,6 +51,7 @@ CREATE TABLE IF NOT EXISTS family_member (
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     deleted TINYINT DEFAULT 0 COMMENT '逻辑删除(0-未删除,1-已删除)',
+    INDEX idx_family_id (family_id),
     INDEX idx_user_id (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='家庭成员表';
 
@@ -98,6 +115,7 @@ CREATE TABLE IF NOT EXISTS approval_record (
     approver_id BIGINT COMMENT '审批人ID',
     remark VARCHAR(500) COMMENT '审批备注',
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     approve_time DATETIME COMMENT '审批时间',
     deleted TINYINT DEFAULT 0 COMMENT '逻辑删除(0-未删除,1-已删除)',
     INDEX idx_applicant_id (applicant_id),
@@ -123,29 +141,51 @@ CREATE TABLE IF NOT EXISTS fund_allocation (
 -- 通知提醒表
 CREATE TABLE IF NOT EXISTS notification (
     id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '通知ID',
-    user_id BIGINT NOT NULL COMMENT '用户ID',
+    family_id BIGINT NOT NULL COMMENT '所属家庭ID',
+    user_id BIGINT COMMENT '关联用户ID(兼容保留)',
     title VARCHAR(100) NOT NULL COMMENT '通知标题',
     content TEXT COMMENT '通知内容',
     type VARCHAR(20) NOT NULL COMMENT '类型(BILL-账单提醒,BUDGET-预算预警,APPROVAL-审批通知,SYSTEM-系统通知)',
     is_read TINYINT DEFAULT 0 COMMENT '是否已读(0-未读,1-已读)',
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    deleted TINYINT DEFAULT 0 COMMENT '逻辑删除(0-未删除,1-已删除)',
+    INDEX idx_family_id (family_id),
     INDEX idx_user_id (user_id),
     INDEX idx_is_read (is_read)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='通知提醒表';
 
--- 插入默认管理员账户 (密码: admin123)
-INSERT INTO user_info (username, password, nickname, role, status) VALUES 
-('admin', '$2a$10$pJqMd5MkmTQUNbEFrAFaj.PMkVh4RrQXmuBKLNjXpglFJ.xIfZic.', '系统管理员', 'ADMIN', 1);
+-- 已存在数据库的结构补丁：为 notification 补齐 update_time/deleted 字段（如已存在可忽略报错）
+ALTER TABLE notification ADD COLUMN update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间';
+ALTER TABLE notification ADD COLUMN deleted TINYINT DEFAULT 0 COMMENT '逻辑删除(0-未删除,1-已删除)';
+ALTER TABLE notification ADD COLUMN family_id BIGINT COMMENT '所属家庭ID';
+ALTER TABLE notification ADD INDEX idx_family_id (family_id);
 
--- 插入默认家庭成员
-INSERT INTO family_member (user_id, member_name, relation, role, status) VALUES 
-(1, '管理员', 'OWNER', 'ADMIN', 1);
+-- 历史数据迁移补丁：历史通知归属默认家庭(如已迁移可忽略)
+UPDATE notification SET family_id = 1 WHERE family_id IS NULL;
+
+-- 插入默认家庭账号 (家庭账号/密码: admin/admin123)
+INSERT INTO family (family_name, username, password, status) VALUES 
+('我的家庭', 'admin', '$2a$10$pJqMd5MkmTQUNbEFrAFaj.PMkVh4RrQXmuBKLNjXpglFJ.xIfZic.', 1);
+
+-- 插入默认家庭成员(属于默认家庭)
+INSERT INTO family_member (family_id, user_id, member_name, relation, role, status) VALUES 
+(1, 1, '管理员', 'OWNER', 'ADMIN', 1);
 
 -- 已存在数据库的结构补丁：为 family_member 补齐新字段（如已存在可忽略报错）
 ALTER TABLE family_member ADD COLUMN gender VARCHAR(10) COMMENT '性别(男/女)';
 ALTER TABLE family_member ADD COLUMN birthday DATE COMMENT '生日';
 ALTER TABLE family_member ADD COLUMN avatar VARCHAR(255) COMMENT '头像URL';
 ALTER TABLE family_member ADD COLUMN remark VARCHAR(500) COMMENT '备注';
+ALTER TABLE family_member ADD COLUMN family_id BIGINT COMMENT '所属家庭ID';
+ALTER TABLE family_member ADD INDEX idx_family_id (family_id);
+
+-- 历史数据迁移补丁：为旧数据创建默认家庭并挂接(如 family 表已有默认家庭可忽略)
+INSERT INTO family (family_name, username, password, status)
+SELECT '我的家庭', 'admin', '$2a$10$pJqMd5MkmTQUNbEFrAFaj.PMkVh4RrQXmuBKLNjXpglFJ.xIfZic.', 1
+WHERE NOT EXISTS (SELECT 1 FROM family WHERE username = 'admin');
+
+UPDATE family_member SET family_id = 1 WHERE family_id IS NULL;
 
 -- ============================================
 -- 二期扩展：4 大新功能模块数据表
