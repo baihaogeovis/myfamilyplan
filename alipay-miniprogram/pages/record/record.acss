@@ -1,0 +1,161 @@
+.record-page {
+  min-height: 100vh;
+  padding-bottom: 160rpx;
+}
+
+.type-tabs {
+  display: flex;
+  background: #ffffff;
+  padding: 20rpx 24rpx 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.type-tab {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+  font-size: 32rpx;
+  color: #909399;
+  border-bottom: 6rpx solid transparent;
+  font-weight: 500;
+}
+
+.type-tab.active {
+  color: #303133;
+  font-weight: 700;
+}
+
+.type-tab.active.income {
+  border-color: #67c23a;
+  color: #67c23a;
+}
+
+.type-tab.active.expense {
+  border-color: #f56c6c;
+  color: #f56c6c;
+}
+
+.list-wrap {
+  padding: 24rpx;
+}
+
+.record-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.record-category {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #303133;
+}
+
+.record-remark {
+  font-size: 24rpx;
+  color: #909399;
+  margin-top: 4rpx;
+}
+
+.record-date {
+  font-size: 22rpx;
+  color: #c0c4cc;
+  margin-top: 4rpx;
+}
+
+.record-right {
+  text-align: right;
+}
+
+.record-amount {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.record-amount.income {
+  color: #67c23a;
+}
+
+.record-amount.expense {
+  color: #f56c6c;
+}
+
+.record-del {
+  font-size: 22rpx;
+  color: #f56c6c;
+  margin-top: 8rpx;
+}
+
+.fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: 120rpx;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  font-size: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.5);
+  z-index: 20;
+}
+
+.modal-mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+}
+
+.modal-body {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 40rpx 32rpx calc(40rpx + env(safe-area-inset-bottom));
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+.category-row {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  justify-content: flex-end;
+}
+
+.category-chip {
+  padding: 8rpx 20rpx;
+  border-radius: 28rpx;
+  font-size: 24rpx;
+  background: #f4f4f5;
+  color: #606266;
+  border: 2rpx solid transparent;
+}
+
+.category-chip.active {
+  background: #667eea;
+  color: #ffffff;
+  border-color: #667eea;
+}
+
+.modal-btn {
+  margin-top: 40rpx;
+}

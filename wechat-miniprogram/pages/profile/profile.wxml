@@ -1,0 +1,65 @@
+<view class="page-container">
+
+  <!-- 家庭信息 -->
+  <view class="card family-card">
+    <view class="family-name">{{family.familyName || '我的家庭'}}</view>
+    <view class="family-meta">
+      账号：{{family.username}} · 家庭成员 {{members.length}} 人
+    </view>
+    <view class="member-switch" bindtap="goMembers">管理成员 ›</view>
+  </view>
+
+  <!-- 当前成员选择 -->
+  <view class="card">
+    <view class="card-title">当前记账成员</view>
+    <view class="member-list">
+      <view class="member-item {{currentMemberId === item.id ? 'active' : ''}}"
+        wx:for="{{members}}" wx:key="id"
+        bindtap="chooseMember" data-id="{{item.id}}" data-name="{{item.memberName}}">
+        <view class="member-avatar">{{item.memberName[0]}}</view>
+        <view class="member-info">
+          <view class="member-name">{{item.memberName}}</view>
+          <view class="member-relation">{{item.relation || '成员'}}</view>
+        </view>
+        <view class="member-check" wx:if="{{currentMemberId === item.id}}">✓</view>
+      </view>
+      <view wx:if="{{members.length === 0}}" class="empty-state">
+        <view class="empty-text" bindtap="goMembers">暂无成员，点击添加 ›</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 设置 -->
+  <view class="card">
+    <view class="card-title">设置</view>
+    <view class="setting-item" bindtap="openPwd">
+      <view class="setting-label">修改密码</view>
+      <view class="setting-arrow">›</view>
+    </view>
+    <view class="setting-item" bindtap="goMembers">
+      <view class="setting-label">家庭成员管理</view>
+      <view class="setting-arrow">›</view>
+    </view>
+  </view>
+
+  <button class="btn-plain logout-btn" bindtap="logout">退出登录</button>
+  <view class="safe-bottom"></view>
+
+  <!-- 修改密码弹窗 -->
+  <view class="modal-mask" wx:if="{{showPwd}}" bindtap="closePwd">
+    <view class="modal-body" catchtap="noop">
+      <view class="modal-title">修改密码</view>
+      <view class="form-item">
+        <text class="form-label">原密码</text>
+        <input class="form-input" password placeholder="请输入原密码" placeholder-class="form-placeholder"
+          value="{{pwdForm.oldPassword}}" bindinput="onOldPwd" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">新密码</text>
+        <input class="form-input" password placeholder="请输入新密码" placeholder-class="form-placeholder"
+          value="{{pwdForm.newPassword}}" bindinput="onNewPwd" />
+      </view>
+      <button class="btn-primary modal-btn" bindtap="submitPwd">确认修改</button>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,83 @@
+<view class="page-container">
+
+  <!-- 日期与统计 -->
+  <view class="card date-card">
+    <picker mode="date" value="{{date}}" bindchange="onDateChange">
+      <view class="date-picker">📅 {{date}} ▾</view>
+    </picker>
+    <view class="date-stats">
+      已完成 <text class="num">{{stats.completed}}</text> / {{stats.total}}
+    </view>
+  </view>
+
+  <!-- 类型筛选 -->
+  <view class="type-tabs">
+    <view class="type-tab {{taskType === item.value ? 'active' : ''}}"
+      wx:for="{{taskTypes}}" wx:key="value" wx:for-item="item"
+      bindtap="onTypeChange" data-value="{{item.value}}">{{item.label}}</view>
+  </view>
+
+  <!-- 任务列表 -->
+  <view wx:if="{{tasks.length === 0}}" class="empty-state">
+    <view class="empty-icon">✅</view>
+    <view class="empty-text">今日暂无任务</view>
+  </view>
+
+  <view class="card task-item {{item.completed ? 'done' : ''}}"
+    wx:for="{{tasks}}" wx:key="id">
+    <view class="task-check {{item.completed ? 'checked' : ''}}"
+      catchtap="toggleComplete" data-item="{{item}}">
+      {{item.completed ? '✓' : ''}}
+    </view>
+    <view class="task-main" bindtap="openEdit" data-item="{{item}}">
+      <view class="task-name">{{item.taskName}}</view>
+      <view class="task-meta">
+        <text class="tag {{item.priorityCls}}">优先级{{item.priorityText}}</text>
+        <text class="tag tag-blue">{{item.typeText}}</text>
+      </view>
+      <view class="task-remark" wx:if="{{item.remark}}">{{item.remark}}</view>
+    </view>
+    <view class="task-del" catchtap="removeItem" data-item="{{item}}">删除</view>
+  </view>
+
+  <view class="fab" bindtap="openAdd">+</view>
+
+  <!-- 弹窗 -->
+  <view class="modal-mask" wx:if="{{showForm}}" bindtap="closeForm">
+    <view class="modal-body" catchtap="noop">
+      <view class="modal-title">{{formMode === 'add' ? '新增' : '编辑'}}任务</view>
+
+      <view class="form-item">
+        <text class="form-label">任务名称</text>
+        <input class="form-input" placeholder="请输入任务名称" placeholder-class="form-placeholder"
+          value="{{form.taskName}}" bindinput="onFormName" />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">类型</text>
+        <view class="chip-row">
+          <view class="chip {{form.taskType === 'TODAY' ? 'active' : ''}}" bindtap="chooseType" data-value="TODAY">今日</view>
+          <view class="chip {{form.taskType === 'PERIODIC' ? 'active' : ''}}" bindtap="chooseType" data-value="PERIODIC">周期</view>
+          <view class="chip {{form.taskType === 'ONE_TIME' ? 'active' : ''}}" bindtap="chooseType" data-value="ONE_TIME">一次性</view>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">优先级</text>
+        <view class="chip-row">
+          <view class="chip {{form.priority === 'HIGH' ? 'active' : ''}}" bindtap="choosePriority" data-value="HIGH">高</view>
+          <view class="chip {{form.priority === 'MEDIUM' ? 'active' : ''}}" bindtap="choosePriority" data-value="MEDIUM">中</view>
+          <view class="chip {{form.priority === 'LOW' ? 'active' : ''}}" bindtap="choosePriority" data-value="LOW">低</view>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">备注</text>
+        <input class="form-input" placeholder="备注（选填）" placeholder-class="form-placeholder"
+          value="{{form.remark}}" bindinput="onFormRemark" />
+      </view>
+
+      <button class="btn-primary modal-btn" bindtap="submitForm">保存</button>
+    </view>
+  </view>
+</view>

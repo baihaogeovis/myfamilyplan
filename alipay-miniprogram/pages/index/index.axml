@@ -1,0 +1,60 @@
+<view class="page-container">
+
+  <!-- 概览卡片 -->
+  <view class="overview-card">
+    <view class="overview-header">
+      <view class="overview-title">本月概览</view>
+      <view class="overview-member" a:if="{{currentMemberName}}">{{currentMemberName}}</view>
+    </view>
+    <view class="overview-row">
+      <view class="overview-item">
+        <view class="overview-label">本月收入</view>
+        <view class="overview-value income">¥{{overview.monthIncome}}</view>
+      </view>
+      <view class="overview-item">
+        <view class="overview-label">本月支出</view>
+        <view class="overview-value expense">¥{{overview.monthExpense}}</view>
+      </view>
+      <view class="overview-item">
+        <view class="overview-label">预算剩余</view>
+        <view class="overview-value">¥{{overview.budgetRemaining}}</view>
+      </view>
+    </view>
+    <view class="overview-footer">
+      <view class="overview-stat" a:if="{{overview.pendingCount}}">待审批 {{overview.pendingCount}} 笔</view>
+      <view class="overview-stat">家庭成员 {{overview.memberCount}} 人</view>
+    </view>
+  </view>
+
+  <!-- 快捷记账 -->
+  <view class="quick-row">
+    <view class="quick-btn income" onTap="goRecord" data-type="income">记收入</view>
+    <view class="quick-btn expense" onTap="goRecord" data-type="expense">记支出</view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="card menu-card">
+    <view class="card-title">全部功能</view>
+    <view class="menu-grid">
+      <view class="menu-item" a:for="{{menus}}" a:key="name" onTap="goMenu" data-path="{{item.path}}">
+        <view class="menu-icon" style="background:{{item.color}}20;color:{{item.color}}">{{item.icon}}</view>
+        <view class="menu-name">{{item.name}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 最近收支 -->
+  <view class="card">
+    <view class="card-title">最近收支</view>
+    <view a:if="{{recent.length === 0}}" class="empty-state">
+      <view class="empty-text">暂无记录，快去记一笔吧</view>
+    </view>
+    <view class="recent-item" a:for="{{recent}}" a:key="id">
+      <view class="recent-info">
+        <view class="recent-name">{{item.category}}</view>
+        <view class="recent-desc">{{item.memberName}} · {{item.dateText}}</view>
+      </view>
+      <view class="recent-amount {{item.type === 'EXPENSE' ? 'expense' : 'income'}}">{{item.amountText}}</view>
+    </view>
+  </view>
+</view>

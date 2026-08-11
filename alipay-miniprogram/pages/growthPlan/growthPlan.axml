@@ -1,0 +1,104 @@
+<view class="page-container">
+
+  <view class="type-tabs">
+    <view class="type-tab {{goalType === item.value ? 'active' : ''}}"
+      a:for="{{typeTabs}}" a:key="value" a:for-item="item"
+      onTap="onTypeChange" data-value="{{item.value}}">{{item.label}}</view>
+  </view>
+
+  <view a:if="{{list.length === 0}}" class="empty-state">
+    <view class="empty-icon">🌱</view>
+    <view class="empty-text">暂无成长目标，为宝宝种下小目标吧</view>
+  </view>
+
+  <view class="card goal-item" a:for="{{list}}" a:key="id" onTap="openEdit" data-item="{{item}}">
+    <view class="goal-top">
+      <view class="goal-title">{{item.title}}</view>
+      <text class="tag {{item.statusCls}}">{{item.statusText}}</text>
+    </view>
+    <view class="goal-meta">
+      <text class="tag tag-purple">{{item.typeText}}</text>
+      <text class="goal-category" a:if="{{item.category}}">{{item.category}}</text>
+      <text class="goal-date">截止 {{item.dateText}}</text>
+    </view>
+    <view class="goal-desc" a:if="{{item.description}}">{{item.description}}</view>
+
+    <view class="progress-row">
+      <view class="progress-bar">
+        <view class="progress-inner" style="width:{{item.progress}}%"></view>
+      </view>
+      <view class="progress-text">{{item.progress}}%</view>
+    </view>
+
+    <view class="goal-actions">
+      <block a:if="{{item.status === 'PLANNING'}}">
+        <view class="mini-btn" catchTap="changeStatus" data-item="{{item}}" data-status="IN_PROGRESS">开始</view>
+      </block>
+      <block a:if="{{item.status === 'IN_PROGRESS'}}">
+        <view class="mini-btn done" catchTap="changeStatus" data-item="{{item}}" data-status="COMPLETED">完成</view>
+      </block>
+      <block a:if="{{item.status !== 'CANCELLED' && item.status !== 'COMPLETED'}}">
+        <view class="mini-btn cancel" catchTap="changeStatus" data-item="{{item}}" data-status="CANCELLED">取消</view>
+      </block>
+      <view class="mini-btn del" catchTap="removeItem" data-item="{{item}}">删除</view>
+    </view>
+  </view>
+
+  <view class="fab" onTap="openAdd">+</view>
+
+  <!-- 弹窗 -->
+  <view class="modal-mask" a:if="{{showForm}}" onTap="closeForm">
+    <view class="modal-body" catchTap="noop">
+      <view class="modal-title">{{formMode === 'add' ? '新增' : '编辑'}}目标</view>
+
+      <view class="form-item">
+        <text class="form-label">目标名称</text>
+        <input class="form-input" placeholder="如：学会游泳" placeholder-class="form-placeholder"
+          value="{{form.title}}" onInput="onTitle" />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">类型</text>
+        <view class="chip-row">
+          <view class="chip {{form.goalType === 'SHORT' ? 'active' : ''}}" onTap="chooseType" data-value="SHORT">短期目标</view>
+          <view class="chip {{form.goalType === 'LONG' ? 'active' : ''}}" onTap="chooseType" data-value="LONG">长期目标</view>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">分类</text>
+        <input class="form-input" placeholder="如：学习 / 运动 / 兴趣" placeholder-class="form-placeholder"
+          value="{{form.category}}" onInput="onCategory" />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">描述</text>
+        <input class="form-input" placeholder="目标描述（选填）" placeholder-class="form-placeholder"
+          value="{{form.description}}" onInput="onDesc" />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">目标日期</text>
+        <picker mode="date" value="{{form.targetDate}}" onChange="onDate">
+          <view class="form-input">{{form.targetDate}}</view>
+        </picker>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">进度</text>
+        <view class="progress-edit">
+          <slider min="0" max="100" step="5" value="{{form.progress}}" onChange="onProgress" />
+          <view class="progress-num">{{form.progress}}%</view>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">备注</text>
+        <input class="form-input" placeholder="备注（选填）" placeholder-class="form-placeholder"
+          value="{{form.remark}}" onInput="onRemark" />
+      </view>
+
+      <button class="btn-primary modal-btn" onTap="submitForm">保存</button>
+    </view>
+  </view>
+</view>

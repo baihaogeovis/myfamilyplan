@@ -1,0 +1,43 @@
+<view class="login-page">
+  <view class="login-hero">
+    <view class="app-name">家庭成长系统</view>
+    <view class="app-desc">记录收支 · 规划预算 · 共同成长</view>
+  </view>
+
+  <view class="login-card">
+    <view class="mode-tabs">
+      <view class="mode-tab {{mode === 'login' ? 'active' : ''}}" bindtap="switchMode">登录</view>
+      <view class="mode-tab {{mode === 'register' ? 'active' : ''}}" bindtap="switchMode">注册</view>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">账号</text>
+      <input class="form-input" placeholder="请输入账号" placeholder-class="form-placeholder"
+        value="{{username}}" bindinput="onUsername" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">密码</text>
+      <input class="form-input" password placeholder="请输入密码" placeholder-class="form-placeholder"
+        value="{{password}}" bindinput="onPassword" />
+    </view>
+
+    <block wx:if="{{mode === 'register'}}">
+      <view class="form-item">
+        <text class="form-label">家庭名称</text>
+        <input class="form-input" placeholder="如：幸福之家" placeholder-class="form-placeholder"
+          value="{{familyName}}" bindinput="onFamilyName" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">户主姓名</text>
+        <input class="form-input" placeholder="家庭户主姓名" placeholder-class="form-placeholder"
+          value="{{ownerName}}" bindinput="onOwnerName" />
+      </view>
+    </block>
+
+    <button class="btn-primary login-btn" bindtap="submit">
+      {{mode === 'login' ? '登 录' : '注册并登录'}}
+    </button>
+  </view>
+
+  <view class="login-footer">登录即代表同意家庭成长系统服务协议</view>
+</view>

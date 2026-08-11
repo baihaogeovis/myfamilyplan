@@ -1,0 +1,77 @@
+<view class="record-page">
+
+  <!-- 类型切换 -->
+  <view class="type-tabs">
+    <view class="type-tab {{type === 'income' ? 'active income' : ''}}"
+      onTap="switchType" data-type="income">收入</view>
+    <view class="type-tab {{type === 'expense' ? 'active expense' : ''}}"
+      onTap="switchType" data-type="expense">支出</view>
+  </view>
+
+  <!-- 列表 -->
+  <view class="list-wrap">
+    <view a:if="{{list.length === 0}}" class="empty-state">
+      <view class="empty-icon">📒</view>
+      <view class="empty-text">暂无记录</view>
+    </view>
+
+    <view class="card record-item" a:for="{{list}}" a:key="id"
+      onTap="openEdit" data-item="{{item}}">
+      <view class="record-left">
+        <view class="record-category">{{item.category}}</view>
+        <view class="record-remark">{{item.remark || item.source || '备注无'}}</view>
+        <view class="record-date">{{item.dateText}} · {{item.memberName || '未设置成员'}}</view>
+      </view>
+      <view class="record-right">
+        <view class="record-amount {{type}}">{{type === 'income' ? '+' : '-'}}{{item.amountText}}</view>
+        <view class="record-del" catchTap="removeItem" data-item="{{item}}">删除</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 新增悬浮按钮 -->
+  <view class="fab" onTap="openAdd">+</view>
+
+  <!-- 新增/编辑弹窗 -->
+  <view class="modal-mask" a:if="{{showForm}}" onTap="closeForm">
+    <view class="modal-body" catchTap="noop">
+      <view class="modal-title">{{formMode === 'add' ? '新增' : '编辑'}}{{type === 'income' ? '收入' : '支出'}}</view>
+
+      <view class="form-item">
+        <text class="form-label">金额</text>
+        <input class="form-input" type="digit" placeholder="请输入金额" placeholder-class="form-placeholder"
+          value="{{form.amount}}" onInput="onFormAmount" />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">分类</text>
+        <view class="category-row">
+          <view class="category-chip {{form.category === item ? 'active' : ''}}"
+            a:for="{{categories}}" a:key="*this" a:for-item="item"
+            onTap="chooseCategory" data-cat="{{item}}">{{item}}</view>
+        </view>
+      </view>
+
+      <view class="form-item" a:if="{{type === 'income'}}">
+        <text class="form-label">来源</text>
+        <input class="form-input" placeholder="收入来源（选填）" placeholder-class="form-placeholder"
+          value="{{form.source}}" onInput="onFormSource" />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">日期</text>
+        <picker mode="date" value="{{form.date}}" onChange="onFormDate">
+          <view class="form-input">{{form.date}}</view>
+        </picker>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">备注</text>
+        <input class="form-input" placeholder="备注（选填）" placeholder-class="form-placeholder"
+          value="{{form.remark}}" onInput="onFormRemark" />
+      </view>
+
+      <button class="btn-primary modal-btn" onTap="submitForm">保存</button>
+    </view>
+  </view>
+</view>

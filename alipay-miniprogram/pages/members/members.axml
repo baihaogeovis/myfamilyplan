@@ -1,0 +1,60 @@
+<view class="page-container">
+
+  <view a:if="{{list.length === 0}}" class="empty-state">
+    <view class="empty-icon">👨‍👩‍👧‍👦</view>
+    <view class="empty-text">暂无家庭成员，点击下方按钮添加</view>
+  </view>
+
+  <view class="card member-item" a:for="{{list}}" a:key="id" onTap="openEdit" data-item="{{item}}">
+    <view class="member-avatar">{{item.memberName[0]}}</view>
+    <view class="member-info">
+      <view class="member-name">{{item.memberName}}</view>
+      <view class="member-meta">
+        <text class="tag tag-purple">{{item.relationText}}</text>
+        <text class="member-phone" a:if="{{item.phone}}">{{item.phone}}</text>
+      </view>
+      <view class="member-remark" a:if="{{item.remark}}">{{item.remark}}</view>
+    </view>
+    <view class="member-del" catchTap="removeItem" data-item="{{item}}">删除</view>
+  </view>
+
+  <view class="fab" onTap="openAdd">+</view>
+
+  <!-- 弹窗 -->
+  <view class="modal-mask" a:if="{{showForm}}" onTap="closeForm">
+    <view class="modal-body" catchTap="noop">
+      <view class="modal-title">{{formMode === 'add' ? '新增' : '编辑'}}成员</view>
+
+      <view class="form-item">
+        <text class="form-label">姓名</text>
+        <input class="form-input" placeholder="请输入姓名" placeholder-class="form-placeholder"
+          value="{{form.memberName}}" onInput="onName" />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">关系</text>
+        <view class="chip-row">
+          <view class="chip {{form.relation === 'OWNER' ? 'active' : ''}}" onTap="chooseRelation" data-value="OWNER">户主</view>
+          <view class="chip {{form.relation === 'SPOUSE' ? 'active' : ''}}" onTap="chooseRelation" data-value="SPOUSE">配偶</view>
+          <view class="chip {{form.relation === 'CHILD' ? 'active' : ''}}" onTap="chooseRelation" data-value="CHILD">子女</view>
+          <view class="chip {{form.relation === 'PARENT' ? 'active' : ''}}" onTap="chooseRelation" data-value="PARENT">父母</view>
+          <view class="chip {{form.relation === 'OTHER' ? 'active' : ''}}" onTap="chooseRelation" data-value="OTHER">其他</view>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">手机号</text>
+        <input class="form-input" type="number" placeholder="选填" placeholder-class="form-placeholder"
+          value="{{form.phone}}" onInput="onPhone" />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">备注</text>
+        <input class="form-input" placeholder="备注（选填）" placeholder-class="form-placeholder"
+          value="{{form.remark}}" onInput="onRemark" />
+      </view>
+
+      <button class="btn-primary modal-btn" onTap="submitForm">保存</button>
+    </view>
+  </view>
+</view>

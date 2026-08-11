@@ -1,0 +1,92 @@
+<view class="page-container">
+
+  <view class="type-tabs">
+    <view class="type-tab {{planType === item.value ? 'active' : ''}}"
+      a:for="{{typeTabs}}" a:key="value" a:for-item="item"
+      onTap="onTypeChange" data-value="{{item.value}}">{{item.label}}</view>
+  </view>
+
+  <view a:if="{{list.length === 0}}" class="empty-state">
+    <view class="empty-icon">🏠</view>
+    <view class="empty-text">暂无生活计划，记录你的美好愿望吧</view>
+  </view>
+
+  <view class="card plan-item" a:for="{{list}}" a:key="id" onTap="openEdit" data-item="{{item}}">
+    <view class="plan-top">
+      <view class="plan-name">{{item.planName}}</view>
+      <text class="tag {{item.statusCls}}">{{item.statusText}}</text>
+    </view>
+    <view class="plan-meta">
+      <text class="tag tag-purple">{{item.typeText}}</text>
+      <text class="plan-category" a:if="{{item.category}}">{{item.category}}</text>
+    </view>
+    <view class="plan-detail">
+      <view class="plan-budget">预算 ¥{{item.budgetText}}</view>
+      <view class="plan-date">{{item.dateText}}</view>
+    </view>
+    <view class="plan-remark" a:if="{{item.remark}}">{{item.remark}}</view>
+
+    <view class="plan-actions">
+      <block a:if="{{item.status === 'PLANNING'}}">
+        <view class="mini-btn" catchTap="changeStatus" data-item="{{item}}" data-status="IN_PROGRESS">开始</view>
+      </block>
+      <block a:if="{{item.status === 'IN_PROGRESS'}}">
+        <view class="mini-btn done" catchTap="changeStatus" data-item="{{item}}" data-status="COMPLETED">完成</view>
+      </block>
+      <block a:if="{{item.status !== 'CANCELLED' && item.status !== 'COMPLETED'}}">
+        <view class="mini-btn cancel" catchTap="changeStatus" data-item="{{item}}" data-status="CANCELLED">取消</view>
+      </block>
+      <view class="mini-btn del" catchTap="removeItem" data-item="{{item}}">删除</view>
+    </view>
+  </view>
+
+  <view class="fab" onTap="openAdd">+</view>
+
+  <!-- 弹窗 -->
+  <view class="modal-mask" a:if="{{showForm}}" onTap="closeForm">
+    <view class="modal-body" catchTap="noop">
+      <view class="modal-title">{{formMode === 'add' ? '新增' : '编辑'}}计划</view>
+
+      <view class="form-item">
+        <text class="form-label">计划名称</text>
+        <input class="form-input" placeholder="如：换台新冰箱" placeholder-class="form-placeholder"
+          value="{{form.planName}}" onInput="onName" />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">类型</text>
+        <view class="chip-row">
+          <view class="chip {{form.planType === 'APPLIANCE' ? 'active' : ''}}" onTap="chooseType" data-value="APPLIANCE">家电</view>
+          <view class="chip {{form.planType === 'TRAVEL' ? 'active' : ''}}" onTap="chooseType" data-value="TRAVEL">旅游</view>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">分类</text>
+        <input class="form-input" placeholder="如：大家电 / 国内游" placeholder-class="form-placeholder"
+          value="{{form.category}}" onInput="onCategory" />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">预算</text>
+        <input class="form-input" type="digit" placeholder="请输入预算金额" placeholder-class="form-placeholder"
+          value="{{form.budget}}" onInput="onBudget" />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">计划日期</text>
+        <picker mode="date" value="{{form.planDate}}" onChange="onDate">
+          <view class="form-input">{{form.planDate}}</view>
+        </picker>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">备注</text>
+        <input class="form-input" placeholder="备注（选填）" placeholder-class="form-placeholder"
+          value="{{form.remark}}" onInput="onRemark" />
+      </view>
+
+      <button class="btn-primary modal-btn" onTap="submitForm">保存</button>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,206 @@
+.type-tabs {
+  display: flex;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 8rpx;
+  margin-bottom: 24rpx;
+}
+
+.type-tab {
+  flex: 1;
+  text-align: center;
+  padding: 14rpx 0;
+  font-size: 26rpx;
+  color: #909399;
+  border-radius: 12rpx;
+}
+
+.type-tab.active {
+  background: #667eea;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.goal-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.goal-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #303133;
+}
+
+.goal-meta {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-top: 12rpx;
+}
+
+.goal-category {
+  font-size: 24rpx;
+  color: #606266;
+}
+
+.goal-date {
+  font-size: 22rpx;
+  color: #909399;
+}
+
+.goal-desc {
+  font-size: 26rpx;
+  color: #606266;
+  margin-top: 12rpx;
+  line-height: 1.5;
+}
+
+.progress-row {
+  display: flex;
+  align-items: center;
+  margin-top: 20rpx;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 16rpx;
+  background: #f0f2f5;
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+
+.progress-inner {
+  height: 100%;
+  border-radius: 8rpx;
+  background: linear-gradient(90deg, #43e97b, #67c23a);
+  transition: width 0.3s;
+}
+
+.progress-text {
+  font-size: 24rpx;
+  color: #67c23a;
+  font-weight: 600;
+  margin-left: 16rpx;
+  width: 90rpx;
+  text-align: right;
+}
+
+.goal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16rpx;
+  margin-top: 20rpx;
+}
+
+.mini-btn {
+  padding: 10rpx 28rpx;
+  border-radius: 28rpx;
+  font-size: 24rpx;
+  background: #f4f4f5;
+  color: #606266;
+}
+
+.mini-btn.done {
+  background: #67c23a;
+  color: #ffffff;
+}
+
+.mini-btn.cancel {
+  background: #fdf6ec;
+  color: #e6a23c;
+}
+
+.mini-btn.del {
+  background: #fef0f0;
+  color: #f56c6c;
+}
+
+.fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: 80rpx;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  font-size: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.5);
+  z-index: 20;
+}
+
+.modal-mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+}
+
+.modal-body {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 40rpx 32rpx calc(40rpx + env(safe-area-inset-bottom));
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+.chip-row {
+  flex: 1;
+  display: flex;
+  gap: 12rpx;
+  justify-content: flex-end;
+}
+
+.chip {
+  padding: 8rpx 24rpx;
+  border-radius: 28rpx;
+  font-size: 24rpx;
+  background: #f4f4f5;
+  color: #606266;
+  border: 2rpx solid transparent;
+}
+
+.chip.active {
+  background: #667eea;
+  color: #ffffff;
+  border-color: #667eea;
+}
+
+.progress-edit {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.progress-edit slider {
+  flex: 1;
+}
+
+.progress-num {
+  font-size: 24rpx;
+  color: #67c23a;
+  font-weight: 600;
+}
+
+.modal-btn {
+  margin-top: 40rpx;
+}

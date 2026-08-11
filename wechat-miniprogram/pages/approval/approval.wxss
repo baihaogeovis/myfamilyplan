@@ -1,0 +1,124 @@
+.status-tabs {
+  display: flex;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 8rpx;
+  margin-bottom: 24rpx;
+}
+
+.status-tab {
+  flex: 1;
+  text-align: center;
+  padding: 14rpx 0;
+  font-size: 26rpx;
+  color: #909399;
+  border-radius: 12rpx;
+}
+
+.status-tab.active {
+  background: #667eea;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.approval-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.approval-amount {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #303133;
+}
+
+.approval-purpose {
+  font-size: 28rpx;
+  color: #606266;
+  margin-top: 12rpx;
+}
+
+.approval-meta {
+  font-size: 22rpx;
+  color: #909399;
+  margin-top: 8rpx;
+}
+
+.approval-remark {
+  font-size: 24rpx;
+  color: #c0c4cc;
+  margin-top: 6rpx;
+}
+
+.approval-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20rpx;
+  margin-top: 20rpx;
+}
+
+.action-btn {
+  padding: 12rpx 36rpx;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+}
+
+.action-btn.approve {
+  background: #67c23a;
+  color: #ffffff;
+}
+
+.action-btn.reject {
+  background: #f56c6c;
+  color: #ffffff;
+}
+
+.action-btn.delete {
+  background: #f4f4f5;
+  color: #909399;
+}
+
+.fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: 80rpx;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  font-size: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.5);
+  z-index: 20;
+}
+
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+}
+
+.modal-body {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 40rpx 32rpx calc(40rpx + env(safe-area-inset-bottom));
+}
+
+.modal-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+.modal-btn {
+  margin-top: 40rpx;
+}

@@ -1,0 +1,122 @@
+.period-tabs {
+  display: flex;
+}
+
+.period-tab {
+  flex: 1;
+  text-align: center;
+  padding: 14rpx 0;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+  color: #909399;
+  background: #f4f4f5;
+  margin: 0 8rpx;
+}
+
+.period-tab.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.budget-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.budget-category {
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.budget-meta {
+  font-size: 22rpx;
+  color: #909399;
+  margin-top: 6rpx;
+}
+
+.budget-right {
+  text-align: right;
+}
+
+.budget-amount {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #e6a23c;
+}
+
+.budget-del {
+  font-size: 22rpx;
+  color: #f56c6c;
+  margin-top: 8rpx;
+}
+
+.fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: 80rpx;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  font-size: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.5);
+  z-index: 20;
+}
+
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+}
+
+.modal-body {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 40rpx 32rpx calc(40rpx + env(safe-area-inset-bottom));
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+.category-row {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  justify-content: flex-end;
+}
+
+.category-chip {
+  padding: 8rpx 20rpx;
+  border-radius: 28rpx;
+  font-size: 24rpx;
+  background: #f4f4f5;
+  color: #606266;
+  border: 2rpx solid transparent;
+}
+
+.category-chip.active {
+  background: #667eea;
+  color: #ffffff;
+  border-color: #667eea;
+}
+
+.modal-btn {
+  margin-top: 40rpx;
+}

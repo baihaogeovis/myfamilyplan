@@ -1,0 +1,50 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/record/record",
+    "pages/workbench/workbench",
+    "pages/statistics/statistics",
+    "pages/profile/profile",
+    "pages/login/login",
+    "pages/members/members",
+    "pages/budget/budget",
+    "pages/approval/approval",
+    "pages/notifications/notifications",
+    "pages/fixedExpense/fixedExpense",
+    "pages/lifePlan/lifePlan",
+    "pages/growthPlan/growthPlan"
+  ],
+  "window": {
+    "defaultTitle": "家庭成长系统",
+    "titleBarColor": "#667eea",
+    "backgroundColor": "#f5f6fa",
+    "allowsBounceVertical": "NO"
+  },
+  "tabBar": {
+    "textColor": "#909399",
+    "selectedColor": "#667eea",
+    "backgroundColor": "#ffffff",
+    "items": [
+      {
+        "pagePath": "pages/index/index",
+        "name": "首页"
+      },
+      {
+        "pagePath": "pages/record/record",
+        "name": "记账"
+      },
+      {
+        "pagePath": "pages/workbench/workbench",
+        "name": "工作台"
+      },
+      {
+        "pagePath": "pages/statistics/statistics",
+        "name": "统计"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "name": "我的"
+      }
+    ]
+  }
+}

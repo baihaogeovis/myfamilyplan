@@ -1,0 +1,137 @@
+.family-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  position: relative;
+}
+
+.family-name {
+  font-size: 40rpx;
+  font-weight: 700;
+}
+
+.family-meta {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 12rpx;
+}
+
+.member-switch {
+  position: absolute;
+  right: 24rpx;
+  top: 32rpx;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.2);
+  padding: 6rpx 16rpx;
+  border-radius: 24rpx;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 2rpx solid #f5f7fa;
+}
+
+.member-item:last-child {
+  border-bottom: none;
+}
+
+.member-item.active {
+  background: rgba(102, 126, 234, 0.06);
+  border-radius: 16rpx;
+  padding: 20rpx;
+}
+
+.member-avatar {
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.member-info {
+  flex: 1;
+}
+
+.member-name {
+  font-size: 30rpx;
+  color: #303133;
+  font-weight: 500;
+}
+
+.member-relation {
+  font-size: 22rpx;
+  color: #909399;
+  margin-top: 4rpx;
+}
+
+.member-check {
+  color: #667eea;
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 26rpx 0;
+  border-bottom: 2rpx solid #f5f7fa;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-label {
+  font-size: 30rpx;
+  color: #303133;
+}
+
+.setting-arrow {
+  font-size: 32rpx;
+  color: #c0c4cc;
+}
+
+.logout-btn {
+  margin-top: 40rpx;
+  color: #f56c6c;
+  border-color: #f56c6c;
+  background: #ffffff;
+}
+
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+}
+
+.modal-body {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 40rpx 32rpx calc(40rpx + env(safe-area-inset-bottom));
+}
+
+.modal-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+.modal-btn {
+  margin-top: 40rpx;
+}

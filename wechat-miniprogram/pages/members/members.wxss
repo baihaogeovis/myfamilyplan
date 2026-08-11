@@ -1,0 +1,122 @@
+.member-item {
+  display: flex;
+  align-items: center;
+}
+
+.member-avatar {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  font-weight: 600;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.member-info {
+  flex: 1;
+}
+
+.member-name {
+  font-size: 30rpx;
+  color: #303133;
+  font-weight: 600;
+}
+
+.member-meta {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-top: 8rpx;
+}
+
+.member-phone {
+  font-size: 22rpx;
+  color: #909399;
+}
+
+.member-remark {
+  font-size: 22rpx;
+  color: #c0c4cc;
+  margin-top: 6rpx;
+}
+
+.member-del {
+  font-size: 24rpx;
+  color: #f56c6c;
+  padding: 16rpx;
+}
+
+.fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: 80rpx;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  font-size: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.5);
+  z-index: 20;
+}
+
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+}
+
+.modal-body {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 40rpx 32rpx calc(40rpx + env(safe-area-inset-bottom));
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+.chip-row {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  justify-content: flex-end;
+}
+
+.chip {
+  padding: 8rpx 24rpx;
+  border-radius: 28rpx;
+  font-size: 24rpx;
+  background: #f4f4f5;
+  color: #606266;
+  border: 2rpx solid transparent;
+}
+
+.chip.active {
+  background: #667eea;
+  color: #ffffff;
+  border-color: #667eea;
+}
+
+.modal-btn {
+  margin-top: 40rpx;
+}

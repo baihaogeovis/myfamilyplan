@@ -1,0 +1,57 @@
+<view class="page-container">
+
+  <!-- 状态筛选 -->
+  <view class="status-tabs">
+    <view class="status-tab {{status === item.value ? 'active' : ''}}"
+      a:for="{{statuses}}" a:key="value" a:for-item="item"
+      onTap="onStatusChange" data-value="{{item.value}}">{{item.label}}</view>
+  </view>
+
+  <view a:if="{{list.length === 0}}" class="empty-state">
+    <view class="empty-icon">📋</view>
+    <view class="empty-text">暂无审批记录</view>
+  </view>
+
+  <view class="card approval-item" a:for="{{list}}" a:key="id">
+    <view class="approval-top">
+      <view class="approval-amount">¥{{item.amountText}}</view>
+      <view class="tag {{item.statusCls}}">{{item.statusText}}</view>
+    </view>
+    <view class="approval-purpose">{{item.purpose}}</view>
+    <view class="approval-meta">申请人：{{item.applicantName}} · {{item.dateText}}</view>
+    <view class="approval-remark" a:if="{{item.remark}}">备注：{{item.remark}}</view>
+
+    <view class="approval-actions" a:if="{{item.isPending}}">
+      <view class="action-btn reject" catchTap="reject" data-item="{{item}}">拒绝</view>
+      <view class="action-btn approve" catchTap="approve" data-item="{{item}}">通过</view>
+    </view>
+    <view class="approval-actions" a:else>
+      <view class="action-btn delete" catchTap="removeItem" data-item="{{item}}">删除</view>
+    </view>
+  </view>
+
+  <view class="fab" onTap="openAdd">+</view>
+
+  <!-- 弹窗 -->
+  <view class="modal-mask" a:if="{{showForm}}" onTap="closeForm">
+    <view class="modal-body" catchTap="noop">
+      <view class="modal-title">发起资金申请</view>
+      <view class="form-item">
+        <text class="form-label">金额</text>
+        <input class="form-input" type="digit" placeholder="请输入金额" placeholder-class="form-placeholder"
+          value="{{form.amount}}" onInput="onFormAmount" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">申请事由</text>
+        <input class="form-input" placeholder="如：购买家电" placeholder-class="form-placeholder"
+          value="{{form.purpose}}" onInput="onFormPurpose" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">备注</text>
+        <input class="form-input" placeholder="备注（选填）" placeholder-class="form-placeholder"
+          value="{{form.remark}}" onInput="onFormRemark" />
+      </view>
+      <button class="btn-primary modal-btn" onTap="submitForm">提交申请</button>
+    </view>
+  </view>
+</view>

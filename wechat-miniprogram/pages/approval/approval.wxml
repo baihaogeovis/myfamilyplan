@@ -1,0 +1,57 @@
+<view class="page-container">
+
+  <!-- 状态筛选 -->
+  <view class="status-tabs">
+    <view class="status-tab {{status === item.value ? 'active' : ''}}"
+      wx:for="{{statuses}}" wx:key="value" wx:for-item="item"
+      bindtap="onStatusChange" data-value="{{item.value}}">{{item.label}}</view>
+  </view>
+
+  <view wx:if="{{list.length === 0}}" class="empty-state">
+    <view class="empty-icon">📋</view>
+    <view class="empty-text">暂无审批记录</view>
+  </view>
+
+  <view class="card approval-item" wx:for="{{list}}" wx:key="id">
+    <view class="approval-top">
+      <view class="approval-amount">¥{{item.amountText}}</view>
+      <view class="tag {{item.statusCls}}">{{item.statusText}}</view>
+    </view>
+    <view class="approval-purpose">{{item.purpose}}</view>
+    <view class="approval-meta">申请人：{{item.applicantName}} · {{item.dateText}}</view>
+    <view class="approval-remark" wx:if="{{item.remark}}">备注：{{item.remark}}</view>
+
+    <view class="approval-actions" wx:if="{{item.isPending}}">
+      <view class="action-btn reject" catchtap="reject" data-item="{{item}}">拒绝</view>
+      <view class="action-btn approve" catchtap="approve" data-item="{{item}}">通过</view>
+    </view>
+    <view class="approval-actions" wx:else>
+      <view class="action-btn delete" catchtap="removeItem" data-item="{{item}}">删除</view>
+    </view>
+  </view>
+
+  <view class="fab" bindtap="openAdd">+</view>
+
+  <!-- 弹窗 -->
+  <view class="modal-mask" wx:if="{{showForm}}" bindtap="closeForm">
+    <view class="modal-body" catchtap="noop">
+      <view class="modal-title">发起资金申请</view>
+      <view class="form-item">
+        <text class="form-label">金额</text>
+        <input class="form-input" type="digit" placeholder="请输入金额" placeholder-class="form-placeholder"
+          value="{{form.amount}}" bindinput="onFormAmount" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">申请事由</text>
+        <input class="form-input" placeholder="如：购买家电" placeholder-class="form-placeholder"
+          value="{{form.purpose}}" bindinput="onFormPurpose" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">备注</text>
+        <input class="form-input" placeholder="备注（选填）" placeholder-class="form-placeholder"
+          value="{{form.remark}}" bindinput="onFormRemark" />
+      </view>
+      <button class="btn-primary modal-btn" bindtap="submitForm">提交申请</button>
+    </view>
+  </view>
+</view>

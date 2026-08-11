@@ -1,0 +1,68 @@
+<view class="page-container">
+
+  <!-- 月份选择 -->
+  <view class="card month-card">
+    <picker mode="date" fields="month" value="{{month}}" onChange="onMonthChange">
+      <view class="month-label">{{month}} ▾</view>
+    </picker>
+  </view>
+
+  <!-- 本月收支 -->
+  <view class="card">
+    <view class="card-title">本月分类统计</view>
+
+    <view class="type-block">
+      <view class="type-title income">收入 ¥{{incomeTotal}}</view>
+      <view class="type-chart-wrap" a:if="{{incomeTotal > 0}}">
+        <view class="type-chart" style="background:{{incomeGradient}}"></view>
+      </view>
+      <view class="legend-list">
+        <view class="legend-item" a:for="{{incomeCategory}}" a:key="category">
+          <view class="legend-dot" style="background:{{item.color}}"></view>
+          <view class="legend-name">{{item.category}}</view>
+          <view class="legend-amount">¥{{item.amount}}</view>
+          <view class="legend-pct">{{item.percent}}%</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="type-block">
+      <view class="type-title expense">支出 ¥{{expenseTotal}}</view>
+      <view class="type-chart-wrap" a:if="{{expenseTotal > 0}}">
+        <view class="type-chart" style="background:{{expenseGradient}}"></view>
+      </view>
+      <view class="legend-list">
+        <view class="legend-item" a:for="{{expenseCategory}}" a:key="category">
+          <view class="legend-dot" style="background:{{item.color}}"></view>
+          <view class="legend-name">{{item.category}}</view>
+          <view class="legend-amount">¥{{item.amount}}</view>
+          <view class="legend-pct">{{item.percent}}%</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 月度趋势 (简易柱状图) -->
+  <view class="card">
+    <view class="card-title-row">
+      <view class="card-title">年度月度收支</view>
+      <picker mode="selector" range="{{years}}" onChange="onYearChange">
+        <view class="year-label">{{year}}年 ▾</view>
+      </picker>
+    </view>
+
+    <view class="bar-chart">
+      <view class="bar-col" a:for="{{bars}}" a:key="month">
+        <view class="bar-group">
+          <view class="bar income" style="height:{{item.incomeHeight}}%"></view>
+          <view class="bar expense" style="height:{{item.expenseHeight}}%"></view>
+        </view>
+        <view class="bar-label">{{item.monthLabel}}</view>
+      </view>
+    </view>
+    <view class="bar-legend">
+      <view class="legend"><view class="dot income"></view>收入</view>
+      <view class="legend"><view class="dot expense"></view>支出</view>
+    </view>
+  </view>
+</view>

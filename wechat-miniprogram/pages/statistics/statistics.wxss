@@ -1,0 +1,160 @@
+.month-card {
+  display: flex;
+}
+
+.month-label {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #303133;
+}
+
+.type-block {
+  margin-bottom: 32rpx;
+}
+
+.type-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+}
+
+.type-title.income {
+  color: #67c23a;
+}
+
+.type-title.expense {
+  color: #f56c6c;
+}
+
+.type-chart-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20rpx;
+}
+
+.type-chart {
+  width: 240rpx;
+  height: 240rpx;
+  border-radius: 50%;
+}
+
+.legend-list {
+  margin-top: 8rpx;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 0;
+}
+
+.legend-dot {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 6rpx;
+  margin-right: 16rpx;
+}
+
+.legend-name {
+  flex: 1;
+  font-size: 26rpx;
+  color: #606266;
+}
+
+.legend-amount {
+  font-size: 26rpx;
+  color: #303133;
+  font-weight: 600;
+  margin-right: 16rpx;
+}
+
+.legend-pct {
+  font-size: 24rpx;
+  color: #909399;
+  width: 80rpx;
+  text-align: right;
+}
+
+/* 柱状图 */
+.card-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.year-label {
+  font-size: 26rpx;
+  color: #667eea;
+}
+
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  height: 320rpx;
+  padding-top: 20rpx;
+}
+
+.bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bar-group {
+  width: 100%;
+  height: 260rpx;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 6rpx;
+}
+
+.bar {
+  width: 20rpx;
+  border-radius: 6rpx 6rpx 0 0;
+  min-height: 4rpx;
+}
+
+.bar.income {
+  background: linear-gradient(180deg, #43e97b, #67c23a);
+}
+
+.bar.expense {
+  background: linear-gradient(180deg, #ff9a9e, #f56c6c);
+}
+
+.bar-label {
+  font-size: 20rpx;
+  color: #909399;
+  margin-top: 10rpx;
+}
+
+.bar-legend {
+  display: flex;
+  justify-content: center;
+  gap: 40rpx;
+  margin-top: 20rpx;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  font-size: 24rpx;
+  color: #909399;
+}
+
+.dot {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  margin-right: 8rpx;
+}
+
+.dot.income {
+  background: #67c23a;
+}
+
+.dot.expense {
+  background: #f56c6c;
+}

@@ -1,0 +1,83 @@
+<view class="page-container">
+
+  <!-- 筛选 -->
+  <view class="card filter-card">
+    <view class="period-tabs">
+      <view class="period-tab {{periodType === item.value ? 'active' : ''}}"
+        wx:for="{{periodTypes}}" wx:key="value" bindtap="onPeriodChange" data-value="{{item.value}}">
+        {{item.label}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 列表 -->
+  <view wx:if="{{list.length === 0}}" class="empty-state">
+    <view class="empty-icon">💰</view>
+    <view class="empty-text">暂无预算，点击下方按钮创建</view>
+  </view>
+
+  <view class="card budget-item" wx:for="{{list}}" wx:key="id" bindtap="openEdit" data-item="{{item}}">
+    <view class="budget-info">
+      <view class="budget-category">{{item.category}}</view>
+      <view class="budget-meta">{{item.periodLabel}} · {{item.year}}年{{item.month ? item.month + '月' : ''}}</view>
+    </view>
+    <view class="budget-right">
+      <view class="budget-amount">¥{{item.amountText}}</view>
+      <view class="budget-del" catchtap="removeItem" data-item="{{item}}">删除</view>
+    </view>
+  </view>
+
+  <view class="fab" bindtap="openAdd">+</view>
+
+  <!-- 弹窗 -->
+  <view class="modal-mask" wx:if="{{showForm}}" bindtap="closeForm">
+    <view class="modal-body" catchtap="noop">
+      <view class="modal-title">{{formMode === 'add' ? '新增' : '编辑'}}预算</view>
+
+      <view class="form-item">
+        <text class="form-label">金额</text>
+        <input class="form-input" type="digit" placeholder="请输入预算金额" placeholder-class="form-placeholder"
+          value="{{form.amount}}" bindinput="onFormAmount" />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">分类</text>
+        <view class="category-row">
+          <view class="category-chip {{form.category === item ? 'active' : ''}}"
+            wx:for="{{categories}}" wx:key="*this" wx:for-item="item"
+            bindtap="chooseCategory" data-cat="{{item}}">{{item}}</view>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">周期</text>
+        <picker mode="selector" range="{{periodTypes}}" range-key="label"
+          value="{{periodTypeIndex}}" bindchange="onPeriodTypeChange">
+          <view class="form-input">{{form.periodType === 'MONTHLY' ? '月度' : form.periodType === 'YEARLY' ? '年度' : '自定义'}}</view>
+        </picker>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">年份</text>
+        <picker mode="selector" range="{{years}}" bindchange="onYearChange">
+          <view class="form-input">{{form.year}}年</view>
+        </picker>
+      </view>
+
+      <view class="form-item" wx:if="{{form.periodType === 'MONTHLY' || form.periodType === 'CUSTOM'}}">
+        <text class="form-label">月份</text>
+        <picker mode="selector" range="{{months}}" bindchange="onMonthChange">
+          <view class="form-input">{{form.month || '全部'}}月</view>
+        </picker>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">备注</text>
+        <input class="form-input" placeholder="备注（选填）" placeholder-class="form-placeholder"
+          value="{{form.remark}}" bindinput="onFormRemark" />
+      </view>
+
+      <button class="btn-primary modal-btn" bindtap="submitForm">保存</button>
+    </view>
+  </view>
+</view>
