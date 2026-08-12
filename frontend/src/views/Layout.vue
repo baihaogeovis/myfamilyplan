@@ -208,7 +208,7 @@ onMounted(() => {
 }
 
 .layout-aside {
-  background: #001529;
+  background: linear-gradient(180deg, #001529 0%, #002140 100%);
   overflow-y: auto;
 }
 
@@ -217,7 +217,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .logo-text {
@@ -225,6 +225,7 @@ onMounted(() => {
   font-size: 18px;
   font-weight: 600;
   margin: 0;
+  letter-spacing: 1px;
 }
 
 .sidebar-menu {
@@ -235,12 +236,16 @@ onMounted(() => {
 :deep(.el-menu-item),
 :deep(.el-sub-menu__title) {
   color: rgba(255, 255, 255, 0.65);
+  height: 48px;
+  line-height: 48px;
+  margin: 2px 8px;
+  border-radius: 8px;
 }
 
 :deep(.el-menu-item:hover),
 :deep(.el-sub-menu__title:hover) {
   color: white;
-  background: #1890ff !important;
+  background: rgba(24, 144, 255, 0.6) !important;
 }
 
 :deep(.el-menu-item.is-active) {
@@ -252,19 +257,27 @@ onMounted(() => {
   background: rgba(0, 0, 0, 0.25);
 }
 
+:deep(.el-sub-menu .el-menu .el-menu-item) {
+  margin: 2px 8px;
+  border-radius: 6px;
+  height: 40px;
+  line-height: 40px;
+}
+
 .layout-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
   padding: 0 24px;
+  height: 64px;
 }
 
 .page-title {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 600;
-  color: #303133;
+  color: #1f2937;
   margin: 0;
 }
 
@@ -280,6 +293,13 @@ onMounted(() => {
   gap: 8px;
   cursor: pointer;
   color: #606266;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.member-info:hover {
+  background: #f5f7fa;
 }
 
 .user-info {
@@ -287,6 +307,13 @@ onMounted(() => {
   align-items: center;
   gap: 10px;
   cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.user-info:hover {
+  background: #f5f7fa;
 }
 
 .username {
@@ -295,7 +322,8 @@ onMounted(() => {
 }
 
 .layout-main {
-  background: #f5f7fa;
-  padding: 24px;
+  background: #f0f2f5;
+  padding: 20px;
+  overflow-y: auto;
 }
 </style>

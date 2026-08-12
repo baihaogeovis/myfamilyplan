@@ -5,7 +5,7 @@
         <div class="header-bar">
           <div class="filters">
             <el-select v-model="filters.category" placeholder="分类" clearable style="width: 140px" @change="load">
-              <el-option v-for="c in categories" :key="c" :label="c" :value="c" />
+              <el-option v-for="c in categories" :key="c.value" :label="c.label" :value="c.value" />
             </el-select>
             <el-date-picker
               v-model="filters.dateRange"
@@ -23,7 +23,9 @@
       </template>
 
       <el-table :data="tableData" v-loading="loading" stripe>
-        <el-table-column prop="category" label="分类" width="120" />
+        <el-table-column prop="category" label="分类" width="120">
+          <template #default="{ row }">{{ categoryMap[row.category] || row.category }}</template>
+        </el-table-column>
         <el-table-column prop="source" label="来源" />
         <el-table-column label="金额" width="140">
           <template #default="{ row }">
@@ -56,7 +58,7 @@
       <el-form :model="form" label-width="80px">
         <el-form-item label="分类">
           <el-select v-model="form.category" placeholder="请选择" style="width: 100%">
-            <el-option v-for="c in categories" :key="c" :label="c" :value="c" />
+            <el-option v-for="c in categories" :key="c.value" :label="c.label" :value="c.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="金额">
@@ -99,7 +101,15 @@ const tableData = ref<IncomeRecord[]>([])
 const total = ref(0)
 const page = ref(1)
 const size = ref(10)
-const categories = ['工资', '奖金', '投资', '兼职', '红包', '其他']
+const categories = [
+  { value: 'SALARY', label: '工资' },
+  { value: 'BONUS', label: '奖金' },
+  { value: 'INVESTMENT', label: '投资' },
+  { value: 'PART_TIME', label: '兼职' },
+  { value: 'GIFT', label: '红包' },
+  { value: 'OTHER', label: '其他' }
+]
+const categoryMap = Object.fromEntries(categories.map(c => [c.value, c.label]))
 
 const filters = reactive({
   category: '',

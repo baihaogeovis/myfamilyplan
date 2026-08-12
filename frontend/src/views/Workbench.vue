@@ -323,11 +323,6 @@ const loadHistory = async () => {
   }
 }
 
-const openHistory = () => {
-  hisPage.value = 1
-  loadHistory()
-}
-
 onMounted(load)
 </script>
 
@@ -340,7 +335,7 @@ onMounted(load)
 
 .summary-card {
   margin-bottom: 16px;
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 .summary-bar {
@@ -376,7 +371,7 @@ onMounted(load)
 }
 
 .stat-value {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
   margin-bottom: 6px;
 }
@@ -406,7 +401,7 @@ onMounted(load)
 }
 
 .task-card {
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 .task-card .card-header {
@@ -421,6 +416,7 @@ onMounted(load)
   gap: 8px;
   font-weight: 600;
   font-size: 15px;
+  color: #1f2937;
 }
 
 .card-title .icon {
@@ -428,8 +424,8 @@ onMounted(load)
   height: 18px;
 }
 
-.family-card :deep(.el-card__header) { border-bottom-color: #f3d19e; }
-.work-card :deep(.el-card__header) { border-bottom-color: #b3e19d; }
+.family-card :deep(.el-card__header) { border-bottom-color: #f3d19e; background: linear-gradient(90deg, #fff9e6, #fff); }
+.work-card :deep(.el-card__header) { border-bottom-color: #b3e19d; background: linear-gradient(90deg, #f0fff0, #fff); }
 
 .task-list {
   display: flex;
@@ -441,13 +437,14 @@ onMounted(load)
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
-  border-radius: 6px;
-  transition: background 0.2s;
+  padding: 12px 14px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  background: #fafafa;
 }
 
 .task-item:hover {
-  background: #f5f7fa;
+  background: #f0f5ff;
 }
 
 .task-item.done .task-name {

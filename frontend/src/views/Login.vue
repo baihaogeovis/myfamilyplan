@@ -360,14 +360,40 @@ const handleRegister = async () => {
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.login-container::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  top: -200px;
+  right: -100px;
+}
+
+.login-container::after {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  bottom: -150px;
+  left: -100px;
 }
 
 .login-card {
   width: 420px;
   padding: 40px;
   background: white;
-  border-radius: 16px;
+  border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 1;
 }
 
 .login-header {
@@ -377,8 +403,8 @@ const handleRegister = async () => {
 
 .login-title {
   font-size: 28px;
-  font-weight: 600;
-  color: #303133;
+  font-weight: 700;
+  color: #1f2937;
   margin: 0 0 8px 0;
 }
 
@@ -396,20 +422,22 @@ const handleRegister = async () => {
   width: 100%;
   height: 44px;
   font-size: 16px;
+  border-radius: 8px;
 }
 
 .login-tips {
   margin-top: 20px;
   padding: 12px;
-  background: #f5f7fa;
-  border-radius: 8px;
+  background: #f8fafc;
+  border-radius: 10px;
   text-align: center;
+  border: 1px solid #f1f5f9;
 }
 
 .login-tips p {
   margin: 0;
   font-size: 13px;
-  color: #909399;
+  color: #94a3b8;
 }
 
 .login-register {
@@ -428,31 +456,34 @@ const handleRegister = async () => {
 .member-item {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
+  padding: 14px 18px;
   margin-bottom: 12px;
   border: 1px solid #e4e7ed;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s ease;
 }
 
 .member-item:hover {
   border-color: #667eea;
-  background: #f5f7ff;
+  background: #f8faff;
+  transform: translateX(4px);
 }
 
 .member-item.active {
   border-color: #667eea;
-  background: #eef1ff;
+  background: #eef2ff;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
 }
 
 .member-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: #fff;
   font-size: 18px;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -466,14 +497,14 @@ const handleRegister = async () => {
 
 .member-name {
   font-size: 16px;
-  font-weight: 500;
-  color: #303133;
+  font-weight: 600;
+  color: #1f2937;
 }
 
 .member-relation {
   font-size: 13px;
   color: #909399;
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
 .member-actions {

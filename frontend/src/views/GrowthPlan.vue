@@ -48,7 +48,7 @@
             <div class="goal-info">
               <div class="goal-title">{{ goal.title }}</div>
               <div class="goal-meta">
-                <el-tag size="small" type="primary">{{ categoryLabel(goal.category) }}</el-tag>
+                <el-tag size="small" type="primary">{{ categories.find(c => c.value === goal.category)?.label || goal.category }}</el-tag>
                 <span class="goal-date">
                   <el-icon><Calendar /></el-icon>
                   {{ goal.targetDate || '无期限' }}
@@ -97,7 +97,7 @@
         </el-form-item>
         <el-form-item label="分类">
           <el-select v-model="form.category" placeholder="请选择" style="width: 100%">
-            <el-option v-for="c in categories" :key="c" :label="c" :value="c" />
+            <el-option v-for="c in categories" :key="c.value" :label="c.label" :value="c.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="目标描述">
@@ -140,15 +140,28 @@ const childId = ref<number | null>(null)
 const list = ref<GrowthPlan[]>([])
 const loading = ref(false)
 
-const categories = ['学习', '运动', '艺术', '习惯', '社交', '自理', '其他']
+const categories = [
+  { value: 'STUDY', label: '学习' },
+  { value: 'SPORTS', label: '运动' },
+  { value: 'ART', label: '艺术' },
+  { value: 'HABIT', label: '习惯' },
+  { value: 'SOCIAL', label: '社交' },
+  { value: 'SELF', label: '自理' },
+  { value: 'OTHER', label: '其他' }
+]
 
 // 孩子选项：优先展示子女，兜底显示全部成员
+const relationText = (r?: string) => {
+  const map: Record<string, string> = { OWNER: '户主', SPOUSE: '配偶', CHILD: '子女', PARENT: '父母', OTHER: '其他' }
+  return r ? map[r] || r : ''
+}
+
 const memberOptions = computed(() => {
-  const kids = memberStore.members.filter(m => /子|女|孩/.test(m.relation || ''))
+  const kids = memberStore.members.filter(m => m.relation === 'CHILD')
   const pool = kids.length > 0 ? kids : memberStore.members
   return pool.map(m => ({
     id: m.id as number,
-    label: m.relation ? `${m.memberName}（${m.relation}）` : m.memberName
+    label: `${m.memberName}（${relationText(m.relation)}）`
   }))
 })
 
@@ -158,11 +171,6 @@ const avgProgress = computed(() => {
   if (list.value.length === 0) return 0
   return Math.round(list.value.reduce((s, g) => s + (g.progress || 0), 0) / list.value.length)
 })
-
-const categoryMap: Record<string, string> = {
-  STUDY: '学习', SPORTS: '运动', ART: '艺术', HABIT: '习惯', SOCIAL: '社交', SELF: '自理', OTHER: '其他'
-}
-const categoryLabel = (c?: string) => (c && categoryMap[c]) || c || '其他'
 
 const statusMap: Record<string, string> = { IN_PROGRESS: '进行中', ACHIEVED: '已达成', GIVEN_UP: '已放弃' }
 const statusLabel = (v?: string) => statusMap[v || 'IN_PROGRESS'] || v || ''
@@ -207,7 +215,7 @@ const openAdd = () => {
     memberId: childId.value,
     title: '',
     goalType: goalType.value,
-    category: '学习',
+    category: 'STUDY',
     description: '',
     targetDate: '',
     status: 'IN_PROGRESS',

@@ -217,7 +217,6 @@ onBeforeUnmount(() => {
 })
 
 watch(year, loadMonthly)
-watch(month, loadCategory)
 </script>
 
 <style scoped>

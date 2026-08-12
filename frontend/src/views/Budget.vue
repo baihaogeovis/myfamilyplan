@@ -22,7 +22,11 @@
       </template>
 
       <el-table :data="tableData" v-loading="loading" stripe>
-        <el-table-column prop="category" label="分类" width="120" />
+        <el-table-column prop="category" label="分类" width="120">
+          <template #default="{ row }">
+            {{ categories.find(c => c.value === row.category)?.label || row.category }}
+          </template>
+        </el-table-column>
         <el-table-column label="周期" width="100">
           <template #default="{ row }">
             {{ row.periodType === 'YEAR' ? '年度' : '月度' }}
@@ -63,7 +67,7 @@
       <el-form :model="form" label-width="80px">
         <el-form-item label="分类">
           <el-select v-model="form.category" placeholder="请选择" style="width: 100%">
-            <el-option v-for="c in categories" :key="c" :label="c" :value="c" />
+            <el-option v-for="c in categories" :key="c.value" :label="c.label" :value="c.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="周期">
@@ -115,7 +119,17 @@ const tableData = ref<BudgetPlan[]>([])
 const total = ref(0)
 const page = ref(1)
 const size = ref(10)
-const categories = ['餐饮', '交通', '购物', '居住', '教育', '医疗', '娱乐', '其他', '总预算']
+const categories = [
+  { value: 'FOOD', label: '餐饮' },
+  { value: 'TRANSPORT', label: '交通' },
+  { value: 'SHOPPING', label: '购物' },
+  { value: 'HOUSING', label: '居住' },
+  { value: 'EDUCATION', label: '教育' },
+  { value: 'MEDICAL', label: '医疗' },
+  { value: 'ENTERTAINMENT', label: '娱乐' },
+  { value: 'OTHER', label: '其他' },
+  { value: 'TOTAL', label: '总预算' }
+]
 const yearModel = ref<string>(String(new Date().getFullYear()))
 
 const filters = reactive({
@@ -185,7 +199,7 @@ const openAdd = async () => {
     id: undefined,
     memberId: memberStore.currentMemberId,
     amount: 0,
-    category: '',
+    category: 'TOTAL',
     periodType: 'MONTH',
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1,

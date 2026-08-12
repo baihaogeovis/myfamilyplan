@@ -68,7 +68,7 @@
               :class="item.type === 'INCOME' ? 'income-item' : 'expense-item'"
             >
               <div class="item-info">
-                <div class="item-title">{{ item.category }}</div>
+                <div class="item-title">{{ categoryLabel(item.category) }}</div>
                 <div class="item-time">{{ item.date }}</div>
               </div>
               <div class="item-amount" :class="item.type === 'INCOME' ? 'positive' : 'negative'">
@@ -136,6 +136,15 @@ let chart: echarts.ECharts | null = null
 
 const formatMoney = (v: number) =>
   (v ?? 0).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
+const categoryLabel = (c?: string) => {
+  const map: Record<string, string> = {
+    SALARY: '工资', BONUS: '奖金', INVESTMENT: '投资', PART_TIME: '兼职', GIFT: '红包',
+    FOOD: '餐饮', TRANSPORT: '交通', SHOPPING: '购物', HOUSING: '居住', EDUCATION: '教育',
+    MEDICAL: '医疗', ENTERTAINMENT: '娱乐', SAVINGS: '储蓄', OTHER: '其他'
+  }
+  return c ? (map[c] || c) : ''
+}
 
 const loadOverview = async () => {
   overview.value = await getDashboardOverview()
@@ -210,11 +219,12 @@ onBeforeUnmount(() => {
 .stat-card {
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+  border: none;
 }
 .stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12) !important;
 }
 .stat-card :deep(.el-card__body) {
   display: flex;
@@ -225,12 +235,13 @@ onBeforeUnmount(() => {
 .stat-icon {
   width: 64px;
   height: 64px;
-  border-radius: 12px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 28px;
   color: white;
+  flex-shrink: 0;
 }
 .income .stat-icon {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -254,8 +265,9 @@ onBeforeUnmount(() => {
 }
 .stat-value {
   font-size: 28px;
-  font-weight: 600;
-  color: #303133;
+  font-weight: 700;
+  color: #1f2937;
+  letter-spacing: -0.5px;
 }
 .chart-card,
 .recent-card {
@@ -269,7 +281,7 @@ onBeforeUnmount(() => {
 .card-title {
   font-size: 16px;
   font-weight: 600;
-  color: #303133;
+  color: #1f2937;
 }
 .chart-container {
   height: 350px;
@@ -277,18 +289,20 @@ onBeforeUnmount(() => {
 .recent-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 .recent-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px;
+  padding: 12px 14px;
   border-radius: 8px;
-  transition: background 0.3s;
+  transition: all 0.2s;
+  background: #fafafa;
 }
 .recent-item:hover {
-  background: #f5f7fa;
+  background: #f0f5ff;
+  transform: translateX(4px);
 }
 .item-info {
   flex: 1;
@@ -297,6 +311,7 @@ onBeforeUnmount(() => {
   font-size: 14px;
   color: #303133;
   margin-bottom: 4px;
+  font-weight: 500;
 }
 .item-time {
   font-size: 12px;

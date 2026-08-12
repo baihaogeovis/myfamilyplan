@@ -5,10 +5,10 @@
         <div class="header-bar">
           <div class="filters">
             <el-select v-model="filters.category" placeholder="分类" clearable style="width: 140px" @change="load">
-              <el-option v-for="c in categories" :key="c" :label="c" :value="c" />
+              <el-option v-for="c in categories" :key="c.value" :label="c.label" :value="c.value" />
             </el-select>
             <el-select v-model="filters.type" placeholder="类型" clearable style="width: 120px" @change="load">
-              <el-option v-for="t in types" :key="t" :label="t" :value="t" />
+              <el-option v-for="t in types" :key="t.value" :label="t.label" :value="t.value" />
             </el-select>
             <el-date-picker
               v-model="filters.dateRange"
@@ -26,8 +26,12 @@
       </template>
 
       <el-table :data="tableData" v-loading="loading" stripe>
-        <el-table-column prop="category" label="分类" width="120" />
-        <el-table-column prop="type" label="类型" width="100" />
+        <el-table-column prop="category" label="分类" width="120">
+          <template #default="{ row }">{{ categoryMap[row.category] || row.category }}</template>
+        </el-table-column>
+        <el-table-column prop="type" label="类型" width="100">
+          <template #default="{ row }">{{ typeMap[row.type] || row.type }}</template>
+        </el-table-column>
         <el-table-column label="金额" width="140">
           <template #default="{ row }">
             <span class="negative">-¥{{ formatMoney(row.amount) }}</span>
@@ -59,12 +63,12 @@
       <el-form :model="form" label-width="80px">
         <el-form-item label="分类">
           <el-select v-model="form.category" placeholder="请选择" style="width: 100%">
-            <el-option v-for="c in categories" :key="c" :label="c" :value="c" />
+            <el-option v-for="c in categories" :key="c.value" :label="c.label" :value="c.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="类型">
           <el-select v-model="form.type" placeholder="请选择" style="width: 100%">
-            <el-option v-for="t in types" :key="t" :label="t" :value="t" />
+            <el-option v-for="t in types" :key="t.value" :label="t.label" :value="t.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="金额">
@@ -104,8 +108,24 @@ const tableData = ref<ExpenseRecord[]>([])
 const total = ref(0)
 const page = ref(1)
 const size = ref(10)
-const categories = ['餐饮', '交通', '购物', '居住', '教育', '医疗', '娱乐', '其他']
-const types = ['必需', '非必需']
+const categories = [
+  { value: 'FOOD', label: '餐饮' },
+  { value: 'TRANSPORT', label: '交通' },
+  { value: 'SHOPPING', label: '购物' },
+  { value: 'HOUSING', label: '居住' },
+  { value: 'EDUCATION', label: '教育' },
+  { value: 'MEDICAL', label: '医疗' },
+  { value: 'ENTERTAINMENT', label: '娱乐' },
+  { value: 'SAVINGS', label: '储蓄' },
+  { value: 'OTHER', label: '其他' }
+]
+const types = [
+  { value: 'NORMAL', label: '普通' },
+  { value: 'BILL', label: '账单' },
+  { value: 'SAVING', label: '储蓄' }
+]
+const categoryMap = Object.fromEntries(categories.map(c => [c.value, c.label]))
+const typeMap = Object.fromEntries(types.map(t => [t.value, t.label]))
 
 const filters = reactive({
   category: '',
