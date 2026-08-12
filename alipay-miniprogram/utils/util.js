@@ -58,21 +58,84 @@ module.exports = {
    * 收入分类
    */
   incomeCategories() {
-    return ['工资', '奖金', '兼职', '理财', '投资收益', '礼金', '报销', '其他']
+    return [
+      { value: 'SALARY', label: '工资' },
+      { value: 'BONUS', label: '奖金' },
+      { value: 'SIDEJOB', label: '兼职' },
+      { value: 'INVESTMENT', label: '理财' },
+      { value: 'INVESTRETURN', label: '投资收益' },
+      { value: 'GIFT', label: '礼金' },
+      { value: 'REIMBURSE', label: '报销' },
+      { value: 'OTHER', label: '其他' }
+    ]
   },
 
   /**
    * 支出分类
    */
   expenseCategories() {
-    return ['餐饮', '购物', '交通', '居住', '水电燃气', '医疗', '教育', '娱乐', '人情', '育儿', '其他']
+    return [
+      { value: 'FOOD', label: '餐饮' },
+      { value: 'SHOPPING', label: '购物' },
+      { value: 'TRANSPORT', label: '交通' },
+      { value: 'HOUSING', label: '居住' },
+      { value: 'UTILITY', label: '水电燃气' },
+      { value: 'MEDICAL', label: '医疗' },
+      { value: 'EDUCATION', label: '教育' },
+      { value: 'ENTERTAINMENT', label: '娱乐' },
+      { value: 'SOCIAL', label: '人情' },
+      { value: 'CHILDCARE', label: '育儿' },
+      { value: 'OTHER', label: '其他' }
+    ]
   },
 
   /**
    * 固定支出分类
    */
   fixedExpenseCategories() {
-    return ['物业费', '车位费', '车位管理费', '话费', '网费', '水电气', '其他']
+    return [
+      { value: 'PROPERTY', label: '物业费' },
+      { value: 'PARKING', label: '车位费' },
+      { value: 'PARKMGMT', label: '车位管理费' },
+      { value: 'PHONE', label: '话费' },
+      { value: 'INTERNET', label: '网费' },
+      { value: 'UTILITY', label: '水电气' },
+      { value: 'OTHER', label: '其他' }
+    ]
+  },
+
+  /**
+   * 分类中文翻译
+   */
+  categoryLabel(value) {
+    if (!value) return ''
+    const map = {
+      SALARY: '工资', BONUS: '奖金', SIDEJOB: '兼职', INVESTMENT: '理财',
+      INVESTRETURN: '投资收益', GIFT: '礼金', REIMBURSE: '报销',
+      FOOD: '餐饮', SHOPPING: '购物', TRANSPORT: '交通', HOUSING: '居住',
+      UTILITY: '水电燃气', MEDICAL: '医疗', EDUCATION: '教育',
+      ENTERTAINMENT: '娱乐', SOCIAL: '人情', CHILDCARE: '育儿',
+      PROPERTY: '物业费', PARKING: '车位费', PARKMGMT: '车位管理费',
+      PHONE: '话费', INTERNET: '网费',
+      OTHER: '其他'
+    }
+    return map[value] || value
+  },
+
+  /**
+   * 支出类型
+   */
+  expenseTypes() {
+    return [
+      { value: 'NORMAL', label: '普通' },
+      { value: 'BILL', label: '必需' },
+      { value: 'SAVING', label: '储蓄' }
+    ]
+  },
+
+  expenseTypeLabel(value) {
+    const map = { NORMAL: '普通', BILL: '必需', SAVING: '储蓄' }
+    return map[value] || value
   },
 
   /**

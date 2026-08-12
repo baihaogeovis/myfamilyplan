@@ -19,7 +19,7 @@
       <view class="legend-list">
         <view class="legend-item" a:for="{{incomeCategory}}" a:key="category">
           <view class="legend-dot" style="background:{{item.color}}"></view>
-          <view class="legend-name">{{item.category}}</view>
+          <view class="legend-name">{{categoryLabel(item.category)}}</view>
           <view class="legend-amount">¥{{item.amount}}</view>
           <view class="legend-pct">{{item.percent}}%</view>
         </view>
@@ -34,7 +34,7 @@
       <view class="legend-list">
         <view class="legend-item" a:for="{{expenseCategory}}" a:key="category">
           <view class="legend-dot" style="background:{{item.color}}"></view>
-          <view class="legend-name">{{item.category}}</view>
+          <view class="legend-name">{{categoryLabel(item.category)}}</view>
           <view class="legend-amount">¥{{item.amount}}</view>
           <view class="legend-pct">{{item.percent}}%</view>
         </view>

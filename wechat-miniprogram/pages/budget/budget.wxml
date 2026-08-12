@@ -18,7 +18,7 @@
 
   <view class="card budget-item" wx:for="{{list}}" wx:key="id" bindtap="openEdit" data-item="{{item}}">
     <view class="budget-info">
-      <view class="budget-category">{{item.category}}</view>
+      <view class="budget-category">{{categoryLabel(item.category)}}</view>
       <view class="budget-meta">{{item.periodLabel}} · {{item.year}}年{{item.month ? item.month + '月' : ''}}</view>
     </view>
     <view class="budget-right">
@@ -43,9 +43,9 @@
       <view class="form-item">
         <text class="form-label">分类</text>
         <view class="category-row">
-          <view class="category-chip {{form.category === item ? 'active' : ''}}"
-            wx:for="{{categories}}" wx:key="*this" wx:for-item="item"
-            bindtap="chooseCategory" data-cat="{{item}}">{{item}}</view>
+          <view class="category-chip {{form.category === item.value ? 'active' : ''}}"
+            wx:for="{{categories}}" wx:key="value" wx:for-item="item"
+            bindtap="chooseCategory" data-cat="{{item.value}}">{{item.label}}</view>
         </view>
       </view>
 

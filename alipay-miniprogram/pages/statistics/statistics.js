@@ -98,5 +98,7 @@ Page({
 
   onYearChange(e) {
     this.setData({ year: this.data.years[Number(e.detail.value)] }, () => this.loadData())
-  }
+  },
+
+  categoryLabel(v) { return util.categoryLabel(v) }
 })

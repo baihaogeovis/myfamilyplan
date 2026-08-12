@@ -97,5 +97,7 @@ Page({
     }
     app.globalData.recordType = type
     my.switchTab({ url: '/pages/record/record' })
-  }
+  },
+
+  categoryLabel(v) { return util.categoryLabel(v) }
 })

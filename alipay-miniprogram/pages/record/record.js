@@ -123,6 +123,7 @@ Page({
 
   closeForm() { this.setData({ showForm: false }) },
   noop() {},
+  categoryLabel(v) { return util.categoryLabel(v) },
   onFormAmount(e) { this.setData({ 'form.amount': e.detail.value }) },
   onFormSource(e) { this.setData({ 'form.source': e.detail.value }) },
   onFormRemark(e) { this.setData({ 'form.remark': e.detail.value }) },

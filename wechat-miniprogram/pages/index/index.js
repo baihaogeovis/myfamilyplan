@@ -122,5 +122,7 @@ Page({
     }
     app.globalData.recordType = type
     wx.switchTab({ url: '/pages/record/record' })
-  }
+  },
+
+  categoryLabel(v) { return util.categoryLabel(v) }
 })

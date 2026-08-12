@@ -51,7 +51,7 @@
     </view>
     <view class="recent-item" a:for="{{recent}}" a:key="id">
       <view class="recent-info">
-        <view class="recent-name">{{item.category}}</view>
+        <view class="recent-name">{{categoryLabel(item.category)}}</view>
         <view class="recent-desc">{{item.memberName}} · {{item.dateText}}</view>
       </view>
       <view class="recent-amount {{item.type === 'EXPENSE' ? 'expense' : 'income'}}">{{item.amountText}}</view>

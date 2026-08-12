@@ -30,7 +30,7 @@
     <view class="fe-info">
       <view class="fe-name">{{item.expenseName}}</view>
       <view class="fe-meta">
-        <text class="tag tag-orange">{{item.category}}</text>
+        <text class="tag tag-orange">{{categoryLabel(item.category)}}</text>
         <text class="tag {{item.active ? 'tag-green' : 'tag-gray'}}">{{item.activeText}}</text>
         <text class="fe-day">每月{{item.dueDay}}日</text>
       </view>
@@ -60,9 +60,9 @@
       <view class="form-item">
         <text class="form-label">分类</text>
         <view class="category-row">
-          <view class="category-chip {{form.category === item ? 'active' : ''}}"
-            wx:for="{{categories}}" wx:key="*this" wx:for-item="item"
-            bindtap="chooseCategory" data-cat="{{item}}">{{item}}</view>
+          <view class="category-chip {{form.category === item.value ? 'active' : ''}}"
+            wx:for="{{categories}}" wx:key="value" wx:for-item="item"
+            bindtap="chooseCategory" data-cat="{{item.value}}">{{item.label}}</view>
         </view>
       </view>
 

@@ -92,6 +92,7 @@ Page({
 
   closeForm() { this.setData({ showForm: false }) },
   noop() {},
+  categoryLabel(v) { return util.categoryLabel(v) },
   onName(e) { this.setData({ 'form.expenseName': e.detail.value }) },
   onAmount(e) { this.setData({ 'form.amount': e.detail.value }) },
   onRemark(e) { this.setData({ 'form.remark': e.detail.value }) },

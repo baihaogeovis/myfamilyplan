@@ -115,6 +115,7 @@ Page({
 
   closeForm() { this.setData({ showForm: false }) },
   noop() {},
+  categoryLabel(v) { return util.categoryLabel(v) },
   onFormAmount(e) { this.setData({ 'form.amount': e.detail.value }) },
   onFormRemark(e) { this.setData({ 'form.remark': e.detail.value }) },
   chooseCategory(e) { this.setData({ 'form.category': e.currentTarget.dataset.cat }) },

@@ -132,6 +132,7 @@ Page({
   },
 
   noop() {},
+  categoryLabel(v) { return util.categoryLabel(v) },
 
   onFormAmount(e) {
     this.setData({ 'form.amount': e.detail.value })
