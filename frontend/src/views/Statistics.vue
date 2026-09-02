@@ -91,9 +91,11 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
-import * as echarts from 'echarts'
+import { echarts, type ECharts } from '@/utils/echarts'
 import { RefreshCw } from 'lucide-vue-next'
 import { ElMessage } from 'element-plus'
+import { formatMoney } from '@/utils/format'
+import { CHART_BASE, CHART_SERIES, MONEY_COLORS } from '@/constants/palette'
 import {
   getMonthlyStat,
   getCategoryStat,
@@ -115,54 +117,71 @@ const annualExpense = computed(() =>
 )
 const annualBalance = computed(() => annualIncome.value - annualExpense.value)
 
-const formatMoney = (v: number) =>
-  (v ?? 0).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 const monthlyChart = ref<HTMLElement>()
 const expensePie = ref<HTMLElement>()
 const incomePie = ref<HTMLElement>()
-let mChart: echarts.ECharts | null = null
-let eChart: echarts.ECharts | null = null
-let iChart: echarts.ECharts | null = null
+let mChart: ECharts | null = null
+let eChart: ECharts | null = null
+let iChart: ECharts | null = null
 
 const renderMonthly = () => {
   if (!monthlyChart.value) return
   if (!mChart) mChart = echarts.init(monthlyChart.value)
   mChart.setOption({
     tooltip: { trigger: 'axis', valueFormatter: (v: number) => `¥${(v || 0).toLocaleString()}` },
-    legend: { data: ['收入', '支出'] },
+    legend: { data: ['收入', '支出'], icon: 'roundRect', itemWidth: 14, itemHeight: 8, textStyle: { color: CHART_BASE.axisLabelColor } },
     grid: { left: 50, right: 20, top: 40, bottom: 30 },
-    xAxis: { type: 'category', data: monthlyData.value.map((m) => `${m.month}月`) },
-    yAxis: { type: 'value' },
+    animationDuration: 700,
+    animationEasing: 'quarticOut',
+    xAxis: {
+      type: 'category',
+      data: monthlyData.value.map((m) => `${m.month}月`),
+      axisLine: { lineStyle: { color: CHART_BASE.axisLineColor } },
+      axisTick: { show: false },
+      axisLabel: { color: CHART_BASE.axisLabelColor }
+    },
+    yAxis: {
+      type: 'value',
+      axisLabel: { color: CHART_BASE.axisLabelColor },
+      splitLine: { lineStyle: { color: CHART_BASE.splitLineColor, type: 'dashed' } }
+    },
     series: [
       {
         name: '收入',
         type: 'bar',
+        barMaxWidth: 22,
         data: monthlyData.value.map((m) => m.income),
-        itemStyle: { color: '#67C23A' }
+        itemStyle: { color: MONEY_COLORS.income, borderRadius: [7, 7, 0, 0] }
       },
       {
         name: '支出',
         type: 'bar',
+        barMaxWidth: 22,
         data: monthlyData.value.map((m) => m.expense),
-        itemStyle: { color: '#F56C6C' }
+        itemStyle: { color: MONEY_COLORS.expense, borderRadius: [7, 7, 0, 0] }
       }
     ]
   })
 }
 
-const renderPie = (el: HTMLElement | undefined, chart: echarts.ECharts | null, data: any[], title: string) => {
+const renderPie = (el: HTMLElement | undefined, chart: ECharts | null, data: { category: string; amount: number }[], title: string) => {
   if (!el) return
   if (!chart) chart = echarts.init(el)
   const list = (data || []).map((d) => ({ name: d.category, value: Number(d.amount || 0) }))
   chart.setOption({
     tooltip: { trigger: 'item', formatter: '{b}: ¥{c} ({d}%)' },
-    legend: { bottom: 0, type: 'scroll' },
+    color: CHART_SERIES,
+    legend: { bottom: 0, type: 'scroll', icon: 'circle', itemWidth: 9, textStyle: { color: CHART_BASE.axisLabelColor } },
+    animationDuration: 700,
+    animationEasing: 'quarticOut',
     series: [
       {
         name: title,
         type: 'pie',
-        radius: ['40%', '65%'],
+        radius: ['46%', '70%'],
+        padAngle: 2,
+        itemStyle: { borderRadius: 8, borderColor: '#ffffff', borderWidth: 2 },
         center: ['50%', '45%'],
         data: list.length ? list : [{ name: '暂无数据', value: 0 }],
         label: { formatter: '{b}\n{d}%' }
@@ -241,17 +260,17 @@ watch(year, loadMonthly)
 }
 .label {
   font-size: 14px;
-  color: #606266;
+  color: var(--text-body);
 }
 .stat-row {
   margin-bottom: 20px;
 }
 .mini-card {
-  border-radius: 12px;
+  border-radius: var(--r-lg);
 }
 .mini-label {
   font-size: 14px;
-  color: #909399;
+  color: var(--text-muted);
   margin-bottom: 8px;
 }
 .mini-value {
@@ -259,28 +278,28 @@ watch(year, loadMonthly)
   font-weight: 600;
 }
 .income .mini-value {
-  color: #67c23a;
+  color: var(--grass-600);
 }
 .expense .mini-value {
-  color: #f56c6c;
+  color: var(--berry-ink);
 }
 .balance .mini-value,
 .avg .mini-value {
-  color: #303133;
+  color: var(--text-strong);
 }
 .positive {
-  color: #67c23a;
+  color: var(--grass-600);
 }
 .negative {
-  color: #f56c6c;
+  color: var(--berry-ink);
 }
 .chart-card {
-  border-radius: 12px;
+  border-radius: var(--r-lg);
 }
 .card-title {
   font-size: 16px;
   font-weight: 600;
-  color: #303133;
+  color: var(--text-strong);
 }
 .chart {
   height: 360px;

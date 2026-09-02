@@ -335,7 +335,7 @@ onMounted(load)
 
 .summary-card {
   margin-bottom: 16px;
-  border-radius: 12px;
+  border-radius: var(--r-lg);
 }
 
 .summary-bar {
@@ -366,7 +366,7 @@ onMounted(load)
 
 .stat-label {
   font-size: 13px;
-  color: #909399;
+  color: var(--text-muted);
   margin-bottom: 4px;
 }
 
@@ -376,9 +376,9 @@ onMounted(load)
   margin-bottom: 6px;
 }
 
-.stat-value.total { color: #409eff; }
-.stat-value.family { color: #e6a23c; }
-.stat-value.work { color: #67c23a; }
+.stat-value.total { color: var(--sky-ink); }
+.stat-value.family { color: var(--sun-ink); }
+.stat-value.work { color: var(--grass-600); }
 
 .actions {
   display: flex;
@@ -401,7 +401,7 @@ onMounted(load)
 }
 
 .task-card {
-  border-radius: 12px;
+  border-radius: var(--r-lg);
 }
 
 .task-card .card-header {
@@ -416,7 +416,7 @@ onMounted(load)
   gap: 8px;
   font-weight: 600;
   font-size: 15px;
-  color: #1f2937;
+  color: var(--text-strong);
 }
 
 .card-title .icon {
@@ -424,8 +424,8 @@ onMounted(load)
   height: 18px;
 }
 
-.family-card :deep(.el-card__header) { border-bottom-color: #f3d19e; background: linear-gradient(90deg, #fff9e6, #fff); }
-.work-card :deep(.el-card__header) { border-bottom-color: #b3e19d; background: linear-gradient(90deg, #f0fff0, #fff); }
+.family-card :deep(.el-card__header) { border-bottom-color: #f2ddab; background: linear-gradient(90deg, var(--sun-soft), #fff); }
+.work-card :deep(.el-card__header) { border-bottom-color: var(--grass-200); background: linear-gradient(90deg, var(--grass-50), #fff); }
 
 .task-list {
   display: flex;
@@ -440,16 +440,16 @@ onMounted(load)
   padding: 12px 14px;
   border-radius: 8px;
   transition: all 0.2s;
-  background: #fafafa;
+  background: var(--surface-2);
 }
 
 .task-item:hover {
-  background: #f0f5ff;
+  background: var(--grass-50);
 }
 
 .task-item.done .task-name {
   text-decoration: line-through;
-  color: #c0c4cc;
+  color: var(--border-strong);
 }
 
 .task-name {
@@ -458,7 +458,7 @@ onMounted(load)
 }
 
 .task-remark {
-  color: #909399;
+  color: var(--text-muted);
   font-size: 12px;
   max-width: 200px;
   overflow: hidden;

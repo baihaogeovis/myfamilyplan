@@ -323,7 +323,7 @@ onMounted(() => {
 .family-avatar {
   flex-shrink: 0;
   font-size: 24px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, var(--grass-400), var(--grass-600));
 }
 .info-desc {
   flex: 1;

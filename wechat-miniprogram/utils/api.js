@@ -121,5 +121,27 @@ module.exports = {
     updateProgress: (id, progress) => request.put(`/growth-plan/progress/${id}`, { progress }),
     updateStatus: (id, status) => request.put(`/growth-plan/status/${id}`, { status }),
     remove: (id) => request.del(`/growth-plan/${id}`)
+  },
+
+  /** 奖励额度: grant/adjust/reject 后端以 @RequestParam 取参, 参数必须拼在 query 上 */
+  reward: {
+    account: (memberId) => request.get('/reward/account', { memberId }),
+    saveAccount: (data) => request.put('/reward/account', data),
+    grant: (memberId, points) =>
+      request.post(`/reward/account/grant?memberId=${memberId}${points ? `&points=${points}` : ''}`),
+    summary: (memberId, periodKey) => request.get('/reward/summary', { memberId, periodKey }),
+    itemList: (itemType) => request.get('/reward/item/list', { itemType }),
+    addItem: (data) => request.post('/reward/item', data),
+    updateItem: (data) => request.put('/reward/item', data),
+    removeItem: (id) => request.del(`/reward/item/${id}`),
+    spend: (data) => request.post('/reward/spend', data),
+    earn: (data) => request.post('/reward/earn', data),
+    adjust: (memberId, points, remark) =>
+      request.post(`/reward/adjust?memberId=${memberId}&points=${points}${remark ? `&remark=${encodeURIComponent(remark)}` : ''}`),
+    txnPage: (params) => request.get('/reward/txn/page', params),
+    confirmTxn: (id) => request.put(`/reward/txn/${id}/confirm`),
+    rejectTxn: (id, remark) =>
+      request.put(`/reward/txn/${id}/reject${remark ? `?remark=${encodeURIComponent(remark)}` : ''}`),
+    removeTxn: (id) => request.del(`/reward/txn/${id}`)
   }
 }

@@ -112,6 +112,8 @@ import { Plus } from 'lucide-vue-next'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getBudgetPage, addBudget, updateBudget, deleteBudget, type BudgetPlan } from '@/api/budget'
 import { useMemberStore } from '@/stores/member'
+import { formatMoney } from '@/utils/format'
+import { BUDGET_CATEGORIES as categories } from '@/constants/categories'
 
 const memberStore = useMemberStore()
 const loading = ref(false)
@@ -119,17 +121,7 @@ const tableData = ref<BudgetPlan[]>([])
 const total = ref(0)
 const page = ref(1)
 const size = ref(10)
-const categories = [
-  { value: 'FOOD', label: '餐饮' },
-  { value: 'TRANSPORT', label: '交通' },
-  { value: 'SHOPPING', label: '购物' },
-  { value: 'HOUSING', label: '居住' },
-  { value: 'EDUCATION', label: '教育' },
-  { value: 'MEDICAL', label: '医疗' },
-  { value: 'ENTERTAINMENT', label: '娱乐' },
-  { value: 'OTHER', label: '其他' },
-  { value: 'TOTAL', label: '总预算' }
-]
+
 const yearModel = ref<string>(String(new Date().getFullYear()))
 
 const filters = reactive({
@@ -149,8 +141,6 @@ const form = reactive<BudgetPlan>({
 })
 
 const pad = (v?: number) => String(v ?? 0).padStart(2, '0')
-const formatMoney = (v: number) =>
-  (v ?? 0).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 const onYearChange = () => {
   form.year = Number(yearModel.value)
@@ -186,6 +176,7 @@ const load = async () => {
 const resetFilters = () => {
   filters.periodType = ''
   filters.yearMonth = null
+  page.value = 1
   load()
 }
 
@@ -271,7 +262,7 @@ onMounted(load)
   justify-content: flex-end;
 }
 .positive {
-  color: #409eff;
+  color: var(--sky-ink);
   font-weight: 600;
 }
 </style>

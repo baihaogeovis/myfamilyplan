@@ -132,6 +132,8 @@ import {
   type GrowthPlan
 } from '@/api/growthPlan'
 import { useMemberStore } from '@/stores/member'
+import { GROWTH_CATEGORIES as categories } from '@/constants/categories'
+import { PALETTE } from '@/constants/palette'
 
 const memberStore = useMemberStore()
 
@@ -140,15 +142,6 @@ const childId = ref<number | null>(null)
 const list = ref<GrowthPlan[]>([])
 const loading = ref(false)
 
-const categories = [
-  { value: 'STUDY', label: '学习' },
-  { value: 'SPORTS', label: '运动' },
-  { value: 'ART', label: '艺术' },
-  { value: 'HABIT', label: '习惯' },
-  { value: 'SOCIAL', label: '社交' },
-  { value: 'SELF', label: '自理' },
-  { value: 'OTHER', label: '其他' }
-]
 
 // 孩子选项：优先展示子女，兜底显示全部成员
 const relationText = (r?: string) => {
@@ -175,7 +168,7 @@ const avgProgress = computed(() => {
 const statusMap: Record<string, string> = { IN_PROGRESS: '进行中', ACHIEVED: '已达成', GIVEN_UP: '已放弃' }
 const statusLabel = (v?: string) => statusMap[v || 'IN_PROGRESS'] || v || ''
 const statusTag = (v?: string) => (v === 'ACHIEVED' ? 'success' : v === 'GIVEN_UP' ? 'info' : 'warning')
-const progressColor = (p: number) => (p < 40 ? '#e6a23c' : p < 80 ? '#409eff' : '#67c23a')
+const progressColor = (p: number) => (p < 40 ? PALETTE.sun : p < 80 ? PALETTE.sky : PALETTE.grass500)
 
 const dialogVisible = ref(false)
 const form = reactive<GrowthPlan>({
@@ -295,7 +288,7 @@ onMounted(async () => {
 
 .toolbar-card {
   margin-bottom: 16px;
-  border-radius: 8px;
+  border-radius: var(--r-lg);
 }
 
 .toolbar {
@@ -313,7 +306,7 @@ onMounted(async () => {
 
 .picker-label {
   font-size: 14px;
-  color: #606266;
+  color: var(--text-body);
 }
 
 .stat-items {
@@ -329,7 +322,7 @@ onMounted(async () => {
 
 .stat-label {
   font-size: 13px;
-  color: #909399;
+  color: var(--text-muted);
 }
 
 .stat-value {
@@ -338,12 +331,12 @@ onMounted(async () => {
   margin-top: 2px;
 }
 
-.stat-value.planning { color: #e6a23c; }
-.stat-value.achieved { color: #67c23a; }
-.stat-value.avg { color: #409eff; }
+.stat-value.planning { color: var(--sun-ink); }
+.stat-value.achieved { color: var(--grass-600); }
+.stat-value.avg { color: var(--sky-ink); }
 
 .plan-card {
-  border-radius: 8px;
+  border-radius: var(--r-lg);
 }
 
 .card-header {
@@ -355,7 +348,7 @@ onMounted(async () => {
 
 .goal-tip {
   font-size: 13px;
-  color: #909399;
+  color: var(--text-muted);
 }
 
 .goal-grid {
@@ -366,8 +359,8 @@ onMounted(async () => {
 }
 
 .goal-card {
-  border: 1px solid #ebeef5;
-  border-radius: 10px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-lg);
   padding: 16px;
   background: #fff;
   transition: all 0.2s;
@@ -416,7 +409,7 @@ onMounted(async () => {
   align-items: center;
   gap: 4px;
   font-size: 12px;
-  color: #909399;
+  color: var(--text-muted);
 }
 
 .goal-date :deep(svg) {
@@ -427,8 +420,8 @@ onMounted(async () => {
 .goal-desc {
   margin-top: 10px;
   font-size: 13px;
-  color: #606266;
-  background: #f5f7fa;
+  color: var(--text-body);
+  background: var(--grass-50);
   border-radius: 6px;
   padding: 8px 10px;
   line-height: 1.6;
@@ -448,7 +441,7 @@ onMounted(async () => {
 .progress-num {
   font-size: 13px;
   font-weight: 600;
-  color: #606266;
+  color: var(--text-body);
   min-width: 40px;
   text-align: right;
 }

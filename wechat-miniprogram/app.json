@@ -12,7 +12,8 @@
     "pages/notifications/notifications",
     "pages/fixedExpense/fixedExpense",
     "pages/lifePlan/lifePlan",
-    "pages/growthPlan/growthPlan"
+    "pages/growthPlan/growthPlan",
+    "pages/reward/reward"
   ],
   "window": {
     "backgroundTextStyle": "dark",

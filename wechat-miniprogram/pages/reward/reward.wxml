@@ -1,0 +1,300 @@
+<view class="page-container">
+
+  <!-- 孩子切换 -->
+  <scroll-view class="child-bar" scroll-x="{{true}}" wx:if="{{children.length > 0}}">
+    <view class="child-chip {{childId === item.id ? 'active' : ''}}"
+      wx:for="{{children}}" wx:key="id" bindtap="switchChild" data-id="{{item.id}}">
+      <view class="child-avatar">{{item.initial}}</view>
+      <view class="child-name">{{item.name}}</view>
+    </view>
+  </scroll-view>
+
+  <view wx:if="{{children.length === 0}}" class="empty-state">
+    <view class="empty-icon">🎯</view>
+    <view class="empty-text">请先在「成员」中添加孩子</view>
+  </view>
+
+  <block wx:if="{{childId && summary}}">
+    <!-- 额度概览 -->
+    <view class="card balance-card">
+      <view class="balance-head">
+        <view class="balance-period">{{summary.periodKey}} 周期</view>
+        <view class="grant-btn" bindtap="doGrant">发放额度</view>
+      </view>
+      <view class="balance-num">{{summary.balance}}</view>
+      <view class="balance-sub">当前可用额度</view>
+      <view class="balance-grid">
+        <view class="grid-item">
+          <view class="grid-num blue">{{summary.granted}}</view>
+          <view class="grid-label">已发放</view>
+        </view>
+        <view class="grid-item">
+          <view class="grid-num green">{{summary.earned}}</view>
+          <view class="grid-label">已赚取</view>
+        </view>
+        <view class="grid-item">
+          <view class="grid-num red">{{summary.spent}}</view>
+          <view class="grid-label">已花掉</view>
+        </view>
+        <view class="grid-item">
+          <view class="grid-num orange">{{summary.pendingCount}}</view>
+          <view class="grid-label">待确认</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 分段切换 -->
+    <view class="type-tabs">
+      <view class="type-tab {{tab === item.key ? 'active' : ''}}"
+        wx:for="{{tabs}}" wx:key="key" bindtap="onTab" data-key="{{item.key}}">
+        <text>{{item.label}}</text>
+        <text class="tab-badge" wx:if="{{item.key === 'pending' && summary.pendingCount > 0}}">{{summary.pendingCount}}</text>
+      </view>
+    </view>
+
+    <!-- 花额度 -->
+    <block wx:if="{{tab === 'spend'}}">
+      <view class="tip-line">消费提交后需父母在「待确认」中通过才扣减额度</view>
+      <view class="card item-card" wx:for="{{spendItems}}" wx:key="id">
+        <view class="item-head">
+          <view class="item-icon" style="background:{{item.iconBg}};color:{{item.iconColor}}">{{item.initial}}</view>
+          <view class="item-mid">
+            <view class="item-name">{{item.itemName}}</view>
+            <view class="item-sub">{{item.categoryText}} · {{item.priceText}}</view>
+          </view>
+          <view class="item-cost">
+            <text class="cost-num">{{item.cost}}</text>
+            <text class="cost-unit">额度</text>
+            <text class="cost-steps" wx:if="{{item.isDuration}}">{{item.steps}} 档</text>
+          </view>
+        </view>
+        <view class="item-foot">
+          <view class="stepper">
+            <view class="step-btn" bindtap="onStep" data-group="spend" data-index="{{index}}"
+              data-field="{{item.isDuration ? 'minutes' : 'quantity'}}" data-delta="-1">−</view>
+            <view class="step-val">{{item.isDuration ? item.minutes + ' 分钟' : item.quantity + ' 次'}}</view>
+            <view class="step-btn" bindtap="onStep" data-group="spend" data-index="{{index}}"
+              data-field="{{item.isDuration ? 'minutes' : 'quantity'}}" data-delta="1">+</view>
+          </view>
+          <view class="item-ops">
+            <text class="{{item.lack ? 'lack' : 'ok'}}">{{item.lack ? '额度不足' : '余额 ' + summary.balance}}</text>
+            <view class="mini-btn edit" catchtap="openEditItem" data-group="spend" data-index="{{index}}">编辑</view>
+            <view class="mini-btn primary" catchtap="doSpend" data-index="{{index}}">申请消费</view>
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{spendItems.length === 0}}" class="empty-state">
+        <view class="empty-icon">🎁</view>
+        <view class="empty-text">还没有消费方案，到「设置」里新增</view>
+      </view>
+    </block>
+
+    <!-- 赚额度 -->
+    <block wx:if="{{tab === 'earn'}}">
+      <view class="tip-line">良好行为即时加额度，无需确认</view>
+      <view class="card item-card" wx:for="{{earnItems}}" wx:key="id">
+        <view class="item-head">
+          <view class="item-icon" style="background:{{item.iconBg}};color:{{item.iconColor}}">{{item.initial}}</view>
+          <view class="item-mid">
+            <view class="item-name">{{item.itemName}}</view>
+            <view class="item-sub">{{item.categoryText}} · {{item.priceText}}</view>
+          </view>
+          <view class="item-cost">
+            <text class="cost-num gain">+{{item.cost}}</text>
+            <text class="cost-unit">额度</text>
+          </view>
+        </view>
+        <view class="item-foot">
+          <view class="stepper">
+            <view class="step-btn" bindtap="onStep" data-group="earn" data-index="{{index}}" data-field="quantity" data-delta="-1">−</view>
+            <view class="step-val">{{item.quantity}} 次</view>
+            <view class="step-btn" bindtap="onStep" data-group="earn" data-index="{{index}}" data-field="quantity" data-delta="1">+</view>
+          </view>
+          <view class="item-ops">
+            <view class="mini-btn edit" catchtap="openEditItem" data-group="earn" data-index="{{index}}">编辑</view>
+            <view class="mini-btn done" catchtap="doEarn" data-index="{{index}}">奖励额度</view>
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{earnItems.length === 0}}" class="empty-state">
+        <view class="empty-icon">⭐</view>
+        <view class="empty-text">还没有赚取方案，到「设置」里新增</view>
+      </view>
+    </block>
+
+    <!-- 待确认 -->
+    <block wx:if="{{tab === 'pending'}}">
+      <view class="card txn-card" wx:for="{{pendingList}}" wx:key="id">
+        <view class="txn-head">
+          <view class="txn-name">{{item.itemName}}</view>
+          <text class="tag {{item.statusCls}}">{{item.statusText}}</text>
+        </view>
+        <view class="txn-sub">
+          <text class="txn-pts cost">-{{item.costAbs}}</text>
+          <text>{{item.categoryText}}{{item.detailText ? ' · ' + item.detailText : ''}} · {{item.timeText}}</text>
+        </view>
+        <view class="txn-ops">
+          <view class="mini-btn cancel" catchtap="doReject" data-index="{{index}}">驳回</view>
+          <view class="mini-btn done" catchtap="doConfirm" data-index="{{index}}">通过</view>
+        </view>
+      </view>
+      <view wx:if="{{pendingList.length === 0}}" class="empty-state">
+        <view class="empty-icon">✅</view>
+        <view class="empty-text">没有待确认的消费申请</view>
+      </view>
+    </block>
+
+    <!-- 流水 -->
+    <block wx:if="{{tab === 'txn'}}">
+      <view class="card txn-card" wx:for="{{txnList}}" wx:key="id">
+        <view class="txn-head">
+          <view class="txn-name">{{item.itemName}}</view>
+          <text class="tag {{item.statusCls}}">{{item.statusText}}</text>
+        </view>
+        <view class="txn-sub">
+          <text class="txn-pts {{item.gainText}}">{{item.pointsText}}</text>
+          <text>{{item.directionText}}{{item.detailText ? ' · ' + item.detailText : ''}} · {{item.timeText}}</text>
+        </view>
+        <view class="txn-ops">
+          <view class="mini-btn del" catchtap="doDeleteTxn" data-index="{{index}}">{{item.revocable ? '撤销' : '删除'}}</view>
+        </view>
+      </view>
+      <view wx:if="{{txnList.length === 0}}" class="empty-state">
+        <view class="empty-icon">📜</view>
+        <view class="empty-text">还没有额度流水</view>
+      </view>
+      <view wx:if="{{txnHasMore}}" class="more-btn" bindtap="loadMoreTxn">加载更多</view>
+    </block>
+
+    <!-- 设置 -->
+    <block wx:if="{{tab === 'setting'}}">
+      <view class="card">
+        <view class="card-title">发放规则</view>
+        <view class="form-item">
+          <text class="form-label">每周期额度</text>
+          <input class="form-input" type="number" value="{{setting.weeklyQuota}}"
+            placeholder="0 表示不自动发放" placeholder-class="form-placeholder" bindinput="onSettingInput" />
+        </view>
+        <view class="form-item">
+          <text class="form-label">发放周期</text>
+          <view class="chip-row">
+            <view class="chip {{setting.periodType === item.value ? 'active' : ''}}"
+              wx:for="{{periodTypes}}" wx:key="value" bindtap="choosePeriodType" data-value="{{item.value}}">{{item.label}}</view>
+          </view>
+        </view>
+        <view class="form-item">
+          <text class="form-label">余额结转</text>
+          <view class="chip-row">
+            <view class="chip {{setting.carryOver === 1 ? 'active' : ''}}" bindtap="toggleCarry" data-value="1">结转下周期</view>
+            <view class="chip {{setting.carryOver === 0 ? 'active' : ''}}" bindtap="toggleCarry" data-value="0">新周期清零</view>
+          </view>
+        </view>
+        <view class="mini-tip" wx:if="{{setting.carryOver === 0}}">选择「新周期清零」后，发放新周期额度前会把上周期结余作废</view>
+        <button class="btn-primary" bindtap="saveSetting">保存设置</button>
+      </view>
+
+      <view class="card">
+        <view class="card-title">手动调整</view>
+        <view class="form-item">
+          <text class="form-label">调整方向</text>
+          <view class="chip-row">
+            <view class="chip {{!adjust.minus ? 'active' : ''}}" bindtap="toggleAdjustSign">增加</view>
+            <view class="chip {{adjust.minus ? 'active' : ''}}" bindtap="toggleAdjustSign">减少</view>
+          </view>
+        </view>
+        <view class="form-item">
+          <text class="form-label">调整额度</text>
+          <view class="stepper">
+            <view class="step-btn" bindtap="onAdjustStep" data-delta="-5">−</view>
+            <input class="step-input" type="number" value="{{adjust.points}}" bindinput="onAdjustField" data-field="points" />
+            <view class="step-btn" bindtap="onAdjustStep" data-delta="5">+</view>
+          </view>
+        </view>
+        <view class="form-item">
+          <text class="form-label">备注</text>
+          <input class="form-input" value="{{adjust.remark}}" placeholder="如：临时奖励" placeholder-class="form-placeholder"
+            bindinput="onAdjustField" data-field="remark" />
+        </view>
+        <button class="btn-primary" bindtap="doAdjust">确认调整</button>
+      </view>
+
+      <view class="card">
+        <view class="card-title">活动方案</view>
+        <view class="plan-row" wx:for="{{spendItems}}" wx:key="id">
+          <view class="plan-name">{{item.itemName}}</view>
+          <view class="plan-sub">{{item.categoryText}} · {{item.priceText}}</view>
+          <view class="plan-ops">
+            <view class="mini-btn edit" bindtap="openEditItem" data-group="spend" data-index="{{index}}">编辑</view>
+            <view class="mini-btn del" bindtap="removeItem" data-group="spend" data-index="{{index}}">删除</view>
+          </view>
+        </view>
+        <view class="plan-row" wx:for="{{earnItems}}" wx:key="id">
+          <view class="plan-name">{{item.itemName}}</view>
+          <view class="plan-sub">{{item.categoryText}} · {{item.priceText}}</view>
+          <view class="plan-ops">
+            <view class="mini-btn edit" bindtap="openEditItem" data-group="earn" data-index="{{index}}">编辑</view>
+            <view class="mini-btn del" bindtap="removeItem" data-group="earn" data-index="{{index}}">删除</view>
+          </view>
+        </view>
+        <button class="btn-plain" bindtap="openAddItem">+ 新增活动方案</button>
+      </view>
+    </block>
+  </block>
+
+  <!-- 活动方案表单 -->
+  <view class="modal-mask" wx:if="{{showItemForm}}" bindtap="closeItemForm">
+    <view class="modal-body" catchtap="noop">
+      <view class="modal-title">{{itemFormMode === 'add' ? '新增' : '编辑'}}活动方案</view>
+
+      <view class="form-item">
+        <text class="form-label">名称</text>
+        <input class="form-input" value="{{itemForm.itemName}}" placeholder="如：看动画片" placeholder-class="form-placeholder"
+          bindinput="onItemInput" data-field="itemName" />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">类型</text>
+        <view class="chip-row">
+          <view class="chip {{itemForm.itemType === item.value ? 'active' : ''}}"
+            wx:for="{{itemTypes}}" wx:key="value" bindtap="chooseItemField" data-field="itemType" data-value="{{item.value}}">{{item.label}}</view>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">分类</text>
+        <view class="chip-row wrap">
+          <view class="chip {{itemForm.category === item.value ? 'active' : ''}}"
+            wx:for="{{categories}}" wx:key="value" bindtap="chooseItemField" data-field="category" data-value="{{item.value}}">{{item.label}}</view>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">计价方式</text>
+        <view class="chip-row">
+          <view class="chip {{itemForm.pricingMode === item.value ? 'active' : ''}}"
+            wx:for="{{pricingModes}}" wx:key="value" bindtap="chooseItemField" data-field="pricingMode" data-value="{{item.value}}">{{item.label}}</view>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">{{itemForm.pricingMode === 'DURATION' ? '每档额度' : '每次额度'}}</text>
+        <input class="form-input" type="number" value="{{itemForm.points}}" placeholder="10" placeholder-class="form-placeholder"
+          bindinput="onItemInput" data-field="points" />
+      </view>
+
+      <view class="form-item" wx:if="{{itemForm.pricingMode === 'DURATION'}}">
+        <text class="form-label">每档时长(分钟)</text>
+        <input class="form-input" type="number" value="{{itemForm.unitMinutes}}" placeholder="30" placeholder-class="form-placeholder"
+          bindinput="onItemInput" data-field="unitMinutes" />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">排序</text>
+        <input class="form-input" type="number" value="{{itemForm.sortOrder}}" placeholder="数字越小越靠前" placeholder-class="form-placeholder"
+          bindinput="onItemInput" data-field="sortOrder" />
+      </view>
+
+      <button class="btn-primary modal-btn" bindtap="submitItem">保存</button>
+    </view>
+  </view>
+</view>

@@ -43,6 +43,18 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '儿童成长计划', requiresAuth: true }
       },
       {
+        path: 'reward',
+        name: 'Reward',
+        component: () => import('@/views/Reward.vue'),
+        meta: { title: '奖励额度', requiresAuth: true }
+      },
+      {
+        path: 'reward-items',
+        name: 'RewardItems',
+        component: () => import('@/views/RewardItems.vue'),
+        meta: { title: '活动方案', requiresAuth: true }
+      },
+      {
         path: 'income',
         name: 'Income',
         component: () => import('@/views/Income.vue'),

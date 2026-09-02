@@ -359,7 +359,7 @@ const handleRegister = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--grass-400) 0%, var(--grass-600) 100%);
   position: relative;
   overflow: hidden;
 }
@@ -404,13 +404,13 @@ const handleRegister = async () => {
 .login-title {
   font-size: 28px;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-strong);
   margin: 0 0 8px 0;
 }
 
 .login-subtitle {
   font-size: 14px;
-  color: #909399;
+  color: var(--text-muted);
   margin: 0;
 }
 
@@ -444,7 +444,7 @@ const handleRegister = async () => {
   margin-top: 16px;
   text-align: center;
   font-size: 14px;
-  color: #909399;
+  color: var(--text-muted);
 }
 
 .member-list {
@@ -465,13 +465,13 @@ const handleRegister = async () => {
 }
 
 .member-item:hover {
-  border-color: #667eea;
+  border-color: var(--grass-500);
   background: #f8faff;
   transform: translateX(4px);
 }
 
 .member-item.active {
-  border-color: #667eea;
+  border-color: var(--grass-500);
   background: #eef2ff;
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
 }
@@ -480,7 +480,7 @@ const handleRegister = async () => {
   width: 48px;
   height: 48px;
   border-radius: 14px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, var(--grass-400), var(--grass-600));
   color: #fff;
   font-size: 18px;
   font-weight: 600;
@@ -498,12 +498,12 @@ const handleRegister = async () => {
 .member-name {
   font-size: 16px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-strong);
 }
 
 .member-relation {
   font-size: 13px;
-  color: #909399;
+  color: var(--text-muted);
   margin-top: 3px;
 }
 

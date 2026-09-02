@@ -133,6 +133,7 @@ import {
   type LifePlan
 } from '@/api/lifePlan'
 import { useMemberStore } from '@/stores/member'
+import { formatMoney } from '@/utils/format'
 
 const memberStore = useMemberStore()
 
@@ -158,8 +159,7 @@ const statusMap: Record<string, string> = { PLANNED: '计划中', COMPLETED: '�
 const statusLabel = (v?: string) => statusMap[v || 'PLANNED'] || v || ''
 const statusTag = (v?: string) => (v === 'COMPLETED' ? 'success' : v === 'CANCELLED' ? 'info' : 'warning')
 
-const fmt = (v?: number) =>
-  (v ?? 0).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+const fmt = formatMoney
 
 const dialogVisible = ref(false)
 const form = reactive<LifePlan>({
@@ -284,7 +284,7 @@ onMounted(load)
   align-items: center;
   gap: 16px;
   background: white;
-  border-radius: 10px;
+  border-radius: var(--r-lg);
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
@@ -305,29 +305,29 @@ onMounted(load)
   height: 26px;
 }
 
-.stat-card.planning .stat-icon { background: #e6a23c; }
-.stat-card.completed .stat-icon { background: #67c23a; }
-.stat-card.budget .stat-icon { background: #409eff; }
+.stat-card.planning .stat-icon { background: var(--sun); }
+.stat-card.completed .stat-icon { background: var(--grass-500); }
+.stat-card.budget .stat-icon { background: var(--sky); }
 
 .stat-label {
   font-size: 13px;
-  color: #909399;
+  color: var(--text-muted);
 }
 
 .stat-value {
   font-size: 22px;
   font-weight: 700;
-  color: #303133;
+  color: var(--text-strong);
   margin: 2px 0;
 }
 
 .stat-sub {
   font-size: 12px;
-  color: #c0c4cc;
+  color: var(--text-muted);
 }
 
 .plan-card {
-  border-radius: 8px;
+  border-radius: var(--r-lg);
 }
 
 .card-header {
@@ -346,8 +346,8 @@ onMounted(load)
 }
 
 .plan-card-item {
-  border: 1px solid #ebeef5;
-  border-radius: 10px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-lg);
   padding: 16px;
   transition: all 0.2s;
   background: #fff;
@@ -380,8 +380,8 @@ onMounted(load)
   flex-shrink: 0;
 }
 
-.plan-icon.appliance { background: linear-gradient(135deg, #409eff, #66b1ff); }
-.plan-icon.travel { background: linear-gradient(135deg, #67c23a, #85ce61); }
+.plan-icon.appliance { background: linear-gradient(135deg, var(--sky), #6fd0f0); }
+.plan-icon.travel { background: linear-gradient(135deg, var(--grass-500), var(--sprout)); }
 
 .plan-icon :deep(svg) {
   width: 22px;
@@ -414,7 +414,7 @@ onMounted(load)
   gap: 16px;
   margin-top: 14px;
   padding-top: 12px;
-  border-top: 1px dashed #ebeef5;
+  border-top: 1px dashed var(--border-soft);
   flex-wrap: wrap;
 }
 
@@ -426,12 +426,12 @@ onMounted(load)
 
 .budget-label {
   font-size: 12px;
-  color: #909399;
+  color: var(--text-muted);
 }
 
 .budget-value {
   font-weight: 700;
-  color: #e6a23c;
+  color: var(--sun-ink);
   font-size: 16px;
 }
 
@@ -440,7 +440,7 @@ onMounted(load)
   align-items: center;
   gap: 4px;
   font-size: 13px;
-  color: #909399;
+  color: var(--text-muted);
 }
 
 .plan-date :deep(svg) {
@@ -456,8 +456,8 @@ onMounted(load)
 .plan-remark {
   margin-top: 10px;
   font-size: 12px;
-  color: #909399;
-  background: #f5f7fa;
+  color: var(--text-muted);
+  background: var(--grass-50);
   border-radius: 6px;
   padding: 6px 10px;
 }

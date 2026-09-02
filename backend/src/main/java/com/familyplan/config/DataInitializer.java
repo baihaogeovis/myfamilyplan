@@ -83,6 +83,11 @@ public class DataInitializer implements ApplicationRunner {
         addColumnIfMissing("notification", "deleted", "TINYINT DEFAULT 0 COMMENT '逻辑删除(0-未删除,1-已删除)'");
         addIndexIfMissing("notification", "idx_family_id",
                 "ALTER TABLE notification ADD INDEX idx_family_id (family_id)");
+
+        // 三期奖励额度模块建表(未手工执行 upgrade_v3_reward.sql 时兜底)
+        createRewardAccountTable();
+        createRewardItemTable();
+        createRewardTxnTable();
     }
 
     private void createFamilyTable() {
@@ -151,6 +156,85 @@ public class DataInitializer implements ApplicationRunner {
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='通知提醒表'");
         } catch (Exception e) {
             log.warn("检查/创建 notification 表失败(可忽略): {}", e.getMessage());
+        }
+    }
+
+    private void createRewardAccountTable() {
+        try {
+            jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS reward_account (" +
+                    "id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '账户ID'," +
+                    "family_id BIGINT NOT NULL COMMENT '所属家庭ID'," +
+                    "member_id BIGINT NOT NULL COMMENT '成员ID(孩子)'," +
+                    "balance INT DEFAULT 0 COMMENT '当前可用额度'," +
+                    "weekly_quota INT DEFAULT 0 COMMENT '每周期发放额度(0-不自动发放)'," +
+                    "period_type VARCHAR(20) DEFAULT 'WEEK' COMMENT '发放周期(WEEK-周,MONTH-月)'," +
+                    "carry_over TINYINT DEFAULT 1 COMMENT '余额是否跨周期结转(0-清零,1-累积)'," +
+                    "remark VARCHAR(500) COMMENT '备注'," +
+                    "status TINYINT DEFAULT 1 COMMENT '状态(0-禁用,1-启用)'," +
+                    "create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'," +
+                    "update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'," +
+                    "deleted TINYINT DEFAULT 0 COMMENT '逻辑删除(0-未删除,1-已删除)'," +
+                    "UNIQUE KEY uk_account_member (member_id)," +
+                    "INDEX idx_account_family_id (family_id)" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='奖励额度账户表'");
+        } catch (Exception e) {
+            log.warn("检查/创建 reward_account 表失败(可忽略): {}", e.getMessage());
+        }
+    }
+
+    private void createRewardItemTable() {
+        try {
+            jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS reward_item (" +
+                    "id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '方案ID'," +
+                    "family_id BIGINT NOT NULL COMMENT '所属家庭ID'," +
+                    "item_name VARCHAR(50) NOT NULL COMMENT '方案名称(如看电视/认真学习)'," +
+                    "item_type VARCHAR(10) NOT NULL COMMENT '类型(EARN-赚额度,SPEND-花额度)'," +
+                    "category VARCHAR(20) COMMENT '分类'," +
+                    "pricing_mode VARCHAR(10) DEFAULT 'TIMES' COMMENT '计价方式(TIMES-按次,DURATION-按时长)'," +
+                    "points INT NOT NULL COMMENT '单价额度'," +
+                    "unit_minutes INT DEFAULT 30 COMMENT '按时长计价的一档分钟数'," +
+                    "icon VARCHAR(20) COMMENT '图标文字'," +
+                    "color VARCHAR(20) COMMENT '展示颜色'," +
+                    "sort_order INT DEFAULT 0 COMMENT '排序(小在前)'," +
+                    "active TINYINT DEFAULT 1 COMMENT '是否启用(0-停用,1-启用)'," +
+                    "remark VARCHAR(500) COMMENT '备注'," +
+                    "create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'," +
+                    "update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'," +
+                    "deleted TINYINT DEFAULT 0 COMMENT '逻辑删除(0-未删除,1-已删除)'," +
+                    "INDEX idx_item_family_type (family_id, item_type)" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='奖励活动方案表'");
+        } catch (Exception e) {
+            log.warn("检查/创建 reward_item 表失败(可忽略): {}", e.getMessage());
+        }
+    }
+
+    private void createRewardTxnTable() {
+        try {
+            jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS reward_txn (" +
+                    "id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '流水ID'," +
+                    "family_id BIGINT NOT NULL COMMENT '所属家庭ID'," +
+                    "member_id BIGINT NOT NULL COMMENT '成员ID(孩子)'," +
+                    "item_id BIGINT COMMENT '活动方案ID(手动调整为空)'," +
+                    "item_name VARCHAR(50) COMMENT '方案名称快照'," +
+                    "category VARCHAR(20) COMMENT '方案分类快照(用于流水分类统计)'," +
+                    "direction VARCHAR(10) NOT NULL COMMENT '方向(GRANT,EARN,SPEND,EXPIRE,ADJUST)'," +
+                    "status VARCHAR(12) DEFAULT 'CONFIRMED' COMMENT '状态(PENDING,CONFIRMED,REJECTED)'," +
+                    "points INT NOT NULL COMMENT '本次变动额度(带符号)'," +
+                    "quantity INT DEFAULT 1 COMMENT '次数'," +
+                    "minutes INT COMMENT '时长分钟数(按时长方案)'," +
+                    "period_key VARCHAR(16) COMMENT '归属周期(如2026-W36/2026-08)'," +
+                    "operator_member_id BIGINT COMMENT '操作/确认的父母成员ID'," +
+                    "confirm_time DATETIME COMMENT '确认时间'," +
+                    "remark VARCHAR(500) COMMENT '备注'," +
+                    "create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'," +
+                    "update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'," +
+                    "deleted TINYINT DEFAULT 0 COMMENT '逻辑删除(0-未删除,1-已删除)'," +
+                    "INDEX idx_txn_member_time (member_id, create_time)," +
+                    "INDEX idx_txn_member_status (member_id, status)," +
+                    "INDEX idx_txn_member_period (member_id, period_key, direction)" +
+                    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='奖励额度流水表'");
+        } catch (Exception e) {
+            log.warn("检查/创建 reward_txn 表失败(可忽略): {}", e.getMessage());
         }
     }
 

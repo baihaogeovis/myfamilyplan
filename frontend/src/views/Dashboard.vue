@@ -103,9 +103,12 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
-import * as echarts from 'echarts'
+import { echarts, type ECharts } from '@/utils/echarts'
 import { Wallet, ShoppingCart, TrendingUp, Bell } from 'lucide-vue-next'
 import { useMemberStore } from '@/stores/member'
+import { formatMoney } from '@/utils/format'
+import { categoryLabel } from '@/constants/categories'
+import { CHART_BASE, MONEY_COLORS } from '@/constants/palette'
 import {
   getDashboardOverview,
   getDashboardTrend,
@@ -132,19 +135,8 @@ const trendPoints = ref<TrendPoint[]>([])
 const currentMonth = ref(new Date().toISOString().slice(0, 7))
 
 const trendChart = ref<HTMLElement>()
-let chart: echarts.ECharts | null = null
+let chart: ECharts | null = null
 
-const formatMoney = (v: number) =>
-  (v ?? 0).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-
-const categoryLabel = (c?: string) => {
-  const map: Record<string, string> = {
-    SALARY: '工资', BONUS: '奖金', INVESTMENT: '投资', PART_TIME: '兼职', GIFT: '红包',
-    FOOD: '餐饮', TRANSPORT: '交通', SHOPPING: '购物', HOUSING: '居住', EDUCATION: '教育',
-    MEDICAL: '医疗', ENTERTAINMENT: '娱乐', SAVINGS: '储蓄', OTHER: '其他'
-  }
-  return c ? (map[c] || c) : ''
-}
 
 const loadOverview = async () => {
   overview.value = await getDashboardOverview()
@@ -161,13 +153,25 @@ const renderTrend = () => {
   if (!chart) chart = echarts.init(trendChart.value)
   chart.setOption({
     tooltip: { trigger: 'axis', valueFormatter: (v: number) => `¥${(v || 0).toLocaleString()}` },
-    legend: { data: ['收入', '支出'] },
+    legend: { data: ['收入', '支出'], icon: 'roundRect', itemWidth: 14, itemHeight: 8, textStyle: { color: CHART_BASE.axisLabelColor } },
     grid: { left: 60, right: 20, top: 40, bottom: 30 },
-    xAxis: { type: 'category', data: trendPoints.value.map((p) => p.date.slice(5)) },
-    yAxis: { type: 'value' },
+    animationDuration: 700,
+    animationEasing: 'quarticOut',
+    xAxis: {
+      type: 'category',
+      data: trendPoints.value.map((p) => p.date.slice(5)),
+      axisLine: { lineStyle: { color: CHART_BASE.axisLineColor } },
+      axisTick: { show: false },
+      axisLabel: { color: CHART_BASE.axisLabelColor }
+    },
+    yAxis: {
+      type: 'value',
+      axisLabel: { color: CHART_BASE.axisLabelColor },
+      splitLine: { lineStyle: { color: CHART_BASE.splitLineColor, type: 'dashed' } }
+    },
     series: [
-      { name: '收入', type: 'line', smooth: true, data: trendPoints.value.map((p) => p.income), itemStyle: { color: '#67C23A' }, areaStyle: { opacity: 0.1 } },
-      { name: '支出', type: 'line', smooth: true, data: trendPoints.value.map((p) => p.expense), itemStyle: { color: '#F56C6C' }, areaStyle: { opacity: 0.1 } }
+      { name: '收入', type: 'line', smooth: true, symbolSize: 7, data: trendPoints.value.map((p) => p.income), itemStyle: { color: MONEY_COLORS.income }, lineStyle: { width: 3, color: MONEY_COLORS.income }, areaStyle: { opacity: 0.13 } },
+      { name: '支出', type: 'line', smooth: true, symbolSize: 7, data: trendPoints.value.map((p) => p.expense), itemStyle: { color: MONEY_COLORS.expense }, lineStyle: { width: 3, color: MONEY_COLORS.expense }, areaStyle: { opacity: 0.11 } }
     ]
   })
 }
@@ -217,7 +221,7 @@ onBeforeUnmount(() => {
   margin-bottom: 20px;
 }
 .stat-card {
-  border-radius: 12px;
+  border-radius: var(--r-lg);
   cursor: pointer;
   transition: all 0.3s ease;
   border: none;
@@ -244,34 +248,34 @@ onBeforeUnmount(() => {
   flex-shrink: 0;
 }
 .income .stat-icon {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--grass-400) 0%, var(--grass-600) 100%);
 }
 .expense .stat-icon {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #f7a8b8 0%, var(--berry) 100%);
 }
 .budget .stat-icon {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: linear-gradient(135deg, #6fd0f0 0%, var(--sky) 100%);
 }
 .pending .stat-icon {
-  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  background: linear-gradient(135deg, var(--sun) 0%, #ffd873 100%);
 }
 .stat-info {
   flex: 1;
 }
 .stat-label {
   font-size: 14px;
-  color: #909399;
+  color: var(--text-muted);
   margin-bottom: 8px;
 }
 .stat-value {
   font-size: 28px;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-strong);
   letter-spacing: -0.5px;
 }
 .chart-card,
 .recent-card {
-  border-radius: 12px;
+  border-radius: var(--r-lg);
 }
 .card-header {
   display: flex;
@@ -281,7 +285,7 @@ onBeforeUnmount(() => {
 .card-title {
   font-size: 16px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-strong);
 }
 .chart-container {
   height: 350px;
@@ -298,10 +302,10 @@ onBeforeUnmount(() => {
   padding: 12px 14px;
   border-radius: 8px;
   transition: all 0.2s;
-  background: #fafafa;
+  background: var(--surface-2);
 }
 .recent-item:hover {
-  background: #f0f5ff;
+  background: var(--grass-50);
   transform: translateX(4px);
 }
 .item-info {
@@ -309,22 +313,22 @@ onBeforeUnmount(() => {
 }
 .item-title {
   font-size: 14px;
-  color: #303133;
+  color: var(--text-strong);
   margin-bottom: 4px;
   font-weight: 500;
 }
 .item-time {
   font-size: 12px;
-  color: #909399;
+  color: var(--text-muted);
 }
 .item-amount {
   font-size: 16px;
   font-weight: 600;
 }
 .positive {
-  color: #67c23a;
+  color: var(--grass-600);
 }
 .negative {
-  color: #f56c6c;
+  color: var(--berry-ink);
 }
 </style>

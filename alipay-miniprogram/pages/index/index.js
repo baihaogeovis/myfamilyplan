@@ -11,6 +11,7 @@ const menus = [
   { icon: '资', color: '#5b8ff9', name: '资金', path: '/pages/fixedExpense/fixedExpense' },
   { icon: '生', color: '#9254de', name: '生活', path: '/pages/lifePlan/lifePlan' },
   { icon: '长', color: '#f759ab', name: '成长', path: '/pages/growthPlan/growthPlan' },
+  { icon: '奖', color: '#ff9f43', name: '奖励', path: '/pages/reward/reward' },
   { icon: '通', color: '#13c2c2', name: '通知', path: '/pages/notifications/notifications' }
 ]
 

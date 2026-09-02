@@ -94,6 +94,9 @@ import {
   type IncomeRecord
 } from '@/api/income'
 import { useMemberStore } from '@/stores/member'
+import { formatMoney } from '@/utils/format'
+import { INCOME_CATEGORIES as categories } from '@/constants/categories'
+const categoryMap = Object.fromEntries(categories.map((c) => [c.value, c.label]))
 
 const memberStore = useMemberStore()
 const loading = ref(false)
@@ -101,16 +104,6 @@ const tableData = ref<IncomeRecord[]>([])
 const total = ref(0)
 const page = ref(1)
 const size = ref(10)
-const categories = [
-  { value: 'SALARY', label: '工资' },
-  { value: 'BONUS', label: '奖金' },
-  { value: 'INVESTMENT', label: '投资' },
-  { value: 'PART_TIME', label: '兼职' },
-  { value: 'GIFT', label: '红包' },
-  { value: 'OTHER', label: '其他' }
-]
-const categoryMap = Object.fromEntries(categories.map(c => [c.value, c.label]))
-
 const filters = reactive({
   category: '',
   dateRange: null as null | [string, string]
@@ -126,8 +119,6 @@ const form = reactive<IncomeRecord>({
   remark: ''
 })
 
-const formatMoney = (v: number) =>
-  (v ?? 0).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 const load = async () => {
   await memberStore.ensureLoaded()
@@ -155,6 +146,7 @@ const load = async () => {
 const resetFilters = () => {
   filters.category = ''
   filters.dateRange = null
+  page.value = 1
   load()
 }
 
@@ -234,7 +226,7 @@ onMounted(load)
   justify-content: flex-end;
 }
 .positive {
-  color: #67c23a;
+  color: var(--grass-600);
   font-weight: 600;
 }
 </style>

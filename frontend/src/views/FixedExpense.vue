@@ -152,6 +152,8 @@ import {
   type FinanceOverview
 } from '@/api/fixedExpense'
 import { useMemberStore } from '@/stores/member'
+import { formatMoney } from '@/utils/format'
+import { FIXED_EXPENSE_CATEGORIES as categories, categoryLabel } from '@/constants/categories'
 
 const memberStore = useMemberStore()
 const loading = ref(false)
@@ -168,18 +170,6 @@ const overview = reactive<FinanceOverview>({
   fixedExpenses: []
 })
 
-const categories = [
-  { value: 'PROPERTY', label: '物业费' },
-  { value: 'PARKING', label: '车位费' },
-  { value: 'PARKING_MANAGE', label: '车位管理费' },
-  { value: 'PHONE', label: '话费' },
-  { value: 'INTERNET', label: '网费' },
-  { value: 'UTILITY', label: '水电气' },
-  { value: 'OTHER', label: '其他' }
-]
-
-const categoryMap = Object.fromEntries(categories.map(c => [c.value, c.label]))
-const categoryLabel = (v: string) => categoryMap[v] || v
 const categoryTag = (v: string) => {
   const map: Record<string, string> = {
     PROPERTY: 'primary',
@@ -205,8 +195,7 @@ const form = reactive<FixedExpense>({
   remark: ''
 })
 
-const fmt = (v: number) =>
-  (v ?? 0).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+const fmt = formatMoney
 
 const load = async () => {
   await memberStore.ensureLoaded()
@@ -304,7 +293,7 @@ onMounted(load)
 
 .toolbar-card {
   margin-bottom: 16px;
-  border-radius: 8px;
+  border-radius: var(--r-lg);
 }
 
 .toolbar {
@@ -319,7 +308,7 @@ onMounted(load)
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #909399;
+  color: var(--text-muted);
   font-size: 13px;
   flex: 1;
   justify-content: center;
@@ -343,7 +332,7 @@ onMounted(load)
   align-items: center;
   gap: 16px;
   background: white;
-  border-radius: 10px;
+  border-radius: var(--r-lg);
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
@@ -364,32 +353,32 @@ onMounted(load)
   height: 26px;
 }
 
-.stat-card.income .stat-icon { background: #67c23a; }
-.stat-card.expense .stat-icon { background: #f56c6c; }
-.stat-card.balance .stat-icon { background: #409eff; }
-.stat-card.saving .stat-icon { background: #e6a23c; }
+.stat-card.income .stat-icon { background: var(--grass-500); }
+.stat-card.expense .stat-icon { background: var(--berry); }
+.stat-card.balance .stat-icon { background: var(--sky); }
+.stat-card.saving .stat-icon { background: var(--sun); }
 
 .stat-label {
   font-size: 13px;
-  color: #909399;
+  color: var(--text-muted);
 }
 
 .stat-value {
   font-size: 22px;
   font-weight: 700;
-  color: #303133;
+  color: var(--text-strong);
   margin: 2px 0;
 }
 
-.stat-value.negative { color: #f56c6c; }
+.stat-value.negative { color: var(--berry-ink); }
 
 .stat-sub {
   font-size: 12px;
-  color: #c0c4cc;
+  color: var(--text-muted);
 }
 
 .fixed-card {
-  border-radius: 8px;
+  border-radius: var(--r-lg);
 }
 
 .card-header {
@@ -406,9 +395,9 @@ onMounted(load)
 }
 
 .money {
-  color: #f56c6c;
+  color: var(--berry-ink);
   font-weight: 600;
 }
 
-.gray { color: #c0c4cc; }
+.gray { color: var(--border-strong); }
 </style>

@@ -101,6 +101,10 @@ import {
   type ExpenseRecord
 } from '@/api/expense'
 import { useMemberStore } from '@/stores/member'
+import { formatMoney } from '@/utils/format'
+import { EXPENSE_CATEGORIES as categories, EXPENSE_TYPES as types } from '@/constants/categories'
+const categoryMap = Object.fromEntries(categories.map((c) => [c.value, c.label]))
+const typeMap = Object.fromEntries(types.map((t) => [t.value, t.label]))
 
 const memberStore = useMemberStore()
 const loading = ref(false)
@@ -108,24 +112,6 @@ const tableData = ref<ExpenseRecord[]>([])
 const total = ref(0)
 const page = ref(1)
 const size = ref(10)
-const categories = [
-  { value: 'FOOD', label: '餐饮' },
-  { value: 'TRANSPORT', label: '交通' },
-  { value: 'SHOPPING', label: '购物' },
-  { value: 'HOUSING', label: '居住' },
-  { value: 'EDUCATION', label: '教育' },
-  { value: 'MEDICAL', label: '医疗' },
-  { value: 'ENTERTAINMENT', label: '娱乐' },
-  { value: 'SAVINGS', label: '储蓄' },
-  { value: 'OTHER', label: '其他' }
-]
-const types = [
-  { value: 'NORMAL', label: '普通' },
-  { value: 'BILL', label: '账单' },
-  { value: 'SAVING', label: '储蓄' }
-]
-const categoryMap = Object.fromEntries(categories.map(c => [c.value, c.label]))
-const typeMap = Object.fromEntries(types.map(t => [t.value, t.label]))
 
 const filters = reactive({
   category: '',
@@ -143,8 +129,6 @@ const form = reactive<ExpenseRecord>({
   remark: ''
 })
 
-const formatMoney = (v: number) =>
-  (v ?? 0).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 const load = async () => {
   await memberStore.ensureLoaded()
@@ -174,6 +158,7 @@ const resetFilters = () => {
   filters.category = ''
   filters.type = ''
   filters.dateRange = null
+  page.value = 1
   load()
 }
 
@@ -253,7 +238,7 @@ onMounted(load)
   justify-content: flex-end;
 }
 .negative {
-  color: #f56c6c;
+  color: var(--berry-ink);
   font-weight: 600;
 }
 </style>

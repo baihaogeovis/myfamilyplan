@@ -158,5 +158,103 @@ module.exports = {
 
   growthPlanTypeText(type) {
     return type === 'SHORT' ? '短期目标' : '长期目标'
+  },
+
+  /**
+   * 日期时间格式化: 后端返回 ISO 串(2026-09-02T11:29:10), 按字符串截断避免 iOS Date 解析差异
+   */
+  formatDateTime(value) {
+    if (!value) return ''
+    const s = String(value).replace('T', ' ')
+    return s.length >= 16 ? s.slice(0, 16) : s
+  },
+
+  /**
+   * 奖励方案类型
+   */
+  rewardItemTypes() {
+    return [
+      { value: 'SPEND', label: '花额度' },
+      { value: 'EARN', label: '赚额度' }
+    ]
+  },
+
+  rewardItemTypeText(value) {
+    const map = { SPEND: '花额度', EARN: '赚额度' }
+    return map[value] || value
+  },
+
+  /**
+   * 奖励方案计价方式
+   */
+  rewardPricingModes() {
+    return [
+      { value: 'TIMES', label: '按次' },
+      { value: 'DURATION', label: '按时长' }
+    ]
+  },
+
+  rewardPricingText(value) {
+    const map = { TIMES: '按次', DURATION: '按时长' }
+    return map[value] || value
+  },
+
+  /**
+   * 奖励方案分类(与 Web 端 REWARD_CATEGORIES 一致)
+   */
+  rewardCategories() {
+    return [
+      { value: 'STUDY', label: '学习' },
+      { value: 'SPORTS', label: '运动' },
+      { value: 'HABIT', label: '习惯' },
+      { value: 'HOUSEWORK', label: '家务' },
+      { value: 'SCREEN', label: '屏幕' },
+      { value: 'TOY', label: '玩具' },
+      { value: 'SNACK', label: '零食' },
+      { value: 'ACTIVITY', label: '活动' },
+      { value: 'OTHER', label: '其他' }
+    ]
+  },
+
+  rewardCategoryText(value) {
+    const map = {
+      STUDY: '学习', SPORTS: '运动', HABIT: '习惯', HOUSEWORK: '家务',
+      SCREEN: '屏幕', TOY: '玩具', SNACK: '零食', ACTIVITY: '活动', OTHER: '其他'
+    }
+    return value ? map[value] || value : '其他'
+  },
+
+  /**
+   * 额度流水方向
+   */
+  rewardDirectionText(value) {
+    const map = {
+      GRANT: '周期发放', EARN: '行为赚取', SPEND: '消费扣减',
+      EXPIRE: '周期清零', ADJUST: '手动调整'
+    }
+    return map[value] || value
+  },
+
+  /**
+   * 额度流水状态
+   */
+  rewardStatusText(value) {
+    const map = { PENDING: '待确认', CONFIRMED: '已生效', REJECTED: '已驳回' }
+    return map[value] || value
+  },
+
+  /**
+   * 额度发放周期
+   */
+  rewardPeriodTypes() {
+    return [
+      { value: 'WEEK', label: '按周发放' },
+      { value: 'MONTH', label: '按月发放' }
+    ]
+  },
+
+  rewardPeriodText(value) {
+    const map = { WEEK: '按周发放', MONTH: '按月发放' }
+    return map[value] || value
   }
 }

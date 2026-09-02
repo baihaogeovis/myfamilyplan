@@ -1,13 +1,13 @@
-import axios from 'axios'
+import axios, { type AxiosRequestConfig } from 'axios'
 import { ElMessage } from 'element-plus'
 
-const request = axios.create({
+const instance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   timeout: 10000
 })
 
 // 请求拦截器
-request.interceptors.request.use(
+instance.interceptors.request.use(
   config => {
     const token = localStorage.getItem('token')
     if (token) {
@@ -26,7 +26,7 @@ request.interceptors.request.use(
 )
 
 // 响应拦截器
-request.interceptors.response.use(
+instance.interceptors.response.use(
   response => {
     const res = response.data
     if (res.code === 200) {
@@ -49,5 +49,24 @@ request.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+
+/**
+ * 统一封装 Axios 实例，默认响应拦截器已经把 Result 解包为 data，
+ * 因此这里让方法直接返回业务数据类型，而不是 AxiosResponse。
+ */
+const request = {
+  get<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    return instance.get(url, config) as Promise<T>
+  },
+  post<T = any>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
+    return instance.post(url, data, config) as Promise<T>
+  },
+  put<T = any>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
+    return instance.put(url, data, config) as Promise<T>
+  },
+  delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    return instance.delete(url, config) as Promise<T>
+  }
+}
 
 export default request

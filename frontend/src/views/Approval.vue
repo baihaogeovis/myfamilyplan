@@ -3,7 +3,7 @@
     <el-card>
       <template #header>
         <div class="header-bar">
-          <el-tabs v-model="activeTab" @tab-change="load" class="tabs">
+          <el-tabs v-model="activeTab" @tab-change="onTabChange" class="tabs">
             <el-tab-pane label="我的申请" name="mine" />
             <el-tab-pane label="待我审批" name="pending" />
           </el-tabs>
@@ -94,6 +94,7 @@ import {
   type ApprovalRecord
 } from '@/api/approval'
 import { useMemberStore } from '@/stores/member'
+import { formatMoney } from '@/utils/format'
 
 const memberStore = useMemberStore()
 const loading = ref(false)
@@ -115,8 +116,7 @@ const form = reactive<ApprovalRecord>({
 const approverOptions = computed(() =>
   memberStore.members.filter((m) => m.id !== memberStore.currentMemberId)
 )
-const formatMoney = (v: number) =>
-  (v ?? 0).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
 const nameOf = (id?: number) => {
   if (!id) return ''
   const m = memberStore.members.find((x) => x.id === id)
@@ -126,6 +126,11 @@ const statusType = (s?: string) =>
   s === 'APPROVED' ? 'success' : s === 'REJECTED' ? 'danger' : 'warning'
 const statusText = (s?: string) =>
   s === 'APPROVED' ? '已通过' : s === 'REJECTED' ? '已驳回' : '待审批'
+
+const onTabChange = () => {
+  page.value = 1
+  load()
+}
 
 const load = async () => {
   await memberStore.ensureLoaded()
