@@ -33,8 +33,8 @@
   <view class="fab" bindtap="openAdd">+</view>
 
   <!-- 弹窗 -->
-  <view class="modal-mask" wx:if="{{showForm}}" bindtap="closeForm">
-    <view class="modal-body" catchtap="noop">
+  <view class="modal-mask {{showForm ? '' : 'is-closing'}}" wx:if="{{showForm || modalHold}}" catchtap="closeForm">
+    <view class="modal-body" wx:if="{{showForm}}" catchtap="noop">
       <view class="modal-title">发起资金申请</view>
       <view class="form-item">
         <text class="form-label">金额</text>

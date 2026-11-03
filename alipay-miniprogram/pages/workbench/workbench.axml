@@ -43,8 +43,8 @@
   <view class="fab" onTap="openAdd">+</view>
 
   <!-- 弹窗 -->
-  <view class="modal-mask" a:if="{{showForm}}" onTap="closeForm">
-    <view class="modal-body" catchTap="noop">
+  <view class="modal-mask {{showForm ? '' : 'is-closing'}}" a:if="{{showForm || modalHold}}" catchTap="closeForm">
+    <view class="modal-body" a:if="{{showForm}}" catchTap="noop">
       <view class="modal-title">{{formMode === 'add' ? '新增' : '编辑'}}任务</view>
 
       <view class="form-item">

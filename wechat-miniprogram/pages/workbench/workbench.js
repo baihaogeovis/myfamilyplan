@@ -1,3 +1,4 @@
+const modal = require('../../utils/modal')
 const api = require('../../utils/api')
 const util = require('../../utils/util')
 
@@ -16,6 +17,7 @@ Page({
     tasks: [],
     stats: { total: 0, completed: 0 },
     showForm: false,
+    modalHold: false,
     formMode: 'add',
     form: {
       id: null,
@@ -97,6 +99,7 @@ Page({
   },
 
   openAdd() {
+    if (!modal.canOpen(this)) return
     this.setData({
       showForm: true,
       formMode: 'add',
@@ -105,6 +108,7 @@ Page({
   },
 
   openEdit(e) {
+    if (!modal.canOpen(this)) return
     const item = e.currentTarget.dataset.item
     this.setData({
       showForm: true,
@@ -119,7 +123,7 @@ Page({
     })
   },
 
-  closeForm() { this.setData({ showForm: false }) },
+  closeForm() { modal.closeModal(this, { showForm: false }) },
   noop() {},
   onFormName(e) { this.setData({ 'form.taskName': e.detail.value }) },
   onFormRemark(e) { this.setData({ 'form.remark': e.detail.value }) },
@@ -151,7 +155,7 @@ Page({
       } else {
         await api.dailyTask.update({ ...payload, id: form.id })
       }
-      this.setData({ showForm: false })
+      modal.closeModal(this, { showForm: false })
       wx.showToast({ title: '保存成功', icon: 'success' })
       this.reload()
     } catch (e) { /* 错误已提示 */ }

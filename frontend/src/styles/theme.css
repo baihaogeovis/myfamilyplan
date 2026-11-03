@@ -370,7 +370,10 @@ h1 {
   to { transform: scaleX(1); }
 }
 
-/* 入场：单个元素加 .anim-rise，容器加 .anim-stagger 让子项错落 */
+/* 入场：单个元素加 .anim-rise，容器加 .anim-stagger 让子项错落。
+   弹层根节点除外：它们是 .page-container 的直接子节点，若套上 grass-rise
+   会盖住 Element Plus 的 dialog-fade。关闭时内容先淡出，离场类卸掉后
+   又亮一帧，然后才消失。 */
 .anim-rise {
   animation: grass-rise var(--dur-3) var(--ease-out) both;
   animation-delay: calc(var(--i, 0) * 55ms);
@@ -381,9 +384,9 @@ h1 {
   animation-delay: calc(var(--i, 0) * 55ms);
 }
 
-.anim-stagger > *,
-.page-container > *,
-.dashboard-container > * {
+.anim-stagger > *:not(.el-overlay):not(.el-dialog):not(.el-message-box),
+.page-container > *:not(.el-overlay):not(.el-dialog):not(.el-message-box),
+.dashboard-container > *:not(.el-overlay):not(.el-dialog):not(.el-message-box) {
   animation: grass-rise var(--dur-3) var(--ease-out) both;
 }
 
@@ -422,6 +425,18 @@ h1 {
 .anim-stagger > *:nth-child(n + 9),
 .page-container > *:nth-child(n + 9),
 .dashboard-container > *:nth-child(n + 9) { animation-delay: 440ms; }
+
+.anim-stagger > .el-overlay,
+.anim-stagger > .el-dialog,
+.anim-stagger > .el-message-box,
+.page-container > .el-overlay,
+.page-container > .el-dialog,
+.page-container > .el-message-box,
+.dashboard-container > .el-overlay,
+.dashboard-container > .el-dialog,
+.dashboard-container > .el-message-box {
+  animation-delay: 0s;
+}
 
 .anim-float {
   animation: grass-float 4.6s ease-in-out infinite;

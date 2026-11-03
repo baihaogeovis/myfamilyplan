@@ -1,3 +1,4 @@
+const modal = require('../../utils/modal')
 const api = require('../../utils/api')
 
 Page({
@@ -7,6 +8,7 @@ Page({
     currentMemberId: null,
     currentMemberName: '',
     showPwd: false,
+    modalHold: false,
     pwdForm: { oldPassword: '', newPassword: '' }
   },
 
@@ -48,10 +50,11 @@ Page({
   },
 
   openPwd() {
+    if (!modal.canOpen(this)) return
     this.setData({ showPwd: true, pwdForm: { oldPassword: '', newPassword: '' } })
   },
 
-  closePwd() { this.setData({ showPwd: false }) },
+  closePwd() { modal.closeModal(this, { showPwd: false }) },
   noop() {},
   onOldPwd(e) { this.setData({ 'pwdForm.oldPassword': e.detail.value }) },
   onNewPwd(e) { this.setData({ 'pwdForm.newPassword': e.detail.value }) },
@@ -64,7 +67,7 @@ Page({
     }
     try {
       await api.family.changePassword({ oldPassword, newPassword })
-      this.setData({ showPwd: false })
+      modal.closeModal(this, { showPwd: false })
       my.showToast({ type: 'success', content: '密码修改成功' })
     } catch (e) { /* 错误已提示 */ }
   },

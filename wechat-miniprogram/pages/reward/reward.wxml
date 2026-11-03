@@ -242,8 +242,8 @@
   </block>
 
   <!-- 活动方案表单 -->
-  <view class="modal-mask" wx:if="{{showItemForm}}" bindtap="closeItemForm">
-    <view class="modal-body" catchtap="noop">
+  <view class="modal-mask {{showItemForm ? '' : 'is-closing'}}" wx:if="{{showItemForm || modalHold}}" catchtap="closeItemForm">
+    <view class="modal-body" wx:if="{{showItemForm}}" catchtap="noop">
       <view class="modal-title">{{itemFormMode === 'add' ? '新增' : '编辑'}}活动方案</view>
 
       <view class="form-item">

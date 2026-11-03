@@ -240,6 +240,12 @@ button[disabled] {
   justify-content: center;
 }
 
+/* 关闭后蒙层先留在树上接住同一次点击，视觉上已经消失 */
+.modal-mask.is-closing {
+  background: transparent;
+  z-index: 1000;
+}
+
 .modal-body {
   background: #ffffff;
   border-radius: 32rpx 32rpx 0 0;

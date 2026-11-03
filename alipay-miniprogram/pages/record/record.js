@@ -1,3 +1,4 @@
+const modal = require('../../utils/modal')
 const api = require('../../utils/api')
 const util = require('../../utils/util')
 
@@ -12,6 +13,7 @@ Page({
     hasMore: true,
     loading: false,
     showForm: false,
+    modalHold: false,
     formMode: 'add',
     form: {
       id: null,
@@ -101,6 +103,7 @@ Page({
   },
 
   openAdd() {
+    if (!modal.canOpen(this)) return
     this.setData({
       showForm: true,
       formMode: 'add',
@@ -116,6 +119,7 @@ Page({
   },
 
   openEdit(e) {
+    if (!modal.canOpen(this)) return
     const item = e.currentTarget.dataset.item
     this.setData({
       showForm: true,
@@ -131,7 +135,7 @@ Page({
     })
   },
 
-  closeForm() { this.setData({ showForm: false }) },
+  closeForm() { modal.closeModal(this, { showForm: false }) },
   noop() {},
   categoryLabel(v) { return util.categoryLabel(v) },
   onFormAmount(e) { this.setData({ 'form.amount': e.detail.value }) },
@@ -170,7 +174,7 @@ Page({
       } else {
         await api[type].update({ ...payload, id: form.id })
       }
-      this.setData({ showForm: false })
+      modal.closeModal(this, { showForm: false })
       my.showToast({ type: 'success', content: '保存成功' })
       this.reload()
     } catch (e) { /* 错误已提示 */ }

@@ -50,8 +50,8 @@
   <view class="safe-bottom"></view>
 
   <!-- 修改密码弹窗 -->
-  <view class="modal-mask" wx:if="{{showPwd}}" bindtap="closePwd">
-    <view class="modal-body" catchtap="noop">
+  <view class="modal-mask {{showPwd ? '' : 'is-closing'}}" wx:if="{{showPwd || modalHold}}" catchtap="closePwd">
+    <view class="modal-body" wx:if="{{showPwd}}" catchtap="noop">
       <view class="modal-title">修改密码</view>
       <view class="form-item">
         <text class="form-label">原密码</text>

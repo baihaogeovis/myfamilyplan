@@ -1,3 +1,4 @@
+const modal = require('../../utils/modal')
 const api = require('../../utils/api')
 const util = require('../../utils/util')
 
@@ -113,6 +114,7 @@ Page({
     categories: util.rewardCategories(),
     adjust: { minus: false, points: 10, remark: '' },
     showItemForm: false,
+    modalHold: false,
     itemFormMode: 'add',
     itemForm: emptyItemForm()
   },
@@ -374,10 +376,12 @@ Page({
 
   /** 活动方案维护 */
   openAddItem() {
+    if (!modal.canOpen(this)) return
     this.setData({ showItemForm: true, itemFormMode: 'add', itemForm: emptyItemForm() })
   },
 
   openEditItem(e) {
+    if (!modal.canOpen(this)) return
     const source = e.currentTarget.dataset.group === 'earn' ? this.data.earnItems : this.data.spendItems
     const item = source[Number(e.currentTarget.dataset.index)]
     this.setData({
@@ -398,7 +402,7 @@ Page({
   },
 
   closeItemForm() {
-    this.setData({ showItemForm: false })
+    modal.closeModal(this, { showItemForm: false })
   },
 
   noop() {},
@@ -440,7 +444,7 @@ Page({
       ? api.reward.addItem(payload)
       : api.reward.updateItem(payload)
     action.then(() => {
-      this.setData({ showItemForm: false })
+      modal.closeModal(this, { showItemForm: false })
       wx.showToast({ title: '保存成功', icon: 'success' })
       return this.reloadAll()
     }).catch(() => {})
