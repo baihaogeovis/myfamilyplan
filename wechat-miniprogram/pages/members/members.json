@@ -1,6 +1,3 @@
 {
-  "navigationBarTitleText": "家庭",
-  "usingComponents": {
-    "main-nav": "/components/main-nav/main-nav"
-  }
+  "navigationBarTitleText": "家庭"
 }

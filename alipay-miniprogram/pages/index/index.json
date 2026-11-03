@@ -1,6 +1,3 @@
 {
-  "defaultTitle": "工作台",
-  "usingComponents": {
-    "main-nav": "/components/main-nav/index"
-  }
+  "defaultTitle": "工作台"
 }

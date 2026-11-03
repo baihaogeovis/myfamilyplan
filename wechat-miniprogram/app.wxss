@@ -28,7 +28,7 @@ scroll-view {
 }
 
 .page-container {
-  padding: 24rpx 24rpx calc(24rpx + 140rpx + env(safe-area-inset-bottom));
+  padding: 24rpx;
   min-height: 100vh;
 }
 
@@ -63,7 +63,7 @@ scroll-view {
   bottom: 6rpx;
   width: 6rpx;
   border-radius: 3rpx;
-  background: #c46a45;
+  background: #2A9D8F;
 }
 
 /* 按钮 */
@@ -207,7 +207,7 @@ button[disabled] {
 .fab {
   position: fixed;
   right: 40rpx;
-  bottom: calc(150rpx + env(safe-area-inset-bottom));
+  bottom: calc(40rpx + env(safe-area-inset-bottom));
   width: 100rpx;
   height: 100rpx;
   border-radius: 50%;

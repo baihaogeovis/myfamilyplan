@@ -1,7 +1,4 @@
 {
   "navigationBarTitleText": "奖励",
-  "enablePullDownRefresh": true,
-  "usingComponents": {
-    "main-nav": "/components/main-nav/main-nav"
-  }
+  "enablePullDownRefresh": true
 }

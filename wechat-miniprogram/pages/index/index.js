@@ -139,7 +139,7 @@ Page({
         content: '请先在「我的」页面选择当前家庭成员',
         confirmText: '去选择',
         success: (res) => {
-          if (res.confirm) wx.reLaunch({ url: '/pages/profile/profile' })
+          if (res.confirm) wx.switchTab({ url: '/pages/profile/profile' })
         }
       })
       return
@@ -153,9 +153,9 @@ Page({
         if (key === 'type') app.globalData.recordType = kv.slice(idx + 1)
       })
     }
-    const roots = ['/pages/index/index', '/pages/members/members', '/pages/lifePlan/lifePlan', '/pages/record/record', '/pages/reward/reward', '/pages/profile/profile']
-    if (roots.includes(base)) {
-      wx.reLaunch({ url: path })
+    const tabs = ['/pages/index/index', '/pages/lifePlan/lifePlan', '/pages/record/record', '/pages/reward/reward', '/pages/profile/profile']
+    if (tabs.includes(base)) {
+      wx.switchTab({ url: base })
       return
     }
     wx.navigateTo({ url: path })
@@ -169,6 +169,6 @@ Page({
       return
     }
     app.globalData.recordType = type
-    wx.reLaunch({ url: `/pages/record/record?type=${type}` })
+    wx.switchTab({ url: '/pages/record/record' })
   }
 })

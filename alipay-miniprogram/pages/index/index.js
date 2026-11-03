@@ -134,7 +134,7 @@ Page({
         content: '请先在「我的」页面选择当前家庭成员',
         confirmText: '去选择',
         success: (res) => {
-          if (res.confirm) my.reLaunch({ url: '/pages/profile/profile' })
+          if (res.confirm) my.switchTab({ url: '/pages/profile/profile' })
         }
       })
       return
@@ -148,9 +148,9 @@ Page({
         if (key === 'type') app.globalData.recordType = kv.slice(idx + 1)
       })
     }
-    const roots = ['/pages/index/index', '/pages/members/members', '/pages/lifePlan/lifePlan', '/pages/record/record', '/pages/reward/reward', '/pages/profile/profile']
-    if (roots.includes(base)) {
-      my.reLaunch({ url: path })
+    const tabs = ['/pages/index/index', '/pages/lifePlan/lifePlan', '/pages/record/record', '/pages/reward/reward', '/pages/profile/profile']
+    if (tabs.includes(base)) {
+      my.switchTab({ url: base })
       return
     }
     my.navigateTo({ url: path })
@@ -164,6 +164,6 @@ Page({
       return
     }
     app.globalData.recordType = type
-    my.reLaunch({ url: `/pages/record/record?type=${type}` })
+    my.switchTab({ url: '/pages/record/record' })
   }
 })

@@ -173,6 +173,6 @@ Page({
   },
 
   goLife() {
-    wx.navigateTo({ url: '/pages/lifePlan/lifePlan' })
+    wx.switchTab({ url: '/pages/lifePlan/lifePlan' })
   }
 })

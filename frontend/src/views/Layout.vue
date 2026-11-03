@@ -411,9 +411,9 @@ onMounted(() => {
 }
 
 .sub-link.active {
-  background: var(--surface);
-  border-color: var(--border-soft);
-  color: var(--text-strong);
+  background: var(--teal-soft);
+  border-color: transparent;
+  color: var(--teal);
   font-weight: 600;
 }
 

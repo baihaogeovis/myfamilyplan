@@ -169,6 +169,6 @@ Page({
   },
 
   goLife() {
-    my.navigateTo({ url: '/pages/lifePlan/lifePlan' })
+    my.switchTab({ url: '/pages/lifePlan/lifePlan' })
   }
 })

@@ -13,7 +13,7 @@ Page({
     // 已登录则直接进入首页
     const token = wx.getStorageSync('token')
     if (token) {
-      wx.reLaunch({ url: '/pages/index/index' })
+      wx.switchTab({ url: '/pages/index/index' })
     }
   },
 
@@ -62,7 +62,7 @@ Page({
   enterHome() {
     wx.showToast({ title: '登录成功', icon: 'success' })
     setTimeout(() => {
-      wx.reLaunch({ url: '/pages/index/index' })
+      wx.switchTab({ url: '/pages/index/index' })
     }, 600)
   }
 })

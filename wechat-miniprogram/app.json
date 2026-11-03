@@ -22,6 +22,44 @@
     "navigationBarTextStyle": "black",
     "backgroundColor": "#f6f1e8"
   },
+  "tabBar": {
+    "color": "#8a8175",
+    "selectedColor": "#E85D4C",
+    "backgroundColor": "#fffcf8",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "工作台",
+        "iconPath": "assets/tab/work.png",
+        "selectedIconPath": "assets/tab/work-on.png"
+      },
+      {
+        "pagePath": "pages/lifePlan/lifePlan",
+        "text": "计划",
+        "iconPath": "assets/tab/plan.png",
+        "selectedIconPath": "assets/tab/plan-on.png"
+      },
+      {
+        "pagePath": "pages/record/record",
+        "text": "钱",
+        "iconPath": "assets/tab/money.png",
+        "selectedIconPath": "assets/tab/money-on.png"
+      },
+      {
+        "pagePath": "pages/reward/reward",
+        "text": "奖励",
+        "iconPath": "assets/tab/reward.png",
+        "selectedIconPath": "assets/tab/reward-on.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "assets/tab/me.png",
+        "selectedIconPath": "assets/tab/me-on.png"
+      }
+    ]
+  },
   "style": "v2",
   "sitemapLocation": "sitemap.json",
   "lazyCodeLoading": "requiredComponents"

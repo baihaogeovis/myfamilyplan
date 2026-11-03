@@ -24,4 +24,3 @@
     <view class="notify-del" catchtap="removeItem" data-item="{{item}}">删除</view>
   </view>
 </view>
-<main-nav current="me" />

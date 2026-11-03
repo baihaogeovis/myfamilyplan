@@ -42,7 +42,7 @@ Page({
   },
 
   goMembers() {
-    wx.reLaunch({ url: '/pages/members/members' })
+    wx.navigateTo({ url: '/pages/members/members' })
   },
 
   goNotes() {
