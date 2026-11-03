@@ -83,7 +83,7 @@
 
 .year-label {
   font-size: 26rpx;
-  color: #2f6b4f;
+  color: #E85D4C;
 }
 
 .bar-chart {

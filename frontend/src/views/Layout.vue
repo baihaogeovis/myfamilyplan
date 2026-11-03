@@ -279,7 +279,7 @@ onMounted(() => {
   height: 36px;
   border-radius: 12px;
   color: #fffdf8;
-  background: var(--grass-700);
+  background: #E85D4C;
 }
 
 .brand-name {
@@ -310,7 +310,7 @@ onMounted(() => {
 }
 
 .primary-link.active {
-  background: var(--grass-700);
+  background: #E85D4C;
   color: #fffdf8;
 }
 

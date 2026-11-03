@@ -489,21 +489,21 @@ const handleRegister = async () => {
 }
 
 .member-item:hover {
-  border-color: var(--grass-400);
+  border-color: #f0b2a8;
   background: var(--surface-2);
 }
 
 .member-item.active {
-  border-color: var(--grass-600);
-  background: var(--grass-50);
+  border-color: #E85D4C;
+  background: #FDE8E4;
 }
 
 .member-avatar {
   width: 48px;
   height: 48px;
   border-radius: 16px;
-  background: var(--grass-100);
-  color: var(--grass-800);
+  background: #FDE8E4;
+  color: #C4473A;
   font-size: 18px;
   font-weight: 600;
   display: flex;

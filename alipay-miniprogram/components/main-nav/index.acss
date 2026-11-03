@@ -23,6 +23,6 @@
 }
 
 .nav-item.on {
-  background: #1f6b45;
+  background: #E85D4C;
   color: #fffdf8;
 }

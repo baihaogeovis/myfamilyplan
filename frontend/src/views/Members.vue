@@ -170,7 +170,7 @@ onMounted(() => {
 <style scoped>
 .page-container {
   width: 100%;
-  max-width: 880px;
+  max-width: 1080px;
   margin: 0 auto;
 }
 
@@ -194,14 +194,15 @@ onMounted(() => {
 }
 
 .people {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
 }
 
 .person {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 16px;
   padding: 18px 18px;
   border-radius: 22px;
@@ -211,7 +212,7 @@ onMounted(() => {
 }
 
 .person.on {
-  border-color: var(--grass-300);
+  border-color: #E85D4C;
 }
 
 .avatar {

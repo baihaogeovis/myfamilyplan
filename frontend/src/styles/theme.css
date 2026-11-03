@@ -1,18 +1,24 @@
 /**
- * 主题层：小草绿（Grass）视觉体系
+ * 主题层：暖纸 + 珊瑚主色
  * 1) 设计 token  2) Element Plus 换肤  3) 全局动效
  * 放在 element-plus/dist/index.css 与 styles/index.css 之后引入。
  */
 
 :root {
-  /* ---- 林绿：主操作色。--grass-600 起才允许承载白字（对比度 >=4.5） ---- */
+  /* 主色：珊瑚。草绿只留给收入/完成这类语义，不承担品牌。 */
+  --coral: #E85D4C;
+  --coral-deep: #C4473A;
+  --coral-soft: #FDE8E4;
+  --shadow-coral: 0 10px 24px rgba(232, 93, 76, 0.28);
+
+  /* ---- 林绿：收入、完成，不是主按钮 ---- */
   --grass-50: #f4f7f2;
   --grass-100: #e6efe4;
   --grass-200: #c9dccb;
   --grass-300: #9fbfa4;
   --grass-400: #6d9a78;
   --grass-500: #3f7a56;
-  --grass-600: #1f6b45; /* 主色：按钮/链接/激活态 */
+  --grass-600: #1f6b45; /* 收入/完成，不是品牌色 */
   --grass-700: #185638;
   --grass-800: #143f2c;
   --grass-900: #10281d;
@@ -56,7 +62,7 @@
   --shadow-1: 0 1px 2px rgba(48, 36, 18, 0.04), 0 10px 28px rgba(48, 36, 18, 0.06);
   --shadow-2: 0 16px 40px rgba(48, 36, 18, 0.10);
   --shadow-3: 0 24px 60px rgba(48, 36, 18, 0.16);
-  --shadow-green: 0 10px 24px rgba(31, 107, 69, 0.24);
+  --shadow-green: var(--shadow-coral);
 
   /* ---- 动效：150~300ms，进入 ease-out、离开 ease-in ---- */
   --dur-1: 140ms;
@@ -73,13 +79,13 @@
     'Noto Serif SC', serif;
 
   /* ================= Element Plus 变量覆盖 ================= */
-  --el-color-primary: var(--grass-600);
-  --el-color-primary-light-3: #4d8a68;
-  --el-color-primary-light-5: #7aa88a;
-  --el-color-primary-light-7: #b4d0bf;
-  --el-color-primary-light-8: #d0e3d6;
-  --el-color-primary-light-9: #f3f7f4;
-  --el-color-primary-dark-2: #174f34;
+  --el-color-primary: #E85D4C;
+  --el-color-primary-light-3: #ee8a7e;
+  --el-color-primary-light-5: #f3aea6;
+  --el-color-primary-light-7: #f8d0ca;
+  --el-color-primary-light-8: #fbe0dc;
+  --el-color-primary-light-9: #fdf4f2;
+  --el-color-primary-dark-2: #c4473a;
 
   --el-color-success: var(--grass-600);
   --el-color-success-light-3: #4a9c6e;
@@ -136,8 +142,8 @@ body {
   background-color: var(--app-bg);
   /* 暖纸上的两团很淡的光，避免纯灰后台底 */
   background-image:
-    radial-gradient(900px 480px at 0% -8%, rgba(196, 106, 69, 0.10), transparent 58%),
-    radial-gradient(820px 420px at 100% 0%, rgba(63, 122, 86, 0.10), transparent 55%);
+    radial-gradient(900px 480px at 0% -8%, rgba(232, 93, 76, 0.12), transparent 58%),
+    radial-gradient(820px 420px at 100% 0%, rgba(232, 93, 76, 0.06), transparent 55%);
   background-attachment: fixed;
 }
 
@@ -192,9 +198,10 @@ h1 {
 }
 
 .el-button--primary:not(.is-link):not(.is-text) {
-  background: linear-gradient(135deg, var(--grass-600) 0%, var(--grass-800) 100%);
-  border-color: var(--grass-700);
-  box-shadow: 0 4px 14px rgba(24, 128, 67, 0.26);
+  background: #E85D4C;
+  border-color: #E85D4C;
+  color: #fffdf8;
+  box-shadow: 0 4px 14px rgba(232, 93, 76, 0.28);
 }
 
 .el-button--primary:not(.is-link):not(.is-text):hover {
@@ -209,9 +216,9 @@ h1 {
 
 .el-button.is-disabled,
 .el-button.is-disabled:hover {
-  background: var(--grass-100);
-  border-color: var(--grass-100);
-  color: #9bb5a3;
+  background: var(--coral-soft);
+  border-color: var(--coral-soft);
+  color: #c4a29c;
   box-shadow: none;
 }
 
@@ -248,7 +255,7 @@ h1 {
 .el-input__wrapper.is-focus,
 .el-select__wrapper.is-focused,
 .el-textarea__inner:focus {
-  box-shadow: 0 0 0 2px var(--grass-400) inset !important;
+  box-shadow: 0 0 0 2px #E85D4C inset !important;
 }
 
 .el-dialog,
@@ -266,21 +273,21 @@ h1 {
 
 .el-tabs__item.is-active,
 .el-tabs__item:hover {
-  color: var(--grass-600);
+  color: #E85D4C;
 }
 
 .el-tabs__active-bar {
-  background-color: var(--grass-500);
+  background-color: #E85D4C;
   height: 4px;
   border-radius: 4px;
 }
 
 .el-pagination.is-background .el-pager li.is-active {
-  background: linear-gradient(135deg, #1f9450, var(--grass-700)) !important;
+  background: #E85D4C !important;
 }
 
 .el-progress-bar__inner {
-  background: linear-gradient(90deg, var(--grass-400), var(--sprout));
+  background: #E85D4C;
   transition: width var(--dur-3) var(--ease-out);
 }
 
@@ -294,7 +301,7 @@ h1 {
 
 /* 焦点环：键盘导航可见 */
 :focus-visible {
-  outline: 3px solid rgba(95, 198, 115, 0.55);
+  outline: 3px solid rgba(232, 93, 76, 0.45);
   outline-offset: 2px;
 }
 

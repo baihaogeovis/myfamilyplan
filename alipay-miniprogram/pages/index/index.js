@@ -1,63 +1,89 @@
 const api = require('../../utils/api')
 const util = require('../../utils/util')
 
-const groups = [
-  {
-    title: '计划',
-    hint: '今天要做的，和生活里想攒的',
-    items: [
-      { icon: '安', tone: 'sage', name: '今日安排', path: '/pages/workbench/workbench' },
-      { icon: '活', tone: 'clay', name: '生活', path: '/pages/lifePlan/lifePlan' },
-      { icon: '长', tone: 'plum', name: '成长', path: '/pages/growthPlan/growthPlan' }
-    ]
-  },
-  {
-    title: '钱',
-    hint: '记账、账单，和要过目的支出',
-    items: [
-      { icon: '支', tone: 'clay', name: '记支出', path: '/pages/record/record?type=expense' },
-      { icon: '收', tone: 'sage', name: '记收入', path: '/pages/record/record?type=income' },
-      { icon: '预', tone: 'sage', name: '预算', path: '/pages/budget/budget' },
-      { icon: '账', tone: 'ink', name: '固定账单', path: '/pages/fixedExpense/fixedExpense' },
-      { icon: '审', tone: 'clay', name: '审批', path: '/pages/approval/approval' },
-      { icon: '报', tone: 'ink', name: '月报', path: '/pages/statistics/statistics' }
-    ]
-  },
-  {
-    title: '我的',
-    hint: '通知',
-    items: [
-      { icon: '讯', tone: 'honey', name: '通知', path: '/pages/notifications/notifications' }
-    ]
-  }
-]
-
 function hello(name) {
   const h = new Date().getHours()
   const word = h < 11 ? '早上好' : h < 14 ? '中午好' : h < 18 ? '下午好' : '晚上好'
   return name ? `${word}，${name}` : word
 }
 
-function dateText() {
-  const d = new Date()
-  const w = ['日', '一', '二', '三', '四', '五', '六']
-  return `${d.getMonth() + 1}月${d.getDate()}日 周${w[d.getDay()]}`
+function asList(value) {
+  if (Array.isArray(value)) return value
+  if (value && Array.isArray(value.records)) return value.records
+  return []
+}
+
+function openStatus(status) {
+  return status !== 'COMPLETED' && status !== 'CANCELLED'
+}
+
+function planProgressOf(life, growth) {
+  const scored = []
+  let open = 0
+  life.forEach((plan) => {
+    if (plan.status === 'CANCELLED') return
+    scored.push(plan.status === 'COMPLETED' ? 100 : plan.status === 'IN_PROGRESS' ? 50 : 0)
+    if (openStatus(plan.status)) open += 1
+  })
+  growth.forEach((plan) => {
+    if (plan.status === 'CANCELLED') return
+    scored.push(plan.status === 'COMPLETED' ? 100 : Number(plan.progress || 0))
+    if (openStatus(plan.status)) open += 1
+  })
+  const progress = scored.length ? Math.round(scored.reduce((sum, n) => sum + n, 0) / scored.length) : 0
+  return { progress, open }
+}
+
+function buildNext(approvals, notes, life, growth) {
+  const items = []
+  asList(approvals).forEach((row) => {
+    items.push({
+      key: `a${row.id}`,
+      kind: '待审',
+      title: row.purpose,
+      meta: `¥${util.formatMoney(row.amount)}`,
+      path: '/pages/approval/approval'
+    })
+  })
+  asList(notes).forEach((row) => {
+    items.push({
+      key: `n${row.id}`,
+      kind: '未读',
+      title: row.title,
+      meta: row.content || '通知',
+      path: '/pages/notifications/notifications'
+    })
+  })
+  life.filter((plan) => openStatus(plan.status)).slice(0, 3).forEach((plan) => {
+    items.push({
+      key: `l${plan.id}`,
+      kind: '生活',
+      title: plan.planName,
+      meta: plan.planDate || '生活计划',
+      path: '/pages/lifePlan/lifePlan'
+    })
+  })
+  growth.filter((plan) => openStatus(plan.status)).slice(0, 3).forEach((plan) => {
+    items.push({
+      key: `g${plan.id}`,
+      kind: '成长',
+      title: plan.title,
+      meta: `${plan.progress || 0}%`,
+      path: '/pages/growthPlan/growthPlan'
+    })
+  })
+  return items.slice(0, 6)
 }
 
 Page({
   data: {
-    groups,
-    overview: {
-      monthIncome: 0,
-      monthExpense: 0,
-      budgetRemaining: 0,
-      pendingCount: 0,
-      memberCount: 0
-    },
-    recent: [],
-    currentMemberName: '',
     greeting: '你好',
-    dateText: ''
+    balanceText: '0',
+    pendingCount: 0,
+    planProgress: 0,
+    planHint: '还没有进行中的计划',
+    unread: 0,
+    nextList: []
   },
 
   onShow() {
@@ -66,27 +92,36 @@ Page({
 
   refresh() {
     const name = getApp().globalData.currentMemberName || ''
-    this.setData({
-      currentMemberName: name,
-      greeting: hello(name),
-      dateText: dateText()
-    })
+    this.setData({ greeting: hello(name) })
     this.loadData()
   },
 
   async loadData() {
+    const memberId = getApp().globalData.currentMemberId
     try {
-      const [overview, recent] = await Promise.all([
+      const [overview, unreadRes, notes, approvals, life, growth] = await Promise.all([
         api.dashboard.overview(),
-        api.dashboard.recent(5)
+        api.notification.unreadCount().catch(() => ({ count: 0 })),
+        api.notification.list({ page: 1, size: 4, isRead: 0 }).catch(() => ({ records: [] })),
+        memberId
+          ? api.approval.page({ approverId: memberId, status: 'PENDING', page: 1, size: 4 }).catch(() => ({ records: [] }))
+          : { records: [] },
+        memberId ? api.lifePlan.list({ memberId }).catch(() => []) : [],
+        memberId ? api.growthPlan.list({ memberId }).catch(() => []) : []
       ])
-      const recentList = (recent || []).map((item) => ({
-        ...item,
-        amountText: `${item.type === 'EXPENSE' ? '-' : '+'}${util.formatMoney(item.amount)}`,
-        dateText: util.formatDate(item.date),
-        categoryText: util.categoryLabel(item.category)
-      }))
-      this.setData({ overview, recent: recentList })
+      const lifeList = asList(life)
+      const growthList = asList(growth)
+      const progress = planProgressOf(lifeList, growthList)
+      const income = Number(overview.monthIncome || 0)
+      const expense = Number(overview.monthExpense || 0)
+      this.setData({
+        balanceText: util.formatMoney(income - expense),
+        pendingCount: overview.pendingCount || 0,
+        planProgress: progress.progress,
+        planHint: progress.open > 0 ? `${progress.open} 个还在进行` : '还没有进行中的计划',
+        unread: Number((unreadRes && unreadRes.count) || 0),
+        nextList: buildNext(approvals, notes, lifeList, growthList)
+      })
     } catch (e) { /* 错误已提示 */ }
   },
 

@@ -38,7 +38,7 @@
 }
 
 .type-tab.active {
-  background: #2f6b4f;
+  background: #E85D4C;
   color: #ffffff;
   font-weight: 600;
 }
@@ -107,7 +107,7 @@
   width: 100rpx;
   height: 100rpx;
   border-radius: 50%;
-  background: linear-gradient(135deg, #2f6b4f 0%, #1e3d32 100%);
+  background: #E85D4C;
   color: #ffffff;
   font-size: 56rpx;
   display: flex;
@@ -160,9 +160,9 @@
 }
 
 .chip.active {
-  background: #2f6b4f;
+  background: #E85D4C;
   color: #ffffff;
-  border-color: #2f6b4f;
+  border-color: #E85D4C;
 }
 
 .modal-btn {

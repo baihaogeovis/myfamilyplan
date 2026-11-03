@@ -7,6 +7,7 @@
 
   <view class="family-lead">点一个人，今天就以这位家人的身份来看。</view>
 
+  <view class="member-grid">
   <view class="card member-item" wx:for="{{list}}" wx:key="id">
     <view class="member-avatar">{{item.memberName[0]}}</view>
     <view class="member-info" bindtap="openEdit" data-item="{{item}}">
@@ -21,6 +22,7 @@
       <view class="member-now" catchtap="setCurrent" data-item="{{item}}">{{currentId === item.id ? '正在用' : '设为当前'}}</view>
       <view class="member-del" catchtap="removeItem" data-item="{{item}}">删除</view>
     </view>
+  </view>
   </view>
 
   <view class="fab" bindtap="openAdd">+</view>

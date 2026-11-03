@@ -23,8 +23,8 @@
   right: 24rpx;
   top: 32rpx;
   font-size: 24rpx;
-  color: #1f6b45;
-  background: #e7f2ea;
+  color: #E85D4C;
+  background: #FDE8E4;
   padding: 8rpx 18rpx;
   border-radius: 24rpx;
 }
@@ -85,7 +85,7 @@
 }
 
 .member-check {
-  color: #2f6b4f;
+  color: #E85D4C;
   font-size: 32rpx;
   font-weight: 700;
 }

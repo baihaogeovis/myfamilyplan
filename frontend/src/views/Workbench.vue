@@ -1,20 +1,5 @@
 <template>
   <div class="page-container">
-    <!-- 一周条：点某一天就看那天的安排，不必先打开日期控件 -->
-    <div class="week" aria-label="本周">
-      <button
-        v-for="day in weekDays"
-        :key="day.iso"
-        type="button"
-        class="week-day"
-        :class="{ on: day.iso === currentDate, today: day.isToday }"
-        @click="pickDay(day.iso)"
-      >
-        <span>周{{ day.label }}</span>
-        <strong>{{ day.dateNum }}</strong>
-      </button>
-    </div>
-
     <!-- 顶部：日期 + 完成率统计 -->
     <el-card class="summary-card" shadow="never">
       <div class="summary-bar">
@@ -210,7 +195,7 @@ import {
   type DailyTask
 } from '@/api/dailyTask'
 import { useMemberStore } from '@/stores/member'
-import { formatLocalDate, weekOf } from '@/utils/family'
+import { formatLocalDate } from '@/utils/family'
 
 const memberStore = useMemberStore()
 const route = useRoute()
@@ -258,16 +243,9 @@ const totalRate = computed(() => {
   return Math.round((done / total) * 100)
 })
 
-const weekDays = computed(() => weekOf(currentDate.value))
-
 const ringStyle = computed(() => ({
-  background: `conic-gradient(var(--grass-600) ${totalRate.value * 3.6}deg, var(--grass-100) 0deg)`
+  background: `conic-gradient(#E85D4C ${totalRate.value * 3.6}deg, #FDE8E4 0deg)`
 }))
-
-const pickDay = (iso: string) => {
-  currentDate.value = iso
-  load()
-}
 
 const load = async () => {
   await memberStore.ensureLoaded()
@@ -402,7 +380,7 @@ onMounted(load)
 }
 
 .week-day.today strong {
-  color: var(--grass-700);
+  color: #E85D4C;
 }
 
 .date-area {
@@ -436,7 +414,7 @@ onMounted(load)
   place-items: center;
   font-size: 13px;
   font-weight: 700;
-  color: var(--grass-700);
+  color: #E85D4C;
 }
 
 .summary-card {
