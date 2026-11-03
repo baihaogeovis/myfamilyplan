@@ -37,7 +37,12 @@ instance.interceptors.response.use(
     }
   },
   error => {
-    if (error.response?.status === 401 || error.response?.status === 403) {
+    const status = error.response?.status
+    // 成员新增/修改若被服务端拒绝，把 403 交回页面展示原因，不要当成登录过期清掉会话
+    if (status === 403 && isMemberWrite(error.config)) {
+      return Promise.reject(error)
+    }
+    if (status === 401 || status === 403) {
       localStorage.removeItem('token')
       localStorage.removeItem('userInfo')
       localStorage.removeItem('currentMemberId')
@@ -67,6 +72,13 @@ const request = {
   delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
     return instance.delete(url, config) as Promise<T>
   }
+}
+
+function isMemberWrite(config?: { url?: string; method?: string }): boolean {
+  const method = String(config?.method || '').toLowerCase()
+  if (method !== 'post' && method !== 'put') return false
+  const path = String(config?.url || '').split('?')[0]
+  return /\/member\/?$/.test(path)
 }
 
 export default request

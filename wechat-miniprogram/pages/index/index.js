@@ -161,6 +161,10 @@ Page({
     wx.navigateTo({ url: path })
   },
 
+  goMembers() {
+    wx.navigateTo({ url: '/pages/members/members' })
+  },
+
   goRecord(e) {
     const type = e.currentTarget.dataset.type
     const app = getApp()

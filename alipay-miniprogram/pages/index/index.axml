@@ -26,8 +26,13 @@
 
   <view class="card next-card">
     <view class="card-title">接下来</view>
-    <view a:if="{{nextList.length === 0}}" class="empty-state">
-      <view class="empty-text">接下来还是空的</view>
+    <view a:if="{{nextList.length === 0}}" class="next-empty">
+      <view class="empty-title">接下来还安静</view>
+      <view class="empty-text">待审、计划和提醒会排在这里</view>
+      <view class="empty-actions">
+        <view class="empty-btn" onTap="goMembers">去看看家庭</view>
+        <view class="empty-btn ghost" onTap="goRecord" data-type="expense">记一笔</view>
+      </view>
     </view>
     <view class="next-item" a:for="{{nextList}}" a:key="key" onTap="goMenu" data-path="{{item.path}}">
       <text class="next-kind">{{item.kind}}</text>

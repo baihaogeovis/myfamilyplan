@@ -156,6 +156,10 @@ Page({
     my.navigateTo({ url: path })
   },
 
+  goMembers() {
+    my.navigateTo({ url: '/pages/members/members' })
+  },
+
   goRecord(e) {
     const type = e.currentTarget.dataset.type
     const app = getApp()

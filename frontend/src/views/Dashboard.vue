@@ -29,7 +29,14 @@
       <header>
         <h2>接下来</h2>
       </header>
-      <el-empty v-if="nextItems.length === 0" description="接下来还是空的" :image-size="72" />
+      <div v-if="nextItems.length === 0" class="next-empty">
+        <h3>接下来还安静</h3>
+        <p>待审、计划和提醒会排在这里</p>
+        <div class="next-actions">
+          <el-button type="primary" round @click="go('/members')">去看看家庭</el-button>
+          <el-button round @click="go('/expense')">记一笔</el-button>
+        </div>
+      </div>
       <ul v-else>
         <li v-for="item in nextItems" :key="item.key">
           <button type="button" @click="go(item.to)">
@@ -214,7 +221,7 @@ onMounted(load)
 }
 
 .stat span,
-.next em {
+.next li em {
   font-style: normal;
   font-size: 13px;
   letter-spacing: 0.08em;
@@ -251,6 +258,35 @@ onMounted(load)
   font-weight: 600;
 }
 
+.next-empty {
+  padding: 22px 22px 20px;
+  border: 1px solid var(--border-soft);
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+}
+
+.next-empty h3 {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.next-empty p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.next-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
 .next ul {
   list-style: none;
   margin: 0;
@@ -260,7 +296,7 @@ onMounted(load)
   gap: 10px;
 }
 
-.next button {
+.next li button {
   width: 100%;
   display: grid;
   grid-template-columns: 52px 1fr auto;
@@ -275,12 +311,12 @@ onMounted(load)
   box-shadow: var(--shadow-1);
 }
 
-.next strong {
+.next li strong {
   font-size: 16px;
   color: var(--text-strong);
 }
 
-.next span {
+.next li span {
   font-size: 13px;
   color: var(--text-muted);
 }
@@ -290,11 +326,11 @@ onMounted(load)
     grid-template-columns: 1fr 1fr;
   }
 
-  .next button {
+  .next li button {
     grid-template-columns: 52px 1fr;
   }
 
-  .next span {
+  .next li span {
     grid-column: 2;
   }
 }

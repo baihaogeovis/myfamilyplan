@@ -134,17 +134,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Plus, Edit } from 'lucide-vue-next'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { FormInstance } from 'element-plus'
 import { getFamilyInfo, updateFamilyInfo, changePassword, type FamilyInfo } from '@/api/family'
-import { addMember, deleteMember, type FamilyMember } from '@/api/member'
+import { addMember, deleteMember, memberForbiddenMessage, type FamilyMember } from '@/api/member'
 import { useMemberStore } from '@/stores/member'
+import { canEditFamilyMembers } from '@/utils/family'
 
 const router = useRouter()
 const memberStore = useMemberStore()
+
+const canManageMembers = computed(() => {
+  const current = memberStore.members.find((m) => m.id === memberStore.currentMemberId)
+  return canEditFamilyMembers(current?.relation, memberStore.members.length)
+})
+
+const ensureCanManage = () => {
+  if (canManageMembers.value) return true
+  ElMessage.warning('只有家长可以添加或编辑家人')
+  return false
+}
 
 /** 家庭信息 */
 const info = reactive<FamilyInfo>({ familyId: 0, familyName: '', username: '', avatar: '', remark: '' })
@@ -263,11 +275,13 @@ const loadMembers = async () => {
 }
 
 const openAdd = () => {
+  if (!ensureCanManage()) return
   Object.assign(memberForm, { memberName: '', relation: '', gender: '', birthday: '', remark: '' })
   memberDialogVisible.value = true
 }
 
 const submitMember = async () => {
+  if (!ensureCanManage()) return
   if (!memberForm.memberName.trim()) {
     ElMessage.warning('请输入姓名')
     return
@@ -277,8 +291,9 @@ const submitMember = async () => {
     ElMessage.success('添加成功')
     memberDialogVisible.value = false
     await loadMembers()
-  } catch {
-    // 拦截器已提示
+  } catch (err) {
+    const reason = memberForbiddenMessage(err)
+    if (reason) ElMessage.error(reason)
   }
 }
 

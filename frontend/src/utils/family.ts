@@ -38,6 +38,15 @@ export function householdRole(relation?: string): '家长' | '孩子' | '家人'
   return '家人'
 }
 
+/**
+ * 只有家长可以添加或编辑家人。
+ * 家里还没有人、也没有当前成员时，允许先加第一位。
+ */
+export function canEditFamilyMembers(relation?: string | null, memberCount = 0): boolean {
+  if (!relation) return memberCount === 0
+  return householdRole(relation) === '家长'
+}
+
 export function formatLocalDate(date = new Date()): string {
   const y = date.getFullYear()
   const m = String(date.getMonth() + 1).padStart(2, '0')
