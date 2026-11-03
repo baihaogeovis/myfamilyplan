@@ -1,7 +1,7 @@
 <view class="login-page">
   <view class="login-hero">
-    <view class="app-name">家庭成长系统</view>
-    <view class="app-desc">记录收支 · 规划预算 · 共同成长</view>
+    <view class="app-name">把一天过好</view>
+    <view class="app-desc">先看安排，再看这个月的账</view>
   </view>
 
   <view class="login-card">

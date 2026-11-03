@@ -5,17 +5,17 @@
  */
 
 :root {
-  /* ---- 草绿梯度：--grass-600 起才允许承载白字（对比度 >=4.5） ---- */
-  --grass-50: #f1faf0;
-  --grass-100: #e1f5de;
-  --grass-200: #c2ebc4;
-  --grass-300: #93dc9b;
-  --grass-400: #5fc673;
-  --grass-500: #2fae52; /* 品牌图形色：渐变起点、图标、图表、装饰 */
-  --grass-600: #188043; /* 主色：按钮/链接/激活态（白字 4.99:1） */
-  --grass-700: #146536;
-  --grass-800: #114d2a;
-  --grass-900: #0e3b22;
+  /* ---- 林绿：主操作色。--grass-600 起才允许承载白字（对比度 >=4.5） ---- */
+  --grass-50: #f4f7f2;
+  --grass-100: #e6efe4;
+  --grass-200: #c9dccb;
+  --grass-300: #9fbfa4;
+  --grass-400: #6d9a78;
+  --grass-500: #3f7a56;
+  --grass-600: #1f6b45; /* 主色：按钮/链接/激活态 */
+  --grass-700: #185638;
+  --grass-800: #143f2c;
+  --grass-900: #10281d;
 
   /* ---- 活泼强调色：只做点缀、图形与大字 ---- */
   --sprout: #a3d93f;      /* 嫩芽 */
@@ -33,27 +33,30 @@
   --plum-soft: #ece5fd;
   --plum-ink: #5b3fb0;
 
-  /* ---- 表面与文字 ---- */
-  --app-bg: #eef7ee;
-  --app-bg-2: #f7fbf5;
-  --surface: #ffffff;
-  --surface-2: #f6fbf5;
-  --border-soft: #dcebdd;
-  --border-strong: #c2d9c5;
-  --text-strong: #12301c;
-  --text-body: #33493c;
-  --text-muted: #5a6b60;
+  /* ---- 暖纸表面：像刊物，不像后台 ---- */
+  --app-bg: #f3eee4;
+  --app-bg-2: #faf7f2;
+  --surface: #fffcf8;
+  --surface-2: #f7f3eb;
+  --border-soft: #e6dfd2;
+  --border-strong: #d3c9b8;
+  --text-strong: #1c2822;
+  --text-body: #3c4740;
+  --text-muted: #6e776f;
   --text-inverse: #ffffff;
+  --clay: #c46a45;
+  --clay-soft: #f8e6dc;
+  --honey: #c4922a;
 
   /* ---- 圆角 / 阴影 / 间距 ---- */
   --r-sm: 10px;
   --r-md: 14px;
   --r-lg: 20px;
   --r-xl: 28px;
-  --shadow-1: 0 2px 10px rgba(18, 60, 34, 0.06);
-  --shadow-2: 0 10px 26px rgba(18, 60, 34, 0.10);
-  --shadow-3: 0 18px 44px rgba(18, 60, 34, 0.16);
-  --shadow-green: 0 10px 24px rgba(24, 128, 67, 0.28);
+  --shadow-1: 0 1px 2px rgba(48, 36, 18, 0.04), 0 10px 28px rgba(48, 36, 18, 0.06);
+  --shadow-2: 0 16px 40px rgba(48, 36, 18, 0.10);
+  --shadow-3: 0 24px 60px rgba(48, 36, 18, 0.16);
+  --shadow-green: 0 10px 24px rgba(31, 107, 69, 0.24);
 
   /* ---- 动效：150~300ms，进入 ease-out、离开 ease-in ---- */
   --dur-1: 140ms;
@@ -66,15 +69,17 @@
   /* ---- 字体：不引外部字体，走系统圆体栈 ---- */
   --font-sans: 'PingFang SC', 'HarmonyOS Sans SC', 'Source Han Sans SC', 'Microsoft YaHei',
     -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Iowan Old Style', Palatino, 'Palatino Linotype', 'Songti SC', 'STSong', 'Source Han Serif SC',
+    'Noto Serif SC', serif;
 
   /* ================= Element Plus 变量覆盖 ================= */
   --el-color-primary: var(--grass-600);
-  --el-color-primary-light-3: #4a9c6e;
-  --el-color-primary-light-5: #74b78e;
-  --el-color-primary-light-7: #a3d1b4;
-  --el-color-primary-light-8: #badcc7;
-  --el-color-primary-light-9: #eef7f0;
-  --el-color-primary-dark-2: #136736;
+  --el-color-primary-light-3: #4d8a68;
+  --el-color-primary-light-5: #7aa88a;
+  --el-color-primary-light-7: #b4d0bf;
+  --el-color-primary-light-8: #d0e3d6;
+  --el-color-primary-light-9: #f3f7f4;
+  --el-color-primary-dark-2: #174f34;
 
   --el-color-success: var(--grass-600);
   --el-color-success-light-3: #4a9c6e;
@@ -129,18 +134,21 @@ body {
   font-family: var(--font-sans);
   color: var(--text-body);
   background-color: var(--app-bg);
-  /* 草地光斑：两层柔光 + 一层极淡草叶纹理，避免纯色呆板 */
+  /* 暖纸上的两团很淡的光，避免纯灰后台底 */
   background-image:
-    radial-gradient(1100px 520px at 8% -10%, rgba(95, 198, 115, 0.22), transparent 60%),
-    radial-gradient(900px 460px at 100% 0%, rgba(163, 217, 63, 0.20), transparent 55%),
-    radial-gradient(760px 420px at 60% 108%, rgba(53, 167, 215, 0.10), transparent 60%),
-    repeating-linear-gradient(112deg, rgba(24, 128, 67, 0.045) 0 2px, transparent 2px 26px);
+    radial-gradient(900px 480px at 0% -8%, rgba(196, 106, 69, 0.10), transparent 58%),
+    radial-gradient(820px 420px at 100% 0%, rgba(63, 122, 86, 0.10), transparent 55%);
   background-attachment: fixed;
 }
 
 h1, h2, h3, h4 {
   color: var(--text-strong);
-  letter-spacing: 0.4px;
+  letter-spacing: 0;
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
 }
 
 /* 数字列/金额保持等宽，刷新时不抖动 */
@@ -160,9 +168,8 @@ h1, h2, h3, h4 {
 }
 
 .el-card:hover {
-  transform: translateY(-3px);
   box-shadow: var(--shadow-2) !important;
-  border-color: var(--grass-200) !important;
+  border-color: var(--border-strong) !important;
 }
 
 .el-card__header {
@@ -215,15 +222,15 @@ h1, h2, h3, h4 {
 
 .el-table {
   --el-table-border-color: var(--border-soft);
-  --el-table-header-bg-color: var(--grass-50);
-  --el-table-row-hover-bg-color: var(--sprout-soft);
+  --el-table-header-bg-color: #f7f3eb;
+  --el-table-row-hover-bg-color: #f3f7f4;
   border-radius: var(--r-md);
 }
 
 .el-table th.el-table__cell {
-  color: var(--grass-700);
-  font-weight: 700;
-  letter-spacing: 0.3px;
+  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 0;
 }
 
 .el-table__row {
@@ -307,6 +314,13 @@ h1, h2, h3, h4 {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--grass-300);
+}
+
+/* 内容区默认按刊物宽度收拢，避免表格贴满视口 */
+.page-container {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
 }
 
 /* ================= 动效工具类 ================= */

@@ -1,98 +1,53 @@
 <template>
   <el-container class="layout-container">
-    <!-- 侧边栏 -->
-    <el-aside :width="isNarrow ? '76px' : '232px'" class="layout-aside">
+    <el-aside :width="isNarrow ? '84px' : '248px'" class="layout-aside" :class="{ narrow: isNarrow }">
       <div class="logo-container" :class="{ narrow: isNarrow }">
         <span class="logo-mark">
-          <Sprout :size="22" class="anim-sway" />
+          <Sprout :size="20" />
         </span>
         <span v-if="!isNarrow" class="logo-word">
-          <strong>家庭成长系统</strong>
-          <em>陪孩子慢慢长大</em>
+          <strong>家庭成长</strong>
+          <em>把一天过好</em>
         </span>
       </div>
 
-      <el-menu
-        :default-active="activeMenu"
-        :collapse="isNarrow"
-        :collapse-transition="false"
-        router
-        class="sidebar-menu"
-      >
-        <el-menu-item index="/dashboard">
-          <Home :size="18" />
-          <template #title><span>仪表盘</span></template>
-        </el-menu-item>
-
-        <el-menu-item index="/workbench">
-          <ClipboardCheck :size="18" />
-          <template #title><span>每日工作台</span></template>
-        </el-menu-item>
-
-        <el-sub-menu index="finance">
-          <template #title>
-            <Wallet :size="18" />
-            <span>资金管理</span>
-          </template>
-          <el-menu-item index="/income">收入管理</el-menu-item>
-          <el-menu-item index="/expense">支出管理</el-menu-item>
-          <el-menu-item index="/fixed-expense">固定支出</el-menu-item>
-          <el-menu-item index="/budget">预算规划</el-menu-item>
-          <el-menu-item index="/statistics">统计报表</el-menu-item>
-        </el-sub-menu>
-
-        <el-sub-menu index="life">
-          <template #title>
-            <Sparkles :size="18" />
-            <span>美好生活</span>
-          </template>
-          <el-menu-item index="/life-plan">生活计划</el-menu-item>
-        </el-sub-menu>
-
-        <el-sub-menu index="growth">
-          <template #title>
-            <Baby :size="18" />
-            <span>儿童成长</span>
-          </template>
-          <el-menu-item index="/growth-plan">成长计划</el-menu-item>
-          <el-menu-item index="/reward">奖励额度</el-menu-item>
-          <el-menu-item index="/reward-items">活动方案</el-menu-item>
-        </el-sub-menu>
-
-        <el-sub-menu index="system">
-          <template #title>
-            <Settings :size="18" />
-            <span>系统管理</span>
-          </template>
-          <el-menu-item index="/family">家庭管理</el-menu-item>
-          <el-menu-item index="/approval">资金审批</el-menu-item>
-          <el-menu-item index="/members">成员管理</el-menu-item>
-          <el-menu-item index="/notifications">提醒中心</el-menu-item>
-        </el-sub-menu>
-      </el-menu>
-
-      <div v-if="!isNarrow" class="aside-grass" aria-hidden="true"></div>
+      <nav class="rail" aria-label="家庭导航">
+        <section v-for="section in sections" :key="section.label" class="rail-section">
+          <p v-if="!isNarrow" class="section-label">{{ section.label }}</p>
+          <router-link
+            v-for="item in section.items"
+            :key="item.to"
+            :to="item.to"
+            class="rail-link"
+            :class="{ active: activeMenu === item.to }"
+          >
+            <component :is="item.icon" :size="18" />
+            <span v-if="!isNarrow">{{ item.label }}</span>
+          </router-link>
+        </section>
+      </nav>
     </el-aside>
 
-    <!-- 主内容区 -->
     <el-container class="layout-body">
-      <!-- 顶部导航 -->
       <el-header class="layout-header">
         <div class="header-left">
-          <span class="title-bar" aria-hidden="true"></span>
-          <h2 class="page-title">{{ currentPageTitle }}</h2>
+          <div>
+            <h2 class="page-title">{{ currentPageTitle }}</h2>
+            <p class="page-kicker">{{ currentPageKicker }}</p>
+          </div>
         </div>
 
         <div class="header-right">
-          <!-- 当前操作成员切换 -->
           <el-dropdown v-if="memberStore.members.length > 0" @command="switchMember">
             <span class="member-info">
-              <span class="member-avatar">{{ currentMemberName.charAt(0) || '家' }}</span>
-              <span class="member-text">
-                <em>当前成员</em>
-                <strong>{{ currentMemberName || '请选择成员' }}</strong>
+              <span class="member-avatar" :style="avatarStyle(memberStore.currentMemberId)">
+                {{ currentMemberName.charAt(0) || '家' }}
               </span>
-              <el-icon class="el-icon--right"><ArrowDown :size="15" /></el-icon>
+              <span class="member-text">
+                <em>{{ currentRole }}</em>
+                <strong>{{ currentMemberName || '请选择家人' }}</strong>
+              </span>
+              <ArrowDown :size="15" />
             </span>
             <template #dropdown>
               <el-dropdown-menu>
@@ -102,7 +57,8 @@
                   :command="m.id"
                   :disabled="m.id === memberStore.currentMemberId"
                 >
-                  {{ m.memberName }}（{{ relationText(m.relation) }}）
+                  <span class="menu-dot" :style="{ background: memberTone(m.id).dot }"></span>
+                  {{ m.memberName }} · {{ relationLabel(m.relation) }}
                 </el-dropdown-item>
               </el-dropdown-menu>
             </template>
@@ -110,9 +66,11 @@
 
           <el-dropdown @command="handleCommand">
             <span class="user-info">
-              <el-avatar :size="34" :src="userStore.userInfo?.avatar" />
+              <el-avatar :size="34" :src="userStore.userInfo?.avatar">
+                {{ (userStore.userInfo?.nickname || '家').charAt(0) }}
+              </el-avatar>
               <span class="username">{{ userStore.userInfo?.nickname }}</span>
-              <el-icon class="el-icon--right"><ArrowDown :size="15" /></el-icon>
+              <ArrowDown :size="15" />
             </span>
             <template #dropdown>
               <el-dropdown-menu>
@@ -124,7 +82,6 @@
         </div>
       </el-header>
 
-      <!-- 主要内容：路由切换做轻量位移动效 -->
       <el-main class="layout-main">
         <router-view v-slot="{ Component }">
           <transition name="page" mode="out-in">
@@ -139,13 +96,100 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { Component } from 'vue'
 import {
-  Home, Wallet, ClipboardCheck, Sparkles, Baby, Settings, ArrowDown, Sprout
+  Home, CalendarCheck, Baby, Gift, Sparkles, Sun,
+  ArrowDownLeft, ArrowUpRight, Receipt, PieChart, PiggyBank,
+  Users, Building2, BadgeCheck, Bell, ArrowDown, Sprout
 } from 'lucide-vue-next'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import { useMemberStore } from '@/stores/member'
 import { logout } from '@/api/auth'
+import { householdRole, memberTone, relationLabel } from '@/utils/family'
+
+interface NavItem {
+  to: string
+  label: string
+  icon: Component
+}
+
+const sections: { label: string; items: NavItem[] }[] = [
+  {
+    label: '今天',
+    items: [
+      { to: '/dashboard', label: '今天', icon: Home },
+      { to: '/workbench', label: '今日安排', icon: CalendarCheck }
+    ]
+  },
+  {
+    label: '成长',
+    items: [
+      { to: '/growth-plan', label: '成长计划', icon: Baby },
+      { to: '/reward', label: '奖励小店', icon: Gift },
+      { to: '/reward-items', label: '活动方案', icon: Sparkles }
+    ]
+  },
+  {
+    label: '生活',
+    items: [{ to: '/life-plan', label: '想做的事', icon: Sun }]
+  },
+  {
+    label: '账本',
+    items: [
+      { to: '/income', label: '收入', icon: ArrowDownLeft },
+      { to: '/expense', label: '支出', icon: ArrowUpRight },
+      { to: '/fixed-expense', label: '固定账单', icon: Receipt },
+      { to: '/budget', label: '预算', icon: PiggyBank },
+      { to: '/statistics', label: '月报', icon: PieChart }
+    ]
+  },
+  {
+    label: '我们家',
+    items: [
+      { to: '/family', label: '家庭', icon: Building2 },
+      { to: '/members', label: '家人', icon: Users },
+      { to: '/approval', label: '审批', icon: BadgeCheck },
+      { to: '/notifications', label: '提醒', icon: Bell }
+    ]
+  }
+]
+
+const titles: Record<string, string> = {
+  '/dashboard': '今天',
+  '/workbench': '今日安排',
+  '/income': '收入',
+  '/expense': '支出',
+  '/fixed-expense': '固定账单',
+  '/budget': '预算',
+  '/life-plan': '想做的事',
+  '/growth-plan': '成长计划',
+  '/reward': '奖励小店',
+  '/reward-items': '活动方案',
+  '/approval': '审批',
+  '/family': '家庭',
+  '/members': '家人',
+  '/statistics': '月报',
+  '/notifications': '提醒'
+}
+
+const kickers: Record<string, string> = {
+  '/dashboard': '先看今天，再看这个月',
+  '/workbench': '家里的事和工作的事，分开打勾',
+  '/income': '钱进来的记录',
+  '/expense': '钱出去的记录',
+  '/fixed-expense': '每个月都会来的账单',
+  '/budget': '这个月打算怎么花',
+  '/life-plan': '家电、旅行，慢慢攒',
+  '/growth-plan': '短期一件事，长期一个方向',
+  '/reward': '额度像零花钱，花在你们约定的事上',
+  '/reward-items': '先定规则，再让孩子来兑',
+  '/approval': '大额支出，家长过一眼',
+  '/family': '这个家的名字和账号',
+  '/members': '每个人一种颜色',
+  '/statistics': '这个月过得怎么样',
+  '/notifications': '该做的事会在这里等你'
+}
 
 const route = useRoute()
 const router = useRouter()
@@ -153,58 +197,32 @@ const userStore = useUserStore()
 const memberStore = useMemberStore()
 
 const activeMenu = computed(() => route.path)
-
-/** 窄屏收起侧栏为图标条，避免菜单挤压内容区 */
 const isNarrow = ref(false)
 const syncNarrow = () => {
   isNarrow.value = window.innerWidth < 992
 }
 
-const currentMemberName = computed(() => {
-  const m = memberStore.members.find((x) => x.id === memberStore.currentMemberId)
-  return m ? m.memberName : ''
-})
+const currentMember = computed(() =>
+  memberStore.members.find((x) => x.id === memberStore.currentMemberId)
+)
+const currentMemberName = computed(() => currentMember.value?.memberName || '')
+const currentRole = computed(() =>
+  currentMember.value ? householdRole(currentMember.value.relation) : '家人'
+)
 
-const relationText = (relation?: string) => {
-  const map: Record<string, string> = {
-    OWNER: '户主',
-    SPOUSE: '配偶',
-    CHILD: '子女',
-    PARENT: '父母',
-    OTHER: '其他'
-  }
-  return relation ? map[relation] || relation : '其他'
+const avatarStyle = (id?: number | null) => {
+  const tone = memberTone(id)
+  return { background: tone.bg, color: tone.ink }
 }
 
-/** 切换当前操作成员(刷新页面使各模块按新成员重新加载) */
 const switchMember = async (memberId: string | number) => {
-  const id = Number(memberId)
-  memberStore.setCurrentMember(id)
-  ElMessage.success('已切换操作成员')
-  // 刷新当前页, 让数据按新成员重新加载
+  memberStore.setCurrentMember(Number(memberId))
+  ElMessage.success('已换成这位家人来看今天')
   window.location.reload()
 }
 
-const currentPageTitle = computed(() => {
-  const titles: Record<string, string> = {
-    '/dashboard': '仪表盘',
-    '/workbench': '每日工作台',
-    '/income': '收入管理',
-    '/expense': '支出管理',
-    '/fixed-expense': '固定支出',
-    '/budget': '预算规划',
-    '/life-plan': '美好生活计划',
-    '/growth-plan': '儿童成长计划',
-    '/reward': '奖励额度',
-    '/reward-items': '活动方案',
-    '/approval': '资金审批',
-    '/family': '家庭管理',
-    '/members': '成员管理',
-    '/statistics': '统计报表',
-    '/notifications': '提醒中心'
-  }
-  return titles[route.path] || '家庭成长系统'
-})
+const currentPageTitle = computed(() => titles[route.path] || '家庭成长')
+const currentPageKicker = computed(() => kickers[route.path] || '陪这个家慢慢长大')
 
 const handleCommand = async (command: string) => {
   if (command === 'logout') {
@@ -214,7 +232,6 @@ const handleCommand = async (command: string) => {
         cancelButtonText: '取消',
         type: 'warning'
       })
-
       await logout()
       userStore.logout()
       ElMessage.success('已退出登录')
@@ -222,13 +239,14 @@ const handleCommand = async (command: string) => {
     } catch {
       // 取消退出
     }
+  } else if (command === 'profile') {
+    router.push('/family')
   }
 }
 
 onMounted(() => {
   syncNarrow()
   window.addEventListener('resize', syncNarrow)
-  // 刷新后恢复成员列表, 供顶栏切换当前操作成员
   memberStore.ensureLoaded().catch(() => {})
 })
 
@@ -240,38 +258,24 @@ onBeforeUnmount(() => {
 <style scoped>
 .layout-container {
   height: 100%;
+  background: transparent;
 }
 
-/* ---------------- 侧边栏 ---------------- */
 .layout-aside {
-  position: relative;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(178deg, #146536 0%, var(--grass-800) 58%, var(--grass-900) 100%);
-  overflow-y: auto;
-  overflow-x: hidden;
-  transition: width var(--dur-3) var(--ease-out);
-}
-
-/* 侧栏顶部的柔光，让深绿不至于死板 */
-.layout-aside::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(420px 180px at 20% -6%, rgba(163, 217, 63, 0.26), transparent 70%),
-    radial-gradient(320px 160px at 100% 40%, rgba(95, 198, 115, 0.16), transparent 70%);
+  background: rgba(255, 252, 248, 0.78);
+  border-right: 1px solid var(--border-soft);
+  overflow: hidden;
+  backdrop-filter: blur(16px);
 }
 
 .logo-container {
-  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
-  height: 68px;
-  padding: 0 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+  height: 76px;
+  padding: 0 20px;
   flex-shrink: 0;
 }
 
@@ -283,197 +287,114 @@ onBeforeUnmount(() => {
 .logo-mark {
   display: grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 13px;
-  color: var(--grass-900);
-  background: linear-gradient(135deg, var(--sprout), var(--grass-400));
-  box-shadow: 0 6px 16px rgba(163, 217, 63, 0.34);
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  color: #fffdf8;
+  background: var(--grass-700);
   flex-shrink: 0;
 }
 
 .logo-word {
   display: flex;
   flex-direction: column;
-  line-height: 1.25;
-  animation: grass-slide-left var(--dur-3) var(--ease-out) both;
+  line-height: 1.2;
 }
 
 .logo-word strong {
-  font-size: 16px;
-  font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 0.6px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-strong);
 }
 
 .logo-word em {
   font-style: normal;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.62);
-  letter-spacing: 0.4px;
+  font-size: 12px;
+  color: var(--text-muted);
 }
 
-.sidebar-menu {
-  position: relative;
-  border-right: none;
-  background: transparent;
-  padding: 10px 0 24px;
+.rail {
   flex: 1;
+  overflow-y: auto;
+  padding: 4px 12px 28px;
 }
 
-:deep(.el-menu) {
-  background: transparent;
-  border-right: none;
+.rail-section + .rail-section {
+  margin-top: 16px;
 }
 
-:deep(.el-menu-item),
-:deep(.el-sub-menu__title) {
-  position: relative;
+.section-label {
+  margin: 0 10px 6px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9a9184;
+}
+
+.rail-link {
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 46px;
-  line-height: 46px;
-  margin: 3px 10px;
-  padding: 0 12px !important;
-  border-radius: 13px;
-  color: rgba(255, 255, 255, 0.72);
+  height: 40px;
+  margin: 2px 0;
+  padding: 0 12px;
+  border-radius: 12px;
+  color: var(--text-body);
+  text-decoration: none;
   font-size: 14px;
-  transition: color var(--dur-1) linear, background-color var(--dur-2) var(--ease-out),
-    transform var(--dur-2) var(--ease-out);
 }
 
-:deep(.el-menu-item svg),
-:deep(.el-sub-menu__title svg) {
-  flex-shrink: 0;
-  opacity: 0.86;
-  transition: transform var(--dur-2) var(--ease-spring), opacity var(--dur-1) linear;
+.narrow .rail-link {
+  justify-content: center;
+  padding: 0;
 }
 
-:deep(.el-menu-item:hover),
-:deep(.el-sub-menu__title:hover) {
-  color: #ffffff;
-  background: rgba(163, 217, 63, 0.16);
-  transform: translateX(3px);
+.rail-link:hover {
+  background: var(--surface-2);
+  color: var(--text-strong);
 }
 
-:deep(.el-menu-item:hover svg),
-:deep(.el-sub-menu__title:hover svg) {
-  transform: scale(1.14);
-  opacity: 1;
+.rail-link.active {
+  background: var(--grass-700);
+  color: #fffdf8;
+  font-weight: 600;
 }
 
-:deep(.el-menu-item.is-active) {
-  color: #ffffff;
-  font-weight: 700;
-  background: linear-gradient(120deg, var(--grass-500), #1f9450);
-  box-shadow: 0 8px 18px rgba(15, 61, 34, 0.38);
-}
-
-:deep(.el-menu-item.is-active svg) {
-  opacity: 1;
-  color: var(--sprout-soft);
-}
-
-/* 激活项左侧的小芽指示条 */
-:deep(.el-menu-item.is-active::before) {
-  content: '';
-  position: absolute;
-  left: -10px;
-  top: 50%;
-  width: 4px;
-  height: 20px;
-  margin-top: -10px;
-  border-radius: 0 4px 4px 0;
-  background: var(--sprout);
-  animation: grass-grow var(--dur-3) var(--ease-spring) both;
-  transform-origin: left center;
-}
-
-:deep(.el-sub-menu .el-menu) {
-  background: rgba(8, 40, 22, 0.42);
-  border-radius: 14px;
-  margin: 2px 10px;
-  padding: 4px 0;
-}
-
-:deep(.el-sub-menu .el-menu .el-menu-item) {
-  height: 38px;
-  line-height: 38px;
-  margin: 2px 6px;
-  font-size: 13px;
-}
-
-:deep(.el-sub-menu.is-opened > .el-sub-menu__title) {
-  color: #ffffff;
-}
-
-:deep(.el-sub-menu__icon-arrow) {
-  transition: transform var(--dur-2) var(--ease-out);
-  color: rgba(255, 255, 255, 0.6);
-}
-
-/* 侧栏底部草叶剪影 */
-.aside-grass {
-  position: sticky;
-  bottom: 0;
-  height: 42px;
-  margin-top: -42px;
-  pointer-events: none;
-  background:
-    repeating-linear-gradient(78deg, rgba(163, 217, 63, 0.30) 0 2px, transparent 2px 9px),
-    linear-gradient(180deg, transparent, rgba(8, 40, 22, 0.5));
-  mask-image: linear-gradient(180deg, transparent, #000 55%);
-  opacity: 0.55;
-}
-
-/* ---------------- 顶栏 ---------------- */
 .layout-body {
   min-width: 0;
+  background: transparent;
 }
 
 .layout-header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 68px;
-  padding: 0 24px;
-  background: rgba(255, 255, 255, 0.86);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-soft);
-  box-shadow: 0 2px 12px rgba(18, 60, 34, 0.05);
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-
-.title-bar {
-  width: 5px;
-  height: 22px;
-  border-radius: 5px;
-  background: linear-gradient(180deg, var(--sprout), var(--grass-500));
-  box-shadow: 0 0 0 3px rgba(95, 198, 115, 0.16);
+  height: 76px;
+  padding: 0 28px;
+  background: transparent;
+  border-bottom: none;
 }
 
 .page-title {
   margin: 0;
-  font-size: 18px;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
   color: var(--text-strong);
-  letter-spacing: 0.4px;
+  line-height: 1.15;
+}
+
+.page-kicker {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--text-muted);
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
 }
 
 .member-info,
@@ -482,37 +403,22 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 9px;
   padding: 6px 12px 6px 6px;
-  border-radius: var(--r-pill, 999px);
-  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-1);
   cursor: pointer;
   outline: none;
-  transition: background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) linear,
-    transform var(--dur-1) var(--ease-out);
-}
-
-.member-info:hover,
-.user-info:hover {
-  background: var(--grass-50);
-  border-color: var(--grass-200);
-  transform: translateY(-1px);
-}
-
-.member-info:focus-visible,
-.user-info:focus-visible {
-  border-color: var(--grass-400);
-  box-shadow: 0 0 0 3px rgba(95, 198, 115, 0.28);
 }
 
 .member-avatar {
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   font-size: 13px;
   font-weight: 700;
-  color: var(--grass-900);
-  background: linear-gradient(135deg, var(--sprout-soft), var(--grass-200));
 }
 
 .member-text {
@@ -524,54 +430,63 @@ onBeforeUnmount(() => {
 .member-text em {
   font-style: normal;
   font-size: 11px;
-  color: var(--sun-ink);
+  color: var(--clay);
 }
 
-.member-text strong {
+.member-text strong,
+.username {
   font-size: 13px;
   color: var(--text-strong);
+  font-weight: 600;
 }
 
-.username {
-  font-size: 14px;
-  color: var(--text-body);
+.menu-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  border-radius: 50%;
 }
 
-/* ---------------- 内容区 ---------------- */
 .layout-main {
-  padding: 22px;
+  padding: 0 28px 36px;
   overflow-y: auto;
 }
 
-/* 路由切换：进场从下方轻推，离场快速淡出 */
 .page-enter-active {
   transition: opacity var(--dur-2) var(--ease-out), transform var(--dur-3) var(--ease-out);
 }
 
 .page-leave-active {
-  transition: opacity var(--dur-1) var(--ease-in), transform var(--dur-1) var(--ease-in);
+  transition: opacity var(--dur-1) var(--ease-in);
 }
 
 .page-enter-from {
   opacity: 0;
-  transform: translate3d(0, 14px, 0);
+  transform: translate3d(0, 10px, 0);
 }
 
 .page-leave-to {
   opacity: 0;
-  transform: translate3d(0, -8px, 0);
 }
 
 @media (max-width: 768px) {
   .layout-main {
-    padding: 14px;
+    padding: 0 14px 24px;
   }
 
   .layout-header {
-    padding: 0 14px;
+    height: auto;
+    padding: 16px 14px 8px;
+    align-items: flex-start;
   }
 
-  .member-text em {
+  .page-title {
+    font-size: 22px;
+  }
+
+  .member-text em,
+  .username {
     display: none;
   }
 }

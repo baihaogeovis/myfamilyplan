@@ -1,11 +1,21 @@
 <template>
   <div class="login-container">
+    <div class="login-stage">
+      <aside class="login-story">
+        <p class="story-mark">家庭成长</p>
+        <h1>把普通的一天，过成一家人的日子。</h1>
+        <ul>
+          <li>先看今天的安排，再看这个月的账</li>
+          <li>每个家人一种颜色，家长和孩子分得开</li>
+          <li>奖励像一家小店，规则你们自己定</li>
+        </ul>
+      </aside>
     <div class="login-card">
       <!-- 第一步：家庭账号登录 -->
       <template v-if="step === 'account'">
         <div class="login-header">
-          <h1 class="login-title">家庭成长系统</h1>
-          <p class="login-subtitle">智能管理家庭财务,规划美好未来</p>
+          <h1 class="login-title">进来坐</h1>
+          <p class="login-subtitle">用家庭账号登录，再选今天是谁在用</p>
         </div>
 
         <el-form ref="formRef" :model="loginForm" :rules="rules" class="login-form">
@@ -150,6 +160,7 @@
           <el-link type="primary" :underline="false" @click="step = 'account'">返回登录</el-link>
         </div>
       </template>
+    </div>
     </div>
   </div>
 </template>
@@ -355,55 +366,68 @@ const handleRegister = async () => {
 <style scoped>
 .login-container {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--grass-400) 0%, var(--grass-600) 100%);
-  position: relative;
-  overflow: hidden;
+  padding: 32px 20px;
+  background:
+    radial-gradient(700px 360px at 12% 10%, rgba(196, 106, 69, 0.16), transparent 60%),
+    radial-gradient(640px 320px at 90% 0%, rgba(63, 122, 86, 0.14), transparent 55%),
+    var(--app-bg);
 }
 
-.login-container::before {
-  content: '';
-  position: absolute;
-  width: 600px;
-  height: 600px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 50%;
-  top: -200px;
-  right: -100px;
+.login-stage {
+  width: min(980px, 100%);
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 36px;
+  align-items: center;
 }
 
-.login-container::after {
-  content: '';
-  position: absolute;
-  width: 400px;
-  height: 400px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 50%;
-  bottom: -150px;
-  left: -100px;
+.login-story h1 {
+  margin: 12px 0 0;
+  font-size: 42px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+.story-mark {
+  margin: 0;
+  letter-spacing: 0.16em;
+  font-size: 12px;
+  color: var(--clay);
+}
+
+.login-story ul {
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--text-body);
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 .login-card {
-  width: 420px;
-  padding: 40px;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  position: relative;
-  z-index: 1;
+  width: 100%;
+  padding: 36px 32px;
+  background: var(--surface);
+  border-radius: 28px;
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-2);
 }
 
 .login-header {
-  text-align: center;
-  margin-bottom: 40px;
+  text-align: left;
+  margin-bottom: 28px;
 }
 
 .login-title {
-  font-size: 28px;
-  font-weight: 700;
+  font-size: 32px;
+  font-weight: 600;
   color: var(--text-strong);
   margin: 0 0 8px 0;
 }
@@ -465,23 +489,21 @@ const handleRegister = async () => {
 }
 
 .member-item:hover {
-  border-color: var(--grass-500);
-  background: #f8faff;
-  transform: translateX(4px);
+  border-color: var(--grass-400);
+  background: var(--surface-2);
 }
 
 .member-item.active {
-  border-color: var(--grass-500);
-  background: #eef2ff;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+  border-color: var(--grass-600);
+  background: var(--grass-50);
 }
 
 .member-avatar {
   width: 48px;
   height: 48px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, var(--grass-400), var(--grass-600));
-  color: #fff;
+  border-radius: 16px;
+  background: var(--grass-100);
+  color: var(--grass-800);
   font-size: 18px;
   font-weight: 600;
   display: flex;
@@ -515,5 +537,16 @@ const handleRegister = async () => {
 
 .member-actions .login-button {
   flex: 1;
+}
+
+@media (max-width: 860px) {
+  .login-stage {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .login-story h1 {
+    font-size: 32px;
+  }
 }
 </style>

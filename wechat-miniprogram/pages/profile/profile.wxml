@@ -11,7 +11,7 @@
 
   <!-- 当前成员选择 -->
   <view class="card">
-    <view class="card-title">当前记账成员</view>
+    <view class="card-title">现在是谁在用</view>
     <view class="member-list">
       <view class="member-item {{currentMemberId === item.id ? 'active' : ''}}"
         wx:for="{{members}}" wx:key="id"

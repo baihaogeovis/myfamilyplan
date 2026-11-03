@@ -17,16 +17,16 @@
   ],
   "window": {
     "backgroundTextStyle": "dark",
-    "navigationBarBackgroundColor": "#667eea",
-    "navigationBarTitleText": "家庭成长系统",
-    "navigationBarTextStyle": "white",
-    "backgroundColor": "#f5f6fa"
+    "navigationBarBackgroundColor": "#f6f1e8",
+    "navigationBarTitleText": "家庭成长",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f6f1e8"
   },
   "tabBar": {
-    "color": "#909399",
-    "selectedColor": "#667eea",
-    "backgroundColor": "#ffffff",
-    "borderStyle": "black",
+    "color": "#8a8175",
+    "selectedColor": "#2f6b4f",
+    "backgroundColor": "#fffcf8",
+    "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/index/index",
@@ -38,11 +38,11 @@
       },
       {
         "pagePath": "pages/workbench/workbench",
-        "text": "工作台"
+        "text": "安排"
       },
       {
         "pagePath": "pages/statistics/statistics",
-        "text": "统计"
+        "text": "月报"
       },
       {
         "pagePath": "pages/profile/profile",

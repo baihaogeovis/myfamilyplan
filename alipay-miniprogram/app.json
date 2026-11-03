@@ -16,15 +16,15 @@
     "pages/reward/reward"
   ],
   "window": {
-    "defaultTitle": "家庭成长系统",
-    "titleBarColor": "#667eea",
-    "backgroundColor": "#f5f6fa",
+    "defaultTitle": "家庭成长",
+    "titleBarColor": "#f6f1e8",
+    "backgroundColor": "#f6f1e8",
     "allowsBounceVertical": "NO"
   },
   "tabBar": {
-    "textColor": "#909399",
-    "selectedColor": "#667eea",
-    "backgroundColor": "#ffffff",
+    "textColor": "#8a8175",
+    "selectedColor": "#2f6b4f",
+    "backgroundColor": "#fffcf8",
     "items": [
       {
         "pagePath": "pages/index/index",
@@ -36,11 +36,11 @@
       },
       {
         "pagePath": "pages/workbench/workbench",
-        "name": "工作台"
+        "name": "安排"
       },
       {
         "pagePath": "pages/statistics/statistics",
-        "name": "统计"
+        "name": "月报"
       },
       {
         "pagePath": "pages/profile/profile",

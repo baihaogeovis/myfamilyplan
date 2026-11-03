@@ -1,17 +1,38 @@
 <template>
   <div class="page-container">
+    <!-- 一周条：点某一天就看那天的安排，不必先打开日期控件 -->
+    <div class="week" aria-label="本周">
+      <button
+        v-for="day in weekDays"
+        :key="day.iso"
+        type="button"
+        class="week-day"
+        :class="{ on: day.iso === currentDate, today: day.isToday }"
+        @click="pickDay(day.iso)"
+      >
+        <span>周{{ day.label }}</span>
+        <strong>{{ day.dateNum }}</strong>
+      </button>
+    </div>
+
     <!-- 顶部：日期 + 完成率统计 -->
     <el-card class="summary-card" shadow="never">
       <div class="summary-bar">
         <div class="date-area">
-          <el-date-picker
-            v-model="currentDate"
-            type="date"
-            value-format="YYYY-MM-DD"
-            format="YYYY年MM月DD日"
-            placeholder="选择日期"
-            @change="load"
-          />
+          <div class="ring" :style="ringStyle" aria-hidden="true">
+            <span>{{ totalRate }}%</span>
+          </div>
+          <div>
+            <div class="date-title">{{ currentDate }}</div>
+            <el-date-picker
+              v-model="currentDate"
+              type="date"
+              value-format="YYYY-MM-DD"
+              format="YYYY年MM月DD日"
+              placeholder="选择日期"
+              @change="load"
+            />
+          </div>
           <el-button text type="primary" @click="jumpToday">回到今天</el-button>
         </div>
 
@@ -52,7 +73,7 @@
         <el-empty v-if="familyTasks.length === 0" description="暂无家庭任务，点击右上角新增" :image-size="80" />
         <div v-else class="task-list">
           <div v-for="task in familyTasks" :key="task.id" class="task-item" :class="{ done: task.completed === 1 }">
-            <el-checkbox :model-value="task.completed === 1" @change="(v) => toggleTask(task, v)" />
+            <el-checkbox :model-value="task.completed === 1" @change="toggleTask(task, $event)" />
             <span class="task-name">{{ task.taskName }}</span>
             <el-tag v-if="task.priority === 'HIGH'" type="danger" size="small">高</el-tag>
             <el-tag v-else-if="task.priority === 'LOW'" type="info" size="small">低</el-tag>
@@ -76,7 +97,7 @@
         <el-empty v-if="workTasks.length === 0" description="暂无工作任务，点击右上角新增" :image-size="80" />
         <div v-else class="task-list">
           <div v-for="task in workTasks" :key="task.id" class="task-item" :class="{ done: task.completed === 1 }">
-            <el-checkbox :model-value="task.completed === 1" @change="(v) => toggleTask(task, v)" />
+            <el-checkbox :model-value="task.completed === 1" @change="toggleTask(task, $event)" />
             <span class="task-name">{{ task.taskName }}</span>
             <el-tag v-if="task.priority === 'HIGH'" type="danger" size="small">高</el-tag>
             <el-tag v-else-if="task.priority === 'LOW'" type="info" size="small">低</el-tag>
@@ -177,6 +198,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { Plus, History, Home, Briefcase } from 'lucide-vue-next'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
@@ -188,10 +210,13 @@ import {
   type DailyTask
 } from '@/api/dailyTask'
 import { useMemberStore } from '@/stores/member'
+import { formatLocalDate, weekOf } from '@/utils/family'
 
 const memberStore = useMemberStore()
+const route = useRoute()
 
-const currentDate = ref(new Date().toISOString().slice(0, 10))
+const queryDate = typeof route.query.date === 'string' ? route.query.date : ''
+const currentDate = ref(/^\d{4}-\d{2}-\d{2}$/.test(queryDate) ? queryDate : formatLocalDate())
 const tasks = ref<DailyTask[]>([])
 
 const dialogVisible = ref(false)
@@ -201,6 +226,7 @@ const form = reactive<DailyTask>({
   memberId: 0,
   taskName: '',
   taskType: 'FAMILY',
+  taskDate: formatLocalDate(),
   priority: 'MEDIUM',
   remark: ''
 })
@@ -232,6 +258,17 @@ const totalRate = computed(() => {
   return Math.round((done / total) * 100)
 })
 
+const weekDays = computed(() => weekOf(currentDate.value))
+
+const ringStyle = computed(() => ({
+  background: `conic-gradient(var(--grass-600) ${totalRate.value * 3.6}deg, var(--grass-100) 0deg)`
+}))
+
+const pickDay = (iso: string) => {
+  currentDate.value = iso
+  load()
+}
+
 const load = async () => {
   await memberStore.ensureLoaded()
   if (!memberStore.currentMemberId) {
@@ -242,7 +279,7 @@ const load = async () => {
 }
 
 const jumpToday = () => {
-  currentDate.value = new Date().toISOString().slice(0, 10)
+  currentDate.value = formatLocalDate()
   load()
 }
 
@@ -329,8 +366,77 @@ onMounted(load)
 <style scoped>
 .page-container {
   width: 100%;
-  max-width: 1600px;
+  max-width: 1120px;
   margin: 0 auto;
+}
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.week-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 0 12px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.week-day strong {
+  font-size: 18px;
+  color: var(--text-strong);
+}
+
+.week-day.on {
+  background: var(--surface);
+  border-color: var(--border-soft);
+  box-shadow: var(--shadow-1);
+}
+
+.week-day.today strong {
+  color: var(--grass-700);
+}
+
+.date-area {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.date-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--text-strong);
+  margin-bottom: 4px;
+}
+
+.ring {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.ring span {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--surface);
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--grass-700);
 }
 
 .summary-card {
@@ -344,12 +450,6 @@ onMounted(load)
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 16px;
-}
-
-.date-area {
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .stat-items {
@@ -436,10 +536,10 @@ onMounted(load)
 .task-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border-radius: 8px;
-  transition: all 0.2s;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  transition: background-color 0.2s;
   background: var(--surface-2);
 }
 
@@ -454,7 +554,9 @@ onMounted(load)
 
 .task-name {
   flex: 1;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-strong);
 }
 
 .task-remark {
@@ -467,11 +569,6 @@ onMounted(load)
 }
 
 .task-ops {
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-.task-item:hover .task-ops {
   opacity: 1;
 }
 

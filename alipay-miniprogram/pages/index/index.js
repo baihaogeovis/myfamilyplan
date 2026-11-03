@@ -1,23 +1,54 @@
 const api = require('../../utils/api')
 const util = require('../../utils/util')
 
-const menus = [
-  { icon: '收', color: '#f56c6c', name: '收入', path: '/pages/record/record?type=income' },
-  { icon: '支', color: '#e6a23c', name: '支出', path: '/pages/record/record?type=expense' },
-  { icon: '预', color: '#67c23a', name: '预算', path: '/pages/budget/budget' },
-  { icon: '审', color: '#409eff', name: '审批', path: '/pages/approval/approval' },
-  { icon: '成', color: '#7c4dff', name: '成员', path: '/pages/members/members' },
-  { icon: '工', color: '#2f9e91', name: '工作台', path: '/pages/workbench/workbench' },
-  { icon: '资', color: '#5b8ff9', name: '资金', path: '/pages/fixedExpense/fixedExpense' },
-  { icon: '生', color: '#9254de', name: '生活', path: '/pages/lifePlan/lifePlan' },
-  { icon: '长', color: '#f759ab', name: '成长', path: '/pages/growthPlan/growthPlan' },
-  { icon: '奖', color: '#ff9f43', name: '奖励', path: '/pages/reward/reward' },
-  { icon: '通', color: '#13c2c2', name: '通知', path: '/pages/notifications/notifications' }
+const groups = [
+  {
+    title: '今天',
+    hint: '先安排，再记一笔',
+    items: [
+      { icon: '安', tone: 'sage', name: '今日安排', path: '/pages/workbench/workbench' },
+      { icon: '收', tone: 'sage', name: '记收入', path: '/pages/record/record?type=income' },
+      { icon: '支', tone: 'clay', name: '记支出', path: '/pages/record/record?type=expense' },
+      { icon: '报', tone: 'ink', name: '月报', path: '/pages/statistics/statistics' }
+    ]
+  },
+  {
+    title: '成长',
+    hint: '计划和可以兑换的奖励',
+    items: [
+      { icon: '长', tone: 'plum', name: '成长', path: '/pages/growthPlan/growthPlan' },
+      { icon: '奖', tone: 'honey', name: '奖励', path: '/pages/reward/reward' },
+      { icon: '活', tone: 'clay', name: '想做的事', path: '/pages/lifePlan/lifePlan' }
+    ]
+  },
+  {
+    title: '家里',
+    hint: '账单、审批和家人',
+    items: [
+      { icon: '预', tone: 'sage', name: '预算', path: '/pages/budget/budget' },
+      { icon: '账', tone: 'ink', name: '固定账单', path: '/pages/fixedExpense/fixedExpense' },
+      { icon: '审', tone: 'clay', name: '审批', path: '/pages/approval/approval' },
+      { icon: '人', tone: 'plum', name: '家人', path: '/pages/members/members' },
+      { icon: '讯', tone: 'honey', name: '提醒', path: '/pages/notifications/notifications' }
+    ]
+  }
 ]
+
+function hello(name) {
+  const h = new Date().getHours()
+  const word = h < 11 ? '早上好' : h < 14 ? '中午好' : h < 18 ? '下午好' : '晚上好'
+  return name ? `${word}，${name}` : word
+}
+
+function dateText() {
+  const d = new Date()
+  const w = ['日', '一', '二', '三', '四', '五', '六']
+  return `${d.getMonth() + 1}月${d.getDate()}日 周${w[d.getDay()]}`
+}
 
 Page({
   data: {
-    menus,
+    groups,
     overview: {
       monthIncome: 0,
       monthExpense: 0,
@@ -26,7 +57,9 @@ Page({
       memberCount: 0
     },
     recent: [],
-    currentMemberName: ''
+    currentMemberName: '',
+    greeting: '你好',
+    dateText: ''
   },
 
   onShow() {
@@ -34,8 +67,11 @@ Page({
   },
 
   refresh() {
+    const name = getApp().globalData.currentMemberName || ''
     this.setData({
-      currentMemberName: getApp().globalData.currentMemberName || ''
+      currentMemberName: name,
+      greeting: hello(name),
+      dateText: dateText()
     })
     this.loadData()
   },
@@ -49,13 +85,13 @@ Page({
       const recentList = (recent || []).map((item) => ({
         ...item,
         amountText: `${item.type === 'EXPENSE' ? '-' : '+'}${util.formatMoney(item.amount)}`,
-        dateText: util.formatDate(item.date)
+        dateText: util.formatDate(item.date),
+        categoryText: util.categoryLabel(item.category)
       }))
       this.setData({ overview, recent: recentList })
     } catch (e) { /* 错误已提示 */ }
   },
 
-  // tabBar 页面(switchTab 跳转, 不支持 query, 参数经 globalData 传递)
   TAB_PATHS: ['/pages/record/record', '/pages/workbench/workbench', '/pages/statistics/statistics', '/pages/profile/profile'],
 
   goMenu(e) {
@@ -98,7 +134,5 @@ Page({
     }
     app.globalData.recordType = type
     my.switchTab({ url: '/pages/record/record' })
-  },
-
-  categoryLabel(v) { return util.categoryLabel(v) }
+  }
 })

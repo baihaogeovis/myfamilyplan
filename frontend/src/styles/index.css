@@ -8,14 +8,14 @@
  */
 @layer base {
   :root {
-    --background: 110 33% 95%;
-    --foreground: 145 44% 13%;
-    --card: 0 0% 100%;
-    --card-foreground: 145 44% 13%;
-    --primary: 147 70% 30%;
+    --background: 40 32% 93%;
+    --foreground: 150 18% 13%;
+    --card: 40 60% 99%;
+    --card-foreground: 150 18% 13%;
+    --primary: 150 55% 27%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 108 43% 92%;
-    --secondary-foreground: 145 30% 22%;
+    --secondary: 40 28% 94%;
+    --secondary-foreground: 150 14% 22%;
     --accent: 79 66% 55%;
     --success: 147 70% 30%;
     --warning: 41 91% 58%;

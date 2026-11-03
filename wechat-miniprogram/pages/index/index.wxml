@@ -1,57 +1,64 @@
 <view class="page-container">
-
-  <!-- 概览卡片 -->
-  <view class="overview-card">
-    <view class="overview-header">
-      <view class="overview-title">本月概览</view>
-      <view class="overview-member" wx:if="{{currentMemberName}}">{{currentMemberName}}</view>
-    </view>
-    <view class="overview-row">
-      <view class="overview-item">
-        <view class="overview-label">本月收入</view>
-        <view class="overview-value income">¥{{overview.monthIncome}}</view>
-      </view>
-      <view class="overview-item">
-        <view class="overview-label">本月支出</view>
-        <view class="overview-value expense">¥{{overview.monthExpense}}</view>
-      </view>
-      <view class="overview-item">
-        <view class="overview-label">预算剩余</view>
-        <view class="overview-value">¥{{overview.budgetRemaining}}</view>
-      </view>
-    </view>
-    <view class="overview-footer">
-      <view class="overview-stat" wx:if="{{overview.pendingCount}}">待审批 {{overview.pendingCount}} 笔</view>
-      <view class="overview-stat">家庭成员 {{overview.memberCount}} 人</view>
+  <view class="hero">
+    <view class="hero-date">{{dateText}}</view>
+    <view class="hero-title">{{greeting}}</view>
+    <view class="hero-lede">先看今天的安排，账本放在下面。</view>
+    <view class="hero-actions">
+      <view class="hero-btn solid" bindtap="goMenu" data-path="/pages/workbench/workbench">今日安排</view>
+      <view class="hero-btn" bindtap="goRecord" data-type="expense">记一笔</view>
     </view>
   </view>
 
-  <!-- 快捷记账 -->
-  <view class="quick-row">
-    <view class="quick-btn income" bindtap="goRecord" data-type="income">记收入</view>
-    <view class="quick-btn expense" bindtap="goRecord" data-type="expense">记支出</view>
+  <view class="card quiet">
+    <view class="quiet-head">
+      <text class="quiet-title">这个月</text>
+      <text class="quiet-meta" wx:if="{{overview.memberCount}}">{{overview.memberCount}} 位家人</text>
+    </view>
+    <view class="quiet-row">
+      <view class="quiet-item">
+        <view class="quiet-label">收入</view>
+        <view class="quiet-value">¥{{overview.monthIncome}}</view>
+      </view>
+      <view class="quiet-item">
+        <view class="quiet-label">支出</view>
+        <view class="quiet-value out">¥{{overview.monthExpense}}</view>
+      </view>
+      <view class="quiet-item">
+        <view class="quiet-label">预算还剩</view>
+        <view class="quiet-value">¥{{overview.budgetRemaining}}</view>
+      </view>
+    </view>
+    <view class="pending" wx:if="{{overview.pendingCount}}" bindtap="goMenu" data-path="/pages/approval/approval">
+      {{overview.pendingCount}} 笔支出等你点头
+    </view>
   </view>
 
-  <!-- 功能菜单 -->
-  <view class="card menu-card">
-    <view class="card-title">全部功能</view>
+  <view class="card" wx:for="{{groups}}" wx:key="title">
+    <view class="card-title">{{item.title}}</view>
+    <view class="group-hint">{{item.hint}}</view>
     <view class="menu-grid">
-      <view class="menu-item" wx:for="{{menus}}" wx:key="name" bindtap="goMenu" data-path="{{item.path}}">
-        <view class="menu-icon" style="background:{{item.color}}20;color:{{item.color}}">{{item.icon}}</view>
-        <view class="menu-name">{{item.name}}</view>
+      <view
+        class="menu-item"
+        wx:for="{{item.items}}"
+        wx:for-item="menu"
+        wx:key="name"
+        bindtap="goMenu"
+        data-path="{{menu.path}}"
+      >
+        <view class="menu-icon tone-{{menu.tone}}">{{menu.icon}}</view>
+        <view class="menu-name">{{menu.name}}</view>
       </view>
     </view>
   </view>
 
-  <!-- 最近收支 -->
   <view class="card">
-    <view class="card-title">最近收支</view>
+    <view class="card-title">最近进出</view>
     <view wx:if="{{recent.length === 0}}" class="empty-state">
-      <view class="empty-text">暂无记录，快去记一笔吧</view>
+      <view class="empty-text">还没有流水，先记一笔家里的开销</view>
     </view>
     <view class="recent-item" wx:for="{{recent}}" wx:key="id">
       <view class="recent-info">
-        <view class="recent-name">{{categoryLabel(item.category)}}</view>
+        <view class="recent-name">{{item.categoryText}}</view>
         <view class="recent-desc">{{item.memberName}} · {{item.dateText}}</view>
       </view>
       <view class="recent-amount {{item.type === 'EXPENSE' ? 'expense' : 'income'}}">{{item.amountText}}</view>

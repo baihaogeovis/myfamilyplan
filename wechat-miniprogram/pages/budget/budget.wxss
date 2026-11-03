@@ -14,7 +14,7 @@
 }
 
 .period-tab.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #2f6b4f 0%, #1e3d32 100%);
   color: #ffffff;
   font-weight: 600;
 }
@@ -59,13 +59,13 @@
   width: 100rpx;
   height: 100rpx;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #2f6b4f 0%, #1e3d32 100%);
   color: #ffffff;
   font-size: 56rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.5);
+  box-shadow: 0 8rpx 24rpx rgba(47, 107, 79, 0.5);
   z-index: 20;
 }
 
@@ -112,9 +112,9 @@
 }
 
 .category-chip.active {
-  background: #667eea;
+  background: #2f6b4f;
   color: #ffffff;
-  border-color: #667eea;
+  border-color: #2f6b4f;
 }
 
 .modal-btn {
