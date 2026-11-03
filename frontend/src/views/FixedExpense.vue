@@ -94,7 +94,7 @@
           <template #default="{ row }">
             <el-switch
               :model-value="row.active === 1"
-              @change="(v) => toggleActive(row, v)"
+              @change="toggleActive(row, $event)"
             />
           </template>
         </el-table-column>

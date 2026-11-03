@@ -42,7 +42,7 @@
 
       <div class="plan-grid" v-loading="loading">
         <el-empty v-if="list.length === 0" description="暂无计划，点击右上角添加美好愿望" />
-        <div v-for="plan in list" :key="plan.id" class="plan-card-item" :class="plan.status.toLowerCase()">
+        <div v-for="plan in list" :key="plan.id" class="plan-card-item" :class="(plan.status || '').toLowerCase()">
           <div class="plan-top">
             <div class="plan-icon" :class="planType === 'APPLIANCE' ? 'appliance' : 'travel'">
               <el-icon>

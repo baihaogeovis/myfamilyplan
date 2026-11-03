@@ -45,6 +45,10 @@ Page({
     wx.navigateTo({ url: '/pages/members/members' })
   },
 
+  goNotes() {
+    wx.navigateTo({ url: '/pages/notifications/notifications' })
+  },
+
   // 修改密码
   openPwd() {
     this.setData({ showPwd: true, pwdForm: { oldPassword: '', newPassword: '' } })

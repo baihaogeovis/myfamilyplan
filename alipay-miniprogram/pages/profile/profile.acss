@@ -1,17 +1,20 @@
 .family-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #ffffff;
+  background: #fffcf8;
+  color: #1c2822;
   position: relative;
+  border: 2rpx solid #e6dfd2;
 }
 
 .family-name {
-  font-size: 40rpx;
-  font-weight: 700;
+  font-size: 48rpx;
+  font-weight: 600;
+  font-family: "Songti SC", "STSong", serif;
+  padding-right: 160rpx;
 }
 
 .family-meta {
   font-size: 24rpx;
-  color: rgba(255, 255, 255, 0.85);
+  color: #6e776f;
   margin-top: 12rpx;
 }
 
@@ -20,9 +23,9 @@
   right: 24rpx;
   top: 32rpx;
   font-size: 24rpx;
-  color: rgba(255, 255, 255, 0.9);
-  background: rgba(255, 255, 255, 0.2);
-  padding: 6rpx 16rpx;
+  color: #E85D4C;
+  background: #FDE8E4;
+  padding: 8rpx 18rpx;
   border-radius: 24rpx;
 }
 
@@ -38,17 +41,24 @@
 }
 
 .member-item.active {
-  background: rgba(102, 126, 234, 0.06);
+  background: rgba(47, 107, 79, 0.06);
   border-radius: 16rpx;
   padding: 20rpx;
 }
 
+.member-item:nth-child(6n+1) .member-avatar { background: #e7f2ea; color: #1f6b45; }
+.member-item:nth-child(6n+2) .member-avatar { background: #f8e6dc; color: #9a4a2c; }
+.member-item:nth-child(6n+3) .member-avatar { background: #e5f3f8; color: #0b7285; }
+.member-item:nth-child(6n+4) .member-avatar { background: #fff1d4; color: #8a5a08; }
+.member-item:nth-child(6n+5) .member-avatar { background: #efe8fb; color: #5b3fb0; }
+.member-item:nth-child(6n+6) .member-avatar { background: #fde8e6; color: #9b3328; }
+
 .member-avatar {
   width: 76rpx;
   height: 76rpx;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #ffffff;
+  border-radius: 24rpx;
+  background: #e7f2ea;
+  color: #1f6b45;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -75,7 +85,7 @@
 }
 
 .member-check {
-  color: #667eea;
+  color: #E85D4C;
   font-size: 32rpx;
   font-weight: 700;
 }

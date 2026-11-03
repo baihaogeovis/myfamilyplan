@@ -1,5 +1,7 @@
 <view class="page-container">
 
+  <view class="plan-jump" bindtap="goLife">回到生活计划 ›</view>
+
   <view class="type-tabs">
     <view class="type-tab {{goalType === item.value ? 'active' : ''}}"
       wx:for="{{typeTabs}}" wx:key="value" wx:for-item="item"

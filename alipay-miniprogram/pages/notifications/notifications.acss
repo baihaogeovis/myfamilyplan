@@ -13,7 +13,7 @@
 
 .notify-allread {
   font-size: 26rpx;
-  color: #667eea;
+  color: #E85D4C;
 }
 
 .notify-item {

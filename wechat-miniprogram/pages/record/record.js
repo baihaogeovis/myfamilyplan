@@ -40,6 +40,16 @@ Page({
   },
 
   onShow() {
+    const globalType = getApp().globalData.recordType
+    if (globalType) {
+      const safeType = globalType === 'expense' ? 'expense' : 'income'
+      getApp().globalData.recordType = ''
+      this.setData({
+        type: safeType,
+        categories: safeType === 'income' ? util.incomeCategories() : util.expenseCategories()
+      })
+      wx.setNavigationBarTitle({ title: safeType === 'income' ? '收入记录' : '支出记录' })
+    }
     this.reload()
   },
 

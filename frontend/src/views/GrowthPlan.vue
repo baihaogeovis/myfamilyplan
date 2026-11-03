@@ -43,7 +43,7 @@
 
       <div class="goal-grid" v-loading="loading">
         <el-empty v-if="list.length === 0" description="暂无目标，点击右上角为孩子添加成长目标" />
-        <div v-for="goal in list" :key="goal.id" class="goal-card" :class="goal.status.toLowerCase()">
+        <div v-for="goal in list" :key="goal.id" class="goal-card" :class="(goal.status || '').toLowerCase()">
           <div class="goal-top">
             <div class="goal-info">
               <div class="goal-title">{{ goal.title }}</div>

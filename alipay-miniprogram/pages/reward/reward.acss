@@ -300,7 +300,7 @@
 
 .mini-btn.edit {
   background: #f0f9ff;
-  color: #409eff;
+  color: #E85D4C;
 }
 
 .mini-btn.del {

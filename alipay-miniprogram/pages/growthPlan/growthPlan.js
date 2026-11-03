@@ -166,5 +166,9 @@ Page({
         }
       }
     })
+  },
+
+  goLife() {
+    my.switchTab({ url: '/pages/lifePlan/lifePlan' })
   }
 })

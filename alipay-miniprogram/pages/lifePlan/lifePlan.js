@@ -161,5 +161,9 @@ Page({
         }
       }
     })
+  },
+
+  goGrowth() {
+    my.navigateTo({ url: '/pages/growthPlan/growthPlan' })
   }
 })

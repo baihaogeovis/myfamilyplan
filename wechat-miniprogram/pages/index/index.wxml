@@ -1,60 +1,41 @@
 <view class="page-container">
+  <view class="hello">{{greeting}}</view>
 
-  <!-- 概览卡片 -->
-  <view class="overview-card">
-    <view class="overview-header">
-      <view class="overview-title">本月概览</view>
-      <view class="overview-member" wx:if="{{currentMemberName}}">{{currentMemberName}}</view>
+  <view class="stats">
+    <view class="stat" bindtap="goMenu" data-path="/pages/statistics/statistics">
+      <view class="stat-k">结余</view>
+      <view class="stat-v">¥{{balanceText}}</view>
+      <view class="stat-s">本月收入减支出</view>
     </view>
-    <view class="overview-row">
-      <view class="overview-item">
-        <view class="overview-label">本月收入</view>
-        <view class="overview-value income">¥{{overview.monthIncome}}</view>
-      </view>
-      <view class="overview-item">
-        <view class="overview-label">本月支出</view>
-        <view class="overview-value expense">¥{{overview.monthExpense}}</view>
-      </view>
-      <view class="overview-item">
-        <view class="overview-label">预算剩余</view>
-        <view class="overview-value">¥{{overview.budgetRemaining}}</view>
-      </view>
+    <view class="stat" bindtap="goMenu" data-path="/pages/approval/approval">
+      <view class="stat-k">待审</view>
+      <view class="stat-v">{{pendingCount}}</view>
+      <view class="stat-s">等你点头的支出</view>
     </view>
-    <view class="overview-footer">
-      <view class="overview-stat" wx:if="{{overview.pendingCount}}">待审批 {{overview.pendingCount}} 笔</view>
-      <view class="overview-stat">家庭成员 {{overview.memberCount}} 人</view>
+    <view class="stat" bindtap="goMenu" data-path="/pages/lifePlan/lifePlan">
+      <view class="stat-k">计划进度</view>
+      <view class="stat-v">{{planProgress}}%</view>
+      <view class="stat-s">{{planHint}}</view>
+    </view>
+    <view class="stat" bindtap="goMenu" data-path="/pages/notifications/notifications">
+      <view class="stat-k">未读</view>
+      <view class="stat-v">{{unread}}</view>
+      <view class="stat-s">还没看的通知</view>
     </view>
   </view>
 
-  <!-- 快捷记账 -->
-  <view class="quick-row">
-    <view class="quick-btn income" bindtap="goRecord" data-type="income">记收入</view>
-    <view class="quick-btn expense" bindtap="goRecord" data-type="expense">记支出</view>
-  </view>
-
-  <!-- 功能菜单 -->
-  <view class="card menu-card">
-    <view class="card-title">全部功能</view>
-    <view class="menu-grid">
-      <view class="menu-item" wx:for="{{menus}}" wx:key="name" bindtap="goMenu" data-path="{{item.path}}">
-        <view class="menu-icon" style="background:{{item.color}}20;color:{{item.color}}">{{item.icon}}</view>
-        <view class="menu-name">{{item.name}}</view>
-      </view>
+  <view class="card next-card">
+    <view class="card-title">接下来</view>
+    <view wx:if="{{nextList.length === 0}}" class="empty-state">
+      <view class="empty-text">接下来还是空的</view>
     </view>
-  </view>
-
-  <!-- 最近收支 -->
-  <view class="card">
-    <view class="card-title">最近收支</view>
-    <view wx:if="{{recent.length === 0}}" class="empty-state">
-      <view class="empty-text">暂无记录，快去记一笔吧</view>
-    </view>
-    <view class="recent-item" wx:for="{{recent}}" wx:key="id">
-      <view class="recent-info">
-        <view class="recent-name">{{categoryLabel(item.category)}}</view>
-        <view class="recent-desc">{{item.memberName}} · {{item.dateText}}</view>
+    <view class="next-item" wx:for="{{nextList}}" wx:key="key" bindtap="goMenu" data-path="{{item.path}}">
+      <text class="next-kind">{{item.kind}}</text>
+      <view class="next-main">
+        <view class="next-title">{{item.title}}</view>
+        <view class="next-meta">{{item.meta}}</view>
       </view>
-      <view class="recent-amount {{item.type === 'EXPENSE' ? 'expense' : 'income'}}">{{item.amountText}}</view>
     </view>
   </view>
 </view>
+

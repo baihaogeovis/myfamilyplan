@@ -3,17 +3,17 @@
  * 数值必须与 styles/theme.css 的 token 保持一致。
  */
 export const PALETTE = {
-  grass400: '#5fc673',
-  grass500: '#2fae52',
-  grass600: '#188043',
-  grass700: '#146536',
+  grass400: '#6d9a78',
+  grass500: '#3f7a56',
+  grass600: '#1f6b45',
+  grass700: '#185638',
   sprout: '#a3d93f',
   sun: '#f7b733',
   sky: '#35a7d7',
   berry: '#e8604c',
   plum: '#8b6be0',
-  inkStrong: '#12301c',
-  textMuted: '#5a6b60'
+  inkStrong: '#1c2822',
+  textMuted: '#6e776f'
 } as const
 
 /** 图表系列配色：草绿为主，搭配嫩芽/阳光/湖水/浆果，色相跨度大以便区分 */
@@ -38,7 +38,7 @@ export const MONEY_COLORS = {
 
 /** 图表通用外观：柔和网格与低对比坐标轴 */
 export const CHART_BASE = {
-  axisLineColor: '#dcebdd',
+  axisLineColor: '#e6dfd2',
   axisLabelColor: PALETTE.textMuted,
-  splitLineColor: '#eef5ef'
+  splitLineColor: '#efeae1'
 } as const

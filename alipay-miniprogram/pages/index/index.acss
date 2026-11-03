@@ -1,164 +1,73 @@
-.overview-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 24rpx;
-  padding: 32rpx;
-  margin-bottom: 24rpx;
-  color: #ffffff;
-  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.35);
-}
-
-.overview-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 28rpx;
-}
-
-.overview-title {
-  font-size: 30rpx;
+.hello {
+  margin: 8rpx 8rpx 24rpx;
+  font-size: 44rpx;
   font-weight: 600;
+  color: #1c2822;
+  font-family: "Songti SC", "STSong", serif;
 }
 
-.overview-member {
-  font-size: 24rpx;
-  background: rgba(255, 255, 255, 0.2);
-  padding: 4rpx 16rpx;
-  border-radius: 20rpx;
-}
-
-.overview-row {
-  display: flex;
-}
-
-.overview-item {
-  flex: 1;
-}
-
-.overview-label {
-  font-size: 24rpx;
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 8rpx;
-}
-
-.overview-value {
-  font-size: 34rpx;
-  font-weight: 700;
-}
-
-.overview-value.income {
-  color: #67e8b9;
-}
-
-.overview-value.expense {
-  color: #ffd3d3;
-}
-
-.overview-footer {
-  display: flex;
-  margin-top: 24rpx;
-  padding-top: 20rpx;
-  border-top: 2rpx solid rgba(255, 255, 255, 0.2);
-}
-
-.overview-stat {
-  font-size: 22rpx;
-  color: rgba(255, 255, 255, 0.85);
-  margin-right: 32rpx;
-}
-
-.quick-row {
-  display: flex;
-  margin-bottom: 24rpx;
-}
-
-.quick-btn {
-  flex: 1;
-  text-align: center;
-  padding: 24rpx 0;
-  border-radius: 20rpx;
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #ffffff;
-  box-shadow: 0 6rpx 16rpx rgba(0, 0, 0, 0.08);
-  margin-right: 12rpx;
-}
-
-.quick-btn:last-child {
-  margin-right: 0;
-}
-
-.quick-btn.income {
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-  color: #0a6b42;
-}
-
-.quick-btn.expense {
-  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-  color: #7a2a3f;
-}
-
-.menu-grid {
+.stats {
   display: flex;
   flex-wrap: wrap;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
 }
 
-.menu-item {
-  width: 20%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 28rpx;
+.stat {
+  width: calc(50% - 8rpx);
+  background: #fffcf8;
+  border: 2rpx solid #e6dfd2;
+  border-radius: 28rpx;
+  padding: 24rpx 22rpx 22rpx;
+  box-sizing: border-box;
 }
 
-.menu-icon {
-  width: 88rpx;
-  height: 88rpx;
-  border-radius: 24rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 36rpx;
-  font-weight: 700;
-  margin-bottom: 12rpx;
-}
-
-.menu-name {
+.stat-k {
   font-size: 24rpx;
-  color: #606266;
+  color: #E85D4C;
+  letter-spacing: 2rpx;
 }
 
-.recent-item {
+.stat-v {
+  margin-top: 10rpx;
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #1c2822;
+}
+
+.stat-s {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #8a8175;
+}
+
+.next-item {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20rpx 0;
-  border-bottom: 2rpx solid #f5f7fa;
+  align-items: flex-start;
+  gap: 16rpx;
+  padding: 18rpx 0;
+  border-bottom: 2rpx solid #f3efe6;
 }
 
-.recent-item:last-child {
+.next-item:last-child {
   border-bottom: none;
 }
 
-.recent-name {
-  font-size: 28rpx;
-  color: #303133;
-}
-
-.recent-desc {
+.next-kind {
+  flex-shrink: 0;
   font-size: 22rpx;
-  color: #909399;
-  margin-top: 4rpx;
-}
-
-.recent-amount {
-  font-size: 30rpx;
+  color: #E85D4C;
   font-weight: 600;
 }
 
-.recent-amount.income {
-  color: #67c23a;
+.next-title {
+  font-size: 30rpx;
+  color: #1c2822;
+  font-weight: 600;
 }
 
-.recent-amount.expense {
-  color: #f56c6c;
+.next-meta {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: #8a8175;
 }

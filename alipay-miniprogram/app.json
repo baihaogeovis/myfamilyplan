@@ -16,35 +16,45 @@
     "pages/reward/reward"
   ],
   "window": {
-    "defaultTitle": "家庭成长系统",
-    "titleBarColor": "#667eea",
-    "backgroundColor": "#f5f6fa",
+    "defaultTitle": "家庭成长",
+    "titleBarColor": "#f6f1e8",
+    "backgroundColor": "#f6f1e8",
     "allowsBounceVertical": "NO"
   },
   "tabBar": {
-    "textColor": "#909399",
-    "selectedColor": "#667eea",
-    "backgroundColor": "#ffffff",
+    "textColor": "#8a8175",
+    "selectedColor": "#E85D4C",
+    "backgroundColor": "#fffcf8",
     "items": [
       {
         "pagePath": "pages/index/index",
-        "name": "首页"
+        "name": "工作台",
+        "icon": "assets/tab/work.png",
+        "activeIcon": "assets/tab/work-on.png"
+      },
+      {
+        "pagePath": "pages/lifePlan/lifePlan",
+        "name": "计划",
+        "icon": "assets/tab/plan.png",
+        "activeIcon": "assets/tab/plan-on.png"
       },
       {
         "pagePath": "pages/record/record",
-        "name": "记账"
+        "name": "钱",
+        "icon": "assets/tab/money.png",
+        "activeIcon": "assets/tab/money-on.png"
       },
       {
-        "pagePath": "pages/workbench/workbench",
-        "name": "工作台"
-      },
-      {
-        "pagePath": "pages/statistics/statistics",
-        "name": "统计"
+        "pagePath": "pages/reward/reward",
+        "name": "奖励",
+        "icon": "assets/tab/reward.png",
+        "activeIcon": "assets/tab/reward-on.png"
       },
       {
         "pagePath": "pages/profile/profile",
-        "name": "我的"
+        "name": "我的",
+        "icon": "assets/tab/me.png",
+        "activeIcon": "assets/tab/me-on.png"
       }
     ]
   }

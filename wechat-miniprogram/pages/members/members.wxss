@@ -1,14 +1,43 @@
+.member-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
 .member-item {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  width: calc(50% - 8rpx);
+  margin-bottom: 0;
+}
+
+.family-lead {
+  margin: 4rpx 8rpx 20rpx;
+  color: #6e776f;
+  font-size: 26rpx;
+}
+
+.member-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8rpx;
+}
+
+.member-now {
+  font-size: 24rpx;
+  color: #E85D4C;
+  font-weight: 600;
+  padding: 8rpx 0;
 }
 
 .member-avatar {
   width: 88rpx;
   height: 88rpx;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #ffffff;
+  border-radius: 28rpx;
+  background: #e7f2ea;
+  color: #1f6b45;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -59,13 +88,13 @@
   width: 100rpx;
   height: 100rpx;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #E85D4C;
   color: #ffffff;
   font-size: 56rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.5);
+  box-shadow: 0 8rpx 24rpx rgba(47, 107, 79, 0.5);
   z-index: 20;
 }
 
@@ -112,9 +141,9 @@
 }
 
 .chip.active {
-  background: #667eea;
+  background: #E85D4C;
   color: #ffffff;
-  border-color: #667eea;
+  border-color: #E85D4C;
 }
 
 .modal-btn {
