@@ -2,10 +2,21 @@ const modal = require('../../utils/modal')
 const api = require('../../utils/api')
 const util = require('../../utils/util')
 
+const MEMBER_EDIT_DENIED = '只有家长可以添加或编辑家人'
+
+function canEdit(list, currentId) {
+  const people = list || []
+  const current = people.find((m) => String(m.id) === String(currentId))
+  if (!current) return people.length === 0
+  return current.relation === 'OWNER' || current.relation === 'SPOUSE' || current.relation === 'PARENT'
+}
+
 Page({
   data: {
     list: [],
     currentId: null,
+    loaded: false,
+    canManage: false,
     showForm: false,
     modalHold: false,
     formMode: 'add',
@@ -24,26 +35,48 @@ Page({
   },
 
   async loadList() {
+    const currentId = getApp().globalData.currentMemberId
     try {
       const list = await api.member.list()
+      const people = list || []
       this.setData({
-        list: (list || []).map((m) => ({
+        currentId,
+        loaded: true,
+        canManage: canEdit(people, currentId),
+        list: people.map((m) => ({
           ...m,
           relationText: util.relationText(m.relation),
           roleText: m.relation === 'CHILD' ? '孩子' : (m.relation === 'OTHER' ? '家人' : '家长')
         }))
       })
-    } catch (e) { /* 错误已提示 */ }
+    } catch (e) {
+      this.setData({
+        currentId,
+        loaded: true,
+        canManage: canEdit(this.data.list, currentId)
+      })
+    }
+  },
+
+  ensureCanManage() {
+    if (!this.data.loaded) return false
+    if (this.data.canManage) return true
+    my.showToast({ type: 'none', content: MEMBER_EDIT_DENIED, duration: 2500 })
+    return false
   },
 
   setCurrent(e) {
     const item = e.currentTarget.dataset.item
     getApp().setCurrentMember(item.id, item.memberName)
-    this.setData({ currentId: item.id })
+    this.setData({
+      currentId: item.id,
+      canManage: canEdit(this.data.list, item.id)
+    })
     my.showToast({ type: 'success', content: `现在是 ${item.memberName}` })
   },
 
   openAdd() {
+    if (!this.ensureCanManage()) return
     if (!modal.canOpen(this)) return
     this.setData({
       showForm: true,
@@ -53,6 +86,7 @@ Page({
   },
 
   openEdit(e) {
+    if (!this.ensureCanManage()) return
     if (!modal.canOpen(this)) return
     const item = e.currentTarget.dataset.item
     this.setData({
@@ -76,6 +110,7 @@ Page({
   chooseRelation(e) { this.setData({ 'form.relation': e.currentTarget.dataset.value }) },
 
   async submitForm() {
+    if (!this.ensureCanManage()) return
     const { form, formMode } = this.data
     if (!form.memberName.trim()) {
       my.showToast({ type: 'none', content: '请输入成员姓名' })

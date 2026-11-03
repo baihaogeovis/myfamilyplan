@@ -71,3 +71,43 @@
   font-size: 22rpx;
   color: #8a8175;
 }
+
+.next-empty {
+  padding: 12rpx 8rpx 8rpx;
+}
+
+.next-empty .empty-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #1c2822;
+  font-family: "Songti SC", "STSong", serif;
+}
+
+.next-empty .empty-text {
+  margin-top: 10rpx;
+  font-size: 26rpx;
+  color: #8a8175;
+  line-height: 1.5;
+}
+
+.empty-actions {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 28rpx;
+}
+
+.empty-btn {
+  flex: 1;
+  text-align: center;
+  background: #E85D4C;
+  color: #ffffff;
+  border-radius: 999rpx;
+  font-size: 28rpx;
+  padding: 18rpx 0;
+}
+
+.empty-btn.ghost {
+  background: #fffcf8;
+  color: #E85D4C;
+  border: 2rpx solid #f0b2a8;
+}

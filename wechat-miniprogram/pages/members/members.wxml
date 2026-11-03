@@ -1,8 +1,10 @@
 <view class="page-container">
 
-  <view wx:if="{{list.length === 0}}" class="empty-state">
-    <view class="empty-icon">👨‍👩‍👧‍👦</view>
-    <view class="empty-text">暂无家庭成员，点击下方按钮添加</view>
+  <view wx:if="{{loaded && list.length === 0}}" class="family-empty">
+    <view class="empty-title">还没有家人</view>
+    <view class="empty-text">先把家里人加进来，工作台才知道跟谁过今天</view>
+    <view wx:if="{{canManage}}" class="empty-btn" bindtap="openAdd">添加成员</view>
+    <view wx:else class="empty-hint">只有家长可以添加或编辑家人</view>
   </view>
 
   <view class="family-lead">点一个人，今天就以这位家人的身份来看。</view>
@@ -25,7 +27,7 @@
   </view>
   </view>
 
-  <view class="fab" bindtap="openAdd">+</view>
+  <view wx:if="{{list.length > 0}}" class="fab" bindtap="openAdd">+</view>
 
   <!-- 弹窗 -->
   <view class="modal-mask {{showForm ? '' : 'is-closing'}}" wx:if="{{showForm || modalHold}}" catchtap="closeForm">

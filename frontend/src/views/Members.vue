@@ -28,7 +28,12 @@
           <el-button link type="danger" @click="remove(m)">删除</el-button>
         </div>
       </article>
-      <el-empty v-if="!loading && memberStore.members.length === 0" description="还没有家人" />
+      <div v-if="!loading && memberStore.members.length === 0" class="family-empty">
+        <h3>还没有家人</h3>
+        <p>先把家里人加进来，工作台才知道跟谁过今天</p>
+        <el-button v-if="canManageMembers" type="primary" round @click="openAdd">添加成员</el-button>
+        <p v-else class="deny">只有家长可以添加或编辑家人</p>
+      </div>
     </div>
 
     <el-dialog v-model="dialogVisible" :title="form.id ? '编辑成员' : '新增成员'" width="480px">
@@ -67,17 +72,30 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Plus } from 'lucide-vue-next'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { addMember, updateMember, deleteMember, type FamilyMember } from '@/api/member'
+import { addMember, updateMember, deleteMember, memberForbiddenMessage, type FamilyMember } from '@/api/member'
 import { useMemberStore } from '@/stores/member'
-import { householdRole, memberTone } from '@/utils/family'
+import { canEditFamilyMembers, householdRole, memberTone } from '@/utils/family'
+
+const MEMBER_EDIT_DENIED = '只有家长可以添加或编辑家人'
 
 const router = useRouter()
 const memberStore = useMemberStore()
 const loading = ref(false)
+
+const canManageMembers = computed(() => {
+  const current = memberStore.members.find((m) => m.id === memberStore.currentMemberId)
+  return canEditFamilyMembers(current?.relation, memberStore.members.length)
+})
+
+const ensureCanManage = () => {
+  if (canManageMembers.value) return true
+  ElMessage.warning(MEMBER_EDIT_DENIED)
+  return false
+}
 
 const toneStyle = (id?: number) => {
   const tone = memberTone(id)
@@ -119,6 +137,7 @@ const setCurrent = (row: FamilyMember) => {
 }
 
 const openAdd = () => {
+  if (!ensureCanManage()) return
   Object.assign(form, {
     id: undefined,
     memberName: '',
@@ -131,11 +150,13 @@ const openAdd = () => {
 }
 
 const openEdit = (row: FamilyMember) => {
+  if (!ensureCanManage()) return
   Object.assign(form, { ...row })
   dialogVisible.value = true
 }
 
 const submit = async () => {
+  if (!ensureCanManage()) return
   try {
     if (form.id) {
       await updateMember(form)
@@ -146,8 +167,9 @@ const submit = async () => {
     }
     dialogVisible.value = false
     await load()
-  } catch {
-    // 错误已在拦截器提示
+  } catch (err) {
+    const reason = memberForbiddenMessage(err)
+    if (reason) ElMessage.error(reason)
   }
 }
 
@@ -251,6 +273,34 @@ onMounted(() => {
   align-items: center;
   gap: 4px;
   flex-shrink: 0;
+}
+
+.family-empty {
+  grid-column: 1 / -1;
+  padding: 28px 22px;
+  border: 1px solid var(--border-soft);
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+}
+
+.family-empty h3 {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.family-empty p {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: var(--text-body);
+}
+
+.family-empty .deny {
+  margin: 0;
+  color: var(--text-muted);
 }
 
 @media (max-width: 720px) {
