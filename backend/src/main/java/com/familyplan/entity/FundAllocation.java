@@ -1,5 +1,7 @@
 package com.familyplan.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,6 +25,8 @@ public class FundAllocation extends BaseEntity {
     private String period;
     
     private Integer year;
-    
+
+    /** 月份；年度分配为空。更新时需要把月度改成年度时清空该列。 */
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private Integer month;
 }

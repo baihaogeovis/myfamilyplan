@@ -48,7 +48,7 @@ async function main() {
   assert.strictEqual(modal.canOpen(closed), false)
 
   const pages = [
-    'approval', 'budget', 'fixedExpense', 'growthPlan', 'lifePlan',
+    'approval', 'budget', 'fixedExpense', 'fundAllocation', 'growthPlan', 'lifePlan',
     'members', 'profile', 'record', 'reward', 'workbench'
   ]
   for (const platform of [

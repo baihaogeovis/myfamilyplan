@@ -26,6 +26,7 @@
           />
         </div>
         <el-button :icon="RefreshCw" @click="loadAll">刷新</el-button>
+        <el-button :icon="Download" :loading="exporting" @click="doExport">导出 Excel</el-button>
       </div>
     </el-card>
 
@@ -92,7 +93,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { echarts, type ECharts } from '@/utils/echarts'
-import { RefreshCw } from 'lucide-vue-next'
+import { Download, RefreshCw } from 'lucide-vue-next'
 import { ElMessage } from 'element-plus'
 import { formatMoney } from '@/utils/format'
 import { CHART_BASE, CHART_SERIES, MONEY_COLORS } from '@/constants/palette'
@@ -102,7 +103,9 @@ import {
   type MonthlyStat,
   type CategoryStatResponse
 } from '@/api/statistics'
+import { exportStatistics } from '@/api/export'
 
+const exporting = ref(false)
 const year = ref(String(new Date().getFullYear()))
 const month = ref(`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`)
 
@@ -215,6 +218,18 @@ const loadCategory = async () => {
 const loadAll = () => {
   loadMonthly()
   loadCategory()
+}
+
+const doExport = async () => {
+  exporting.value = true
+  try {
+    await exportStatistics({
+      year: Number(year.value),
+      month: month.value
+    })
+  } finally {
+    exporting.value = false
+  }
 }
 
 const handleResize = () => {

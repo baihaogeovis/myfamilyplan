@@ -95,6 +95,14 @@ module.exports = {
     remove: (id) => request.del(`/daily-task/${id}`)
   },
 
+  /** 资金分配 */
+  fundAllocation: {
+    list: (params) => request.get('/fund-allocation/list', params),
+    add: (data) => request.post('/fund-allocation', data),
+    update: (data) => request.put('/fund-allocation', data),
+    remove: (id) => request.del(`/fund-allocation/${id}`)
+  },
+
   /** 固定支出 */
   fixedExpense: {
     list: (params) => request.get('/fixed-expense/list', params),

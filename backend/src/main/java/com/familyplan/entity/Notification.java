@@ -26,4 +26,10 @@ public class Notification extends BaseEntity {
     private String type;
     
     private Integer isRead;
+
+    /**
+     * 业务幂等键。固定支出提醒为 FE:{账单ID}:{yyyyMM}，手工提醒为空。
+     * 同一家庭、同一账单、同一账期只保留一条，避免重复打扰。
+     */
+    private String bizKey;
 }

@@ -11,6 +11,7 @@
     "pages/approval/approval",
     "pages/notifications/notifications",
     "pages/fixedExpense/fixedExpense",
+    "pages/fundAllocation/fundAllocation",
     "pages/lifePlan/lifePlan",
     "pages/growthPlan/growthPlan",
     "pages/reward/reward"

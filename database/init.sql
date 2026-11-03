@@ -147,12 +147,14 @@ CREATE TABLE IF NOT EXISTS notification (
     content TEXT COMMENT '通知内容',
     type VARCHAR(20) NOT NULL COMMENT '类型(BILL-账单提醒,BUDGET-预算预警,APPROVAL-审批通知,SYSTEM-系统通知)',
     is_read TINYINT DEFAULT 0 COMMENT '是否已读(0-未读,1-已读)',
+    biz_key VARCHAR(64) NULL COMMENT '业务幂等键(固定支出提醒 FE:{账单ID}:{yyyyMM}，手工提醒为空)',
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     deleted TINYINT DEFAULT 0 COMMENT '逻辑删除(0-未删除,1-已删除)',
     INDEX idx_family_id (family_id),
     INDEX idx_user_id (user_id),
-    INDEX idx_is_read (is_read)
+    INDEX idx_is_read (is_read),
+    UNIQUE KEY uk_notification_biz (family_id, biz_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='通知提醒表';
 
 -- 已存在数据库的结构补丁：为 notification 补齐 update_time/deleted 字段（如已存在可忽略报错）
@@ -160,6 +162,10 @@ ALTER TABLE notification ADD COLUMN update_time DATETIME DEFAULT CURRENT_TIMESTA
 ALTER TABLE notification ADD COLUMN deleted TINYINT DEFAULT 0 COMMENT '逻辑删除(0-未删除,1-已删除)';
 ALTER TABLE notification ADD COLUMN family_id BIGINT COMMENT '所属家庭ID';
 ALTER TABLE notification ADD INDEX idx_family_id (family_id);
+
+-- M2：固定支出缴费提醒幂等键（列或索引已存在时可忽略报错）
+ALTER TABLE notification ADD COLUMN biz_key VARCHAR(64) NULL COMMENT '业务幂等键(固定支出提醒 FE:{账单ID}:{yyyyMM}，手工提醒为空)';
+ALTER TABLE notification ADD UNIQUE INDEX uk_notification_biz (family_id, biz_key);
 
 -- 历史数据迁移补丁：历史通知归属默认家庭(如已迁移可忽略)
 UPDATE notification SET family_id = 1 WHERE family_id IS NULL;

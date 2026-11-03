@@ -8,6 +8,10 @@
       onTap="switchType" data-type="expense">支出</view>
   </view>
 
+  <view class="money-extra">
+    <view class="plan-jump" onTap="goAllocation">资金怎么分 ›</view>
+  </view>
+
   <!-- 列表 -->
   <view class="list-wrap">
     <view a:if="{{list.length === 0}}" class="empty-state">

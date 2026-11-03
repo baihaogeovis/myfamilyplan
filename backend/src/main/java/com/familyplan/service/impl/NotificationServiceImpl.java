@@ -6,8 +6,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.familyplan.entity.Notification;
 import com.familyplan.mapper.NotificationMapper;
+import com.familyplan.service.FixedExpenseReminderService;
 import com.familyplan.service.INotificationService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,8 +21,12 @@ import java.time.LocalDateTime;
 @Service
 public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Notification> implements INotificationService {
 
+    @Autowired
+    private FixedExpenseReminderService fixedExpenseReminderService;
+
     @Override
     public IPage<Notification> pageQuery(Long familyId, Integer page, Integer size, Integer isRead) {
+        refreshFixedExpenseReminders(familyId);
         LambdaQueryWrapper<Notification> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Notification::getFamilyId, familyId);
         if (isRead != null) {
@@ -32,6 +38,8 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
 
     @Override
     public void add(Notification notification) {
+        // 手工提醒不占用固定支出的幂等键
+        notification.setBizKey(null);
         if (notification.getIsRead() == null) {
             notification.setIsRead(0);
         }
@@ -68,8 +76,20 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
 
     @Override
     public long unreadCount(Long familyId) {
+        refreshFixedExpenseReminders(familyId);
         LambdaQueryWrapper<Notification> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Notification::getFamilyId, familyId).eq(Notification::getIsRead, 0);
         return baseMapper.selectCount(wrapper);
+    }
+
+    /**
+     * 打开提醒或未读数时补齐即将到期/已逾期的固定支出提醒。失败不影响列表本身。
+     */
+    private void refreshFixedExpenseReminders(Long familyId) {
+        try {
+            fixedExpenseReminderService.generateForFamily(familyId);
+        } catch (Exception ex) {
+            log.warn("生成固定支出提醒失败: {}", ex.getMessage());
+        }
     }
 }

@@ -200,6 +200,10 @@ Page({
     } catch (e) { /* 错误已提示 */ }
   },
 
+  goAllocation() {
+    wx.navigateTo({ url: '/pages/fundAllocation/fundAllocation' })
+  },
+
   async removeItem(e) {
     const item = e.currentTarget.dataset.item
     const { type } = this.data

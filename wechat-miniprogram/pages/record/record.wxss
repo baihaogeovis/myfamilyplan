@@ -160,3 +160,8 @@
 .modal-btn {
   margin-top: 40rpx;
 }
+
+.money-extra {
+  padding: 8rpx 24rpx 0;
+  background: #ffffff;
+}

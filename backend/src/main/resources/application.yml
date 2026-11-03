@@ -48,6 +48,16 @@ knife4j:
   setting:
     language: zh_cn
 
+# 固定支出缴费提醒
+# 1. 打开提醒列表或刷新未读数时，按当前家庭即时生成（主路径）
+# 2. 每天定时再扫一遍全部家庭，避免当天没人打开应用就漏掉
+# 同一账单同一账期只写一条（notification.biz_key = FE:{账单ID}:{yyyyMM}）
+familyplan:
+  reminder:
+    lead-days: 3
+    cron: "0 10 8 * * ?"
+    zone: Asia/Shanghai
+
 # 日志配置
 logging:
   level:

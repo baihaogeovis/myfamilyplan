@@ -58,7 +58,7 @@ Page({
   },
 
   typeText(type) {
-    const map = { APPROVAL: '审批', BUDGET: '预算', SYSTEM: '系统', TASK: '任务' }
+    const map = { BILL: '缴费', APPROVAL: '审批', BUDGET: '预算', SYSTEM: '系统', TASK: '任务' }
     return map[type] || type || '系统'
   },
 

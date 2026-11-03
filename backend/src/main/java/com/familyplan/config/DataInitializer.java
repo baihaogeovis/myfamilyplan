@@ -83,6 +83,10 @@ public class DataInitializer implements ApplicationRunner {
         addColumnIfMissing("notification", "deleted", "TINYINT DEFAULT 0 COMMENT '逻辑删除(0-未删除,1-已删除)'");
         addIndexIfMissing("notification", "idx_family_id",
                 "ALTER TABLE notification ADD INDEX idx_family_id (family_id)");
+        addColumnIfMissing("notification", "biz_key",
+                "VARCHAR(64) NULL COMMENT '业务幂等键(固定支出提醒 FE:{账单ID}:{yyyyMM}，手工提醒为空)'");
+        addIndexIfMissing("notification", "uk_notification_biz",
+                "ALTER TABLE notification ADD UNIQUE INDEX uk_notification_biz (family_id, biz_key)");
 
         // 三期奖励额度模块建表(未手工执行 upgrade_v3_reward.sql 时兜底)
         createRewardAccountTable();
@@ -147,12 +151,14 @@ public class DataInitializer implements ApplicationRunner {
                     "content TEXT COMMENT '通知内容'," +
                     "type VARCHAR(20) NOT NULL COMMENT '类型(BILL-账单提醒,BUDGET-预算预警,APPROVAL-审批通知,SYSTEM-系统通知)'," +
                     "is_read TINYINT DEFAULT 0 COMMENT '是否已读(0-未读,1-已读)'," +
+                    "biz_key VARCHAR(64) NULL COMMENT '业务幂等键(固定支出提醒 FE:{账单ID}:{yyyyMM}，手工提醒为空)'," +
                     "create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'," +
                     "update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'," +
                     "deleted TINYINT DEFAULT 0 COMMENT '逻辑删除(0-未删除,1-已删除)'," +
                     "INDEX idx_family_id (family_id)," +
                     "INDEX idx_user_id (user_id)," +
-                    "INDEX idx_is_read (is_read)" +
+                    "INDEX idx_is_read (is_read)," +
+                    "UNIQUE KEY uk_notification_biz (family_id, biz_key)" +
                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='通知提醒表'");
         } catch (Exception e) {
             log.warn("检查/创建 notification 表失败(可忽略): {}", e.getMessage());
