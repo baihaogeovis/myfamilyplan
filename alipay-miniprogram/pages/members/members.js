@@ -4,6 +4,7 @@ const util = require('../../utils/util')
 Page({
   data: {
     list: [],
+    currentId: null,
     showForm: false,
     formMode: 'add',
     form: {
@@ -16,6 +17,7 @@ Page({
   },
 
   onShow() {
+    this.setData({ currentId: getApp().globalData.currentMemberId })
     this.loadList()
   },
 
@@ -25,10 +27,18 @@ Page({
       this.setData({
         list: (list || []).map((m) => ({
           ...m,
-          relationText: util.relationText(m.relation)
+          relationText: util.relationText(m.relation),
+          roleText: m.relation === 'CHILD' ? '孩子' : (m.relation === 'OTHER' ? '家人' : '家长')
         }))
       })
     } catch (e) { /* 错误已提示 */ }
+  },
+
+  setCurrent(e) {
+    const item = e.currentTarget.dataset.item
+    getApp().setCurrentMember(item.id, item.memberName)
+    this.setData({ currentId: item.id })
+    my.showToast({ type: 'success', content: `现在是 ${item.memberName}` })
   },
 
   openAdd() {

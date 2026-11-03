@@ -20,32 +20,5 @@
     "titleBarColor": "#f6f1e8",
     "backgroundColor": "#f6f1e8",
     "allowsBounceVertical": "NO"
-  },
-  "tabBar": {
-    "textColor": "#8a8175",
-    "selectedColor": "#2f6b4f",
-    "backgroundColor": "#fffcf8",
-    "items": [
-      {
-        "pagePath": "pages/index/index",
-        "name": "首页"
-      },
-      {
-        "pagePath": "pages/record/record",
-        "name": "记账"
-      },
-      {
-        "pagePath": "pages/workbench/workbench",
-        "name": "安排"
-      },
-      {
-        "pagePath": "pages/statistics/statistics",
-        "name": "月报"
-      },
-      {
-        "pagePath": "pages/profile/profile",
-        "name": "我的"
-      }
-    ]
   }
 }

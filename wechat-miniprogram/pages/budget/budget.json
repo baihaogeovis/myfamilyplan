@@ -1,4 +1,7 @@
 {
   "navigationBarTitleText": "预算规划",
-  "enablePullDownRefresh": true
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "main-nav": "/components/main-nav/main-nav"
+  }
 }

@@ -1,4 +1,7 @@
 {
-  "navigationBarTitleText": "美好生活",
-  "enablePullDownRefresh": true
+  "navigationBarTitleText": "计划",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "main-nav": "/components/main-nav/main-nav"
+  }
 }

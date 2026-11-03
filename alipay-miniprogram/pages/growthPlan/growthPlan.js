@@ -166,5 +166,9 @@ Page({
         }
       }
     })
+  },
+
+  goLife() {
+    my.navigateTo({ url: '/pages/lifePlan/lifePlan' })
   }
 })

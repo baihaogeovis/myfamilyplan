@@ -1,3 +1,6 @@
 {
-  "defaultTitle": "奖励额度"
+  "defaultTitle": "奖励",
+  "usingComponents": {
+    "main-nav": "/components/main-nav/index"
+  }
 }

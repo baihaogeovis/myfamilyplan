@@ -12,7 +12,7 @@ Page({
   onLoad() {
     const token = my.getStorageSync({ key: 'token' }).data
     if (token) {
-      my.switchTab({ url: '/pages/index/index' })
+      my.reLaunch({ url: '/pages/index/index' })
     }
   },
 
@@ -61,7 +61,7 @@ Page({
   enterHome() {
     my.showToast({ type: 'success', content: '登录成功' })
     setTimeout(() => {
-      my.switchTab({ url: '/pages/index/index' })
+      my.reLaunch({ url: '/pages/index/index' })
     }, 600)
   }
 })

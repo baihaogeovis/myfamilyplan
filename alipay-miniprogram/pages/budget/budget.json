@@ -1,3 +1,6 @@
 {
-  "defaultTitle": "预算规划"
+  "defaultTitle": "预算规划",
+  "usingComponents": {
+    "main-nav": "/components/main-nav/index"
+  }
 }

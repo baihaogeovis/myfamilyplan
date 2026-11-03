@@ -3,33 +3,31 @@ const util = require('../../utils/util')
 
 const groups = [
   {
-    title: '今天',
-    hint: '先安排，再记一笔',
+    title: '计划',
+    hint: '今天要做的，和生活里想攒的',
     items: [
       { icon: '安', tone: 'sage', name: '今日安排', path: '/pages/workbench/workbench' },
-      { icon: '收', tone: 'sage', name: '记收入', path: '/pages/record/record?type=income' },
+      { icon: '活', tone: 'clay', name: '生活', path: '/pages/lifePlan/lifePlan' },
+      { icon: '长', tone: 'plum', name: '成长', path: '/pages/growthPlan/growthPlan' }
+    ]
+  },
+  {
+    title: '钱',
+    hint: '记账、账单，和要过目的支出',
+    items: [
       { icon: '支', tone: 'clay', name: '记支出', path: '/pages/record/record?type=expense' },
+      { icon: '收', tone: 'sage', name: '记收入', path: '/pages/record/record?type=income' },
+      { icon: '预', tone: 'sage', name: '预算', path: '/pages/budget/budget' },
+      { icon: '账', tone: 'ink', name: '固定账单', path: '/pages/fixedExpense/fixedExpense' },
+      { icon: '审', tone: 'clay', name: '审批', path: '/pages/approval/approval' },
       { icon: '报', tone: 'ink', name: '月报', path: '/pages/statistics/statistics' }
     ]
   },
   {
-    title: '成长',
-    hint: '计划和可以兑换的奖励',
+    title: '我的',
+    hint: '通知',
     items: [
-      { icon: '长', tone: 'plum', name: '成长', path: '/pages/growthPlan/growthPlan' },
-      { icon: '奖', tone: 'honey', name: '奖励', path: '/pages/reward/reward' },
-      { icon: '活', tone: 'clay', name: '想做的事', path: '/pages/lifePlan/lifePlan' }
-    ]
-  },
-  {
-    title: '家里',
-    hint: '账单、审批和家人',
-    items: [
-      { icon: '预', tone: 'sage', name: '预算', path: '/pages/budget/budget' },
-      { icon: '账', tone: 'ink', name: '固定账单', path: '/pages/fixedExpense/fixedExpense' },
-      { icon: '审', tone: 'clay', name: '审批', path: '/pages/approval/approval' },
-      { icon: '人', tone: 'plum', name: '家人', path: '/pages/members/members' },
-      { icon: '讯', tone: 'honey', name: '提醒', path: '/pages/notifications/notifications' }
+      { icon: '讯', tone: 'honey', name: '通知', path: '/pages/notifications/notifications' }
     ]
   }
 ]
@@ -92,8 +90,6 @@ Page({
     } catch (e) { /* 错误已提示 */ }
   },
 
-  TAB_PATHS: ['/pages/record/record', '/pages/workbench/workbench', '/pages/statistics/statistics', '/pages/profile/profile'],
-
   goMenu(e) {
     const path = e.currentTarget.dataset.path
     const app = getApp()
@@ -103,23 +99,23 @@ Page({
         content: '请先在「我的」页面选择当前家庭成员',
         confirmText: '去选择',
         success: (res) => {
-          if (res.confirm) my.switchTab({ url: '/pages/profile/profile' })
+          if (res.confirm) my.reLaunch({ url: '/pages/profile/profile' })
         }
       })
       return
     }
     const base = path.split('?')[0]
-    if (this.TAB_PATHS.includes(base)) {
-      const query = path.split('?')[1]
-      if (query) {
-        const params = {}
-        query.split('&').forEach((kv) => {
-          const idx = kv.indexOf('=')
-          params[kv.slice(0, idx)] = kv.slice(idx + 1)
-        })
-        if (params.type) app.globalData.recordType = params.type
-      }
-      my.switchTab({ url: base })
+    const query = path.split('?')[1]
+    if (query) {
+      query.split('&').forEach((kv) => {
+        const idx = kv.indexOf('=')
+        const key = kv.slice(0, idx)
+        if (key === 'type') app.globalData.recordType = kv.slice(idx + 1)
+      })
+    }
+    const roots = ['/pages/index/index', '/pages/members/members', '/pages/lifePlan/lifePlan', '/pages/record/record', '/pages/reward/reward', '/pages/profile/profile']
+    if (roots.includes(base)) {
+      my.reLaunch({ url: path })
       return
     }
     my.navigateTo({ url: path })
@@ -133,6 +129,6 @@ Page({
       return
     }
     app.globalData.recordType = type
-    my.switchTab({ url: '/pages/record/record' })
+    my.reLaunch({ url: `/pages/record/record?type=${type}` })
   }
 })

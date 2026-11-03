@@ -1,4 +1,7 @@
 {
   "navigationBarTitleText": "资金审批",
-  "enablePullDownRefresh": true
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "main-nav": "/components/main-nav/main-nav"
+  }
 }

@@ -1,3 +1,6 @@
 {
-  "defaultTitle": "资金审批"
+  "defaultTitle": "资金审批",
+  "usingComponents": {
+    "main-nav": "/components/main-nav/index"
+  }
 }

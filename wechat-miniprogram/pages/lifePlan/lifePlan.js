@@ -166,5 +166,9 @@ Page({
         }
       }
     })
+  },
+
+  goGrowth() {
+    wx.navigateTo({ url: '/pages/growthPlan/growthPlan' })
   }
 })

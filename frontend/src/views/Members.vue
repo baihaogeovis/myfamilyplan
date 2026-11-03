@@ -1,45 +1,35 @@
 <template>
   <div class="page-container">
-    <el-card>
-      <template #header>
-        <div class="header-bar">
-          <div class="tip">
-            当前操作成员：
-            <el-tag v-if="memberStore.currentMemberId" type="success">
-              {{ currentName }}
-            </el-tag>
-            <el-tag v-else type="warning">未选择</el-tag>
-          </div>
-          <el-button type="primary" :icon="Plus" @click="openAdd">新增成员</el-button>
-        </div>
-      </template>
+    <div class="family-head">
+      <p>点一个人，今天就以这位家人的身份来看。</p>
+      <div class="family-actions">
+        <el-button round @click="router.push('/family')">家庭账号</el-button>
+        <el-button type="primary" round :icon="Plus" @click="openAdd">添加家人</el-button>
+      </div>
+    </div>
 
-      <el-table :data="memberStore.members" v-loading="loading" stripe>
-        <el-table-column prop="memberName" label="姓名" width="120" />
-        <el-table-column prop="relation" label="关系" width="120">
-          <template #default="{ row }">
-            {{ relationText(row.relation) }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="gender" label="性别" width="80" />
-        <el-table-column prop="birthday" label="生日" width="140" />
-        <el-table-column prop="remark" label="备注" show-overflow-tooltip />
-        <el-table-column label="操作" width="200">
-          <template #default="{ row }">
-            <el-button
-              link
-              type="primary"
-              :disabled="memberStore.currentMemberId === row.id"
-              @click="setCurrent(row)"
-            >
-              设为当前
-            </el-button>
-            <el-button link type="primary" @click="openEdit(row)">编辑</el-button>
-            <el-button link type="danger" @click="remove(row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-card>
+    <div class="people" v-loading="loading">
+      <article
+        v-for="m in memberStore.members"
+        :key="m.id"
+        class="person"
+        :class="{ on: m.id === memberStore.currentMemberId }"
+      >
+        <span class="avatar" :style="toneStyle(m.id)">{{ (m.memberName || '?').charAt(0) }}</span>
+        <div class="who">
+          <strong>{{ m.memberName }}</strong>
+          <em>{{ householdRole(m.relation) }} · {{ relationText(m.relation) }}</em>
+          <span v-if="m.birthday || m.remark">{{ [m.birthday, m.remark].filter(Boolean).join(' · ') }}</span>
+        </div>
+        <div class="ops">
+          <el-tag v-if="m.id === memberStore.currentMemberId" round effect="plain">正在用</el-tag>
+          <el-button v-else round @click="setCurrent(m)">设为当前</el-button>
+          <el-button link type="primary" @click="openEdit(m)">编辑</el-button>
+          <el-button link type="danger" @click="remove(m)">删除</el-button>
+        </div>
+      </article>
+      <el-empty v-if="!loading && memberStore.members.length === 0" description="还没有家人" />
+    </div>
 
     <el-dialog v-model="dialogVisible" :title="form.id ? '编辑成员' : '新增成员'" width="480px">
       <el-form :model="form" label-width="80px">
@@ -77,19 +67,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { Plus } from 'lucide-vue-next'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { addMember, updateMember, deleteMember, type FamilyMember } from '@/api/member'
 import { useMemberStore } from '@/stores/member'
+import { householdRole, memberTone } from '@/utils/family'
 
+const router = useRouter()
 const memberStore = useMemberStore()
 const loading = ref(false)
 
-const currentName = computed(() => {
-  const m = memberStore.members.find((x) => x.id === memberStore.currentMemberId)
-  return m ? m.memberName : ''
-})
+const toneStyle = (id?: number) => {
+  const tone = memberTone(id)
+  return { background: tone.bg, color: tone.ink }
+}
 
 const relationText = (val?: string) => {
   const map: Record<string, string> = {
@@ -177,14 +170,93 @@ onMounted(() => {
 <style scoped>
 .page-container {
   width: 100%;
-  max-width: 1600px;
+  max-width: 880px;
   margin: 0 auto;
 }
-.header-bar {
+
+.family-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.family-head p {
+  margin: 0;
+  color: var(--text-body);
+}
+
+.family-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.people {
+  display: flex;
+  flex-direction: column;
   gap: 12px;
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 18px;
+  border-radius: 22px;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-1);
+}
+
+.person.on {
+  border-color: var(--grass-300);
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  font-size: 20px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.who {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.who strong {
+  font-size: 18px;
+  color: var(--text-strong);
+}
+
+.who em,
+.who span {
+  font-style: normal;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.ops {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 720px) {
+  .family-head,
+  .person {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 </style>

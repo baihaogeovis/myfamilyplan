@@ -1,3 +1,6 @@
 {
-  "defaultTitle": "家庭成员"
+  "defaultTitle": "家庭",
+  "usingComponents": {
+    "main-nav": "/components/main-nav/index"
+  }
 }

@@ -40,7 +40,11 @@ Page({
   },
 
   goMembers() {
-    my.navigateTo({ url: '/pages/members/members' })
+    my.reLaunch({ url: '/pages/members/members' })
+  },
+
+  goNotes() {
+    my.navigateTo({ url: '/pages/notifications/notifications' })
   },
 
   openPwd() {

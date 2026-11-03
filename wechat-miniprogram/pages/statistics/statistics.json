@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "统计"
+  "navigationBarTitleText": "统计",
+  "usingComponents": {
+    "main-nav": "/components/main-nav/main-nav"
+  }
 }

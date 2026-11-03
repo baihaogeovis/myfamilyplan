@@ -22,34 +22,6 @@
     "navigationBarTextStyle": "black",
     "backgroundColor": "#f6f1e8"
   },
-  "tabBar": {
-    "color": "#8a8175",
-    "selectedColor": "#2f6b4f",
-    "backgroundColor": "#fffcf8",
-    "borderStyle": "white",
-    "list": [
-      {
-        "pagePath": "pages/index/index",
-        "text": "首页"
-      },
-      {
-        "pagePath": "pages/record/record",
-        "text": "记账"
-      },
-      {
-        "pagePath": "pages/workbench/workbench",
-        "text": "安排"
-      },
-      {
-        "pagePath": "pages/statistics/statistics",
-        "text": "月报"
-      },
-      {
-        "pagePath": "pages/profile/profile",
-        "text": "我的"
-      }
-    ]
-  },
   "style": "v2",
   "sitemapLocation": "sitemap.json",
   "lazyCodeLoading": "requiredComponents"

@@ -1,3 +1,6 @@
 {
-  "defaultTitle": "每日工作台"
+  "defaultTitle": "每日工作台",
+  "usingComponents": {
+    "main-nav": "/components/main-nav/index"
+  }
 }

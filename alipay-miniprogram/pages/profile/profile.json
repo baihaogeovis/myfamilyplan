@@ -1,3 +1,6 @@
 {
-  "defaultTitle": "我的"
+  "defaultTitle": "我的",
+  "usingComponents": {
+    "main-nav": "/components/main-nav/index"
+  }
 }

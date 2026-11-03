@@ -1,3 +1,6 @@
 {
-  "defaultTitle": "儿童成长"
+  "defaultTitle": "儿童成长",
+  "usingComponents": {
+    "main-nav": "/components/main-nav/index"
+  }
 }

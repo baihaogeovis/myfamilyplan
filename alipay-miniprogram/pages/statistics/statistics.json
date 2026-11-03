@@ -1,3 +1,6 @@
 {
-  "defaultTitle": "统计"
+  "defaultTitle": "统计",
+  "usingComponents": {
+    "main-nav": "/components/main-nav/index"
+  }
 }

@@ -1,3 +1,6 @@
 {
-  "defaultTitle": "通知中心"
+  "defaultTitle": "通知中心",
+  "usingComponents": {
+    "main-nav": "/components/main-nav/index"
+  }
 }

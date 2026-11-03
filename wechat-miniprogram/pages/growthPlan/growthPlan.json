@@ -1,4 +1,7 @@
 {
   "navigationBarTitleText": "儿童成长",
-  "enablePullDownRefresh": true
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "main-nav": "/components/main-nav/main-nav"
+  }
 }

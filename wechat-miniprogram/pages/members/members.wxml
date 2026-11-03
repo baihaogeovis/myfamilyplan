@@ -5,17 +5,22 @@
     <view class="empty-text">暂无家庭成员，点击下方按钮添加</view>
   </view>
 
-  <view class="card member-item" wx:for="{{list}}" wx:key="id" bindtap="openEdit" data-item="{{item}}">
+  <view class="family-lead">点一个人，今天就以这位家人的身份来看。</view>
+
+  <view class="card member-item" wx:for="{{list}}" wx:key="id">
     <view class="member-avatar">{{item.memberName[0]}}</view>
-    <view class="member-info">
+    <view class="member-info" bindtap="openEdit" data-item="{{item}}">
       <view class="member-name">{{item.memberName}}</view>
       <view class="member-meta">
-        <text class="tag tag-purple">{{item.relationText}}</text>
-        <text class="member-phone" wx:if="{{item.phone}}">{{item.phone}}</text>
+        <text class="tag tag-green">{{item.roleText}}</text>
+        <text class="tag tag-gray">{{item.relationText}}</text>
       </view>
       <view class="member-remark" wx:if="{{item.remark}}">{{item.remark}}</view>
     </view>
-    <view class="member-del" catchtap="removeItem" data-item="{{item}}">删除</view>
+    <view class="member-side">
+      <view class="member-now" catchtap="setCurrent" data-item="{{item}}">{{currentId === item.id ? '正在用' : '设为当前'}}</view>
+      <view class="member-del" catchtap="removeItem" data-item="{{item}}">删除</view>
+    </view>
   </view>
 
   <view class="fab" bindtap="openAdd">+</view>
@@ -58,3 +63,4 @@
     </view>
   </view>
 </view>
+<main-nav current="family" />

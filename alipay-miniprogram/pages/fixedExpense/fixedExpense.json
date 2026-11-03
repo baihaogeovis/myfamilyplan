@@ -1,3 +1,6 @@
 {
-  "defaultTitle": "资金管理"
+  "defaultTitle": "资金管理",
+  "usingComponents": {
+    "main-nav": "/components/main-nav/index"
+  }
 }

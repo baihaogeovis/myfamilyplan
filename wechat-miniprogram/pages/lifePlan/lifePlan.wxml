@@ -1,5 +1,7 @@
 <view class="page-container">
 
+  <view class="plan-jump" bindtap="goGrowth">成长计划也在这里 ›</view>
+
   <view class="type-tabs">
     <view class="type-tab {{planType === item.value ? 'active' : ''}}"
       wx:for="{{typeTabs}}" wx:key="value" wx:for-item="item"
@@ -90,3 +92,4 @@
     </view>
   </view>
 </view>
+<main-nav current="plan" />

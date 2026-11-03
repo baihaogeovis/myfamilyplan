@@ -170,5 +170,9 @@ Page({
         }
       }
     })
+  },
+
+  goLife() {
+    wx.navigateTo({ url: '/pages/lifePlan/lifePlan' })
   }
 })

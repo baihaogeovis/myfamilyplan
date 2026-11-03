@@ -1,3 +1,6 @@
 {
-  "defaultTitle": "记账"
+  "defaultTitle": "钱",
+  "usingComponents": {
+    "main-nav": "/components/main-nav/index"
+  }
 }

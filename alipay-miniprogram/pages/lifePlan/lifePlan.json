@@ -1,3 +1,6 @@
 {
-  "defaultTitle": "美好生活"
+  "defaultTitle": "计划",
+  "usingComponents": {
+    "main-nav": "/components/main-nav/index"
+  }
 }

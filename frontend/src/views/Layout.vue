@@ -1,176 +1,172 @@
 <template>
-  <el-container class="layout-container">
-    <el-aside :width="isNarrow ? '84px' : '248px'" class="layout-aside" :class="{ narrow: isNarrow }">
-      <div class="logo-container" :class="{ narrow: isNarrow }">
-        <span class="logo-mark">
-          <Sprout :size="20" />
-        </span>
-        <span v-if="!isNarrow" class="logo-word">
-          <strong>家庭成长</strong>
-          <em>把一天过好</em>
-        </span>
-      </div>
+  <div class="shell">
+    <header class="topbar">
+      <router-link to="/dashboard" class="brand">
+        <span class="logo-mark"><Sprout :size="18" /></span>
+        <span class="brand-name">家庭成长</span>
+      </router-link>
 
-      <nav class="rail" aria-label="家庭导航">
-        <section v-for="section in sections" :key="section.label" class="rail-section">
-          <p v-if="!isNarrow" class="section-label">{{ section.label }}</p>
-          <router-link
-            v-for="item in section.items"
-            :key="item.to"
-            :to="item.to"
-            class="rail-link"
-            :class="{ active: activeMenu === item.to }"
-          >
-            <component :is="item.icon" :size="18" />
-            <span v-if="!isNarrow">{{ item.label }}</span>
-          </router-link>
-        </section>
+      <nav class="primary" aria-label="主要导航">
+        <router-link
+          v-for="item in primary"
+          :key="item.id"
+          :to="item.to"
+          class="primary-link"
+          :class="{ active: sectionId === item.id }"
+        >
+          {{ item.label }}
+        </router-link>
       </nav>
-    </el-aside>
 
-    <el-container class="layout-body">
-      <el-header class="layout-header">
-        <div class="header-left">
-          <div>
-            <h2 class="page-title">{{ currentPageTitle }}</h2>
-            <p class="page-kicker">{{ currentPageKicker }}</p>
-          </div>
-        </div>
-
-        <div class="header-right">
-          <el-dropdown v-if="memberStore.members.length > 0" @command="switchMember">
-            <span class="member-info">
-              <span class="member-avatar" :style="avatarStyle(memberStore.currentMemberId)">
-                {{ currentMemberName.charAt(0) || '家' }}
-              </span>
-              <span class="member-text">
-                <em>{{ currentRole }}</em>
-                <strong>{{ currentMemberName || '请选择家人' }}</strong>
-              </span>
-              <ArrowDown :size="15" />
+      <div class="tools">
+        <el-dropdown v-if="memberStore.members.length > 0" @command="switchMember">
+          <span class="member-info">
+            <span class="member-avatar" :style="avatarStyle(memberStore.currentMemberId)">
+              {{ currentMemberName.charAt(0) || '家' }}
             </span>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item
-                  v-for="m in memberStore.members"
-                  :key="m.id"
-                  :command="m.id"
-                  :disabled="m.id === memberStore.currentMemberId"
-                >
-                  <span class="menu-dot" :style="{ background: memberTone(m.id).dot }"></span>
-                  {{ m.memberName }} · {{ relationLabel(m.relation) }}
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-
-          <el-dropdown @command="handleCommand">
-            <span class="user-info">
-              <el-avatar :size="34" :src="userStore.userInfo?.avatar">
-                {{ (userStore.userInfo?.nickname || '家').charAt(0) }}
-              </el-avatar>
-              <span class="username">{{ userStore.userInfo?.nickname }}</span>
-              <ArrowDown :size="15" />
+            <span class="member-text">
+              <em>{{ currentRole }}</em>
+              <strong>{{ currentMemberName || '选择家人' }}</strong>
             </span>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item command="profile">个人中心</el-dropdown-item>
-                <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </div>
-      </el-header>
+            <ArrowDown :size="15" />
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item
+                v-for="m in memberStore.members"
+                :key="m.id"
+                :command="m.id"
+                :disabled="m.id === memberStore.currentMemberId"
+              >
+                <span class="menu-dot" :style="{ background: memberTone(m.id).dot }"></span>
+                {{ m.memberName }} · {{ relationLabel(m.relation) }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
 
-      <el-main class="layout-main">
-        <router-view v-slot="{ Component }">
-          <transition name="page" mode="out-in">
-            <component :is="Component" />
-          </transition>
-        </router-view>
-      </el-main>
-    </el-container>
-  </el-container>
+        <el-dropdown @command="handleCommand">
+          <span class="user-info">
+            <span class="username">{{ userStore.userInfo?.nickname || '家庭' }}</span>
+            <ArrowDown :size="15" />
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item command="account">家庭账号</el-dropdown-item>
+              <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
+    </header>
+
+    <div class="page-intro">
+      <h1>{{ currentPageTitle }}</h1>
+      <p>{{ currentPageKicker }}</p>
+    </div>
+
+    <nav v-if="subs.length > 1" class="subnav" aria-label="本节">
+      <router-link
+        v-for="item in subs"
+        :key="item.to"
+        :to="item.to"
+        class="sub-link"
+        :class="{ active: route.path === item.to }"
+      >
+        {{ item.label }}
+      </router-link>
+    </nav>
+
+    <main class="shell-main">
+      <router-view v-slot="{ Component }">
+        <transition name="page" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
+    </main>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { Component } from 'vue'
-import {
-  Home, CalendarCheck, Baby, Gift, Sparkles, Sun,
-  ArrowDownLeft, ArrowUpRight, Receipt, PieChart, PiggyBank,
-  Users, Building2, BadgeCheck, Bell, ArrowDown, Sprout
-} from 'lucide-vue-next'
+import { ArrowDown, Sprout } from 'lucide-vue-next'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import { useMemberStore } from '@/stores/member'
 import { logout } from '@/api/auth'
 import { householdRole, memberTone, relationLabel } from '@/utils/family'
 
-interface NavItem {
-  to: string
+interface PrimaryItem {
+  id: string
   label: string
-  icon: Component
+  to: string
+  match: string[]
 }
 
-const sections: { label: string; items: NavItem[] }[] = [
+interface SubItem {
+  to: string
+  label: string
+}
+
+const primary: PrimaryItem[] = [
+  { id: 'work', label: '工作台', to: '/dashboard', match: ['/dashboard', '/workbench'] },
+  { id: 'family', label: '家庭', to: '/members', match: ['/members', '/family'] },
+  { id: 'plan', label: '计划', to: '/life-plan', match: ['/life-plan', '/growth-plan'] },
   {
-    label: '今天',
-    items: [
-      { to: '/dashboard', label: '今天', icon: Home },
-      { to: '/workbench', label: '今日安排', icon: CalendarCheck }
-    ]
+    id: 'money',
+    label: '钱',
+    to: '/expense',
+    match: ['/income', '/expense', '/fixed-expense', '/budget', '/statistics', '/approval']
   },
-  {
-    label: '成长',
-    items: [
-      { to: '/growth-plan', label: '成长计划', icon: Baby },
-      { to: '/reward', label: '奖励小店', icon: Gift },
-      { to: '/reward-items', label: '活动方案', icon: Sparkles }
-    ]
-  },
-  {
-    label: '生活',
-    items: [{ to: '/life-plan', label: '想做的事', icon: Sun }]
-  },
-  {
-    label: '账本',
-    items: [
-      { to: '/income', label: '收入', icon: ArrowDownLeft },
-      { to: '/expense', label: '支出', icon: ArrowUpRight },
-      { to: '/fixed-expense', label: '固定账单', icon: Receipt },
-      { to: '/budget', label: '预算', icon: PiggyBank },
-      { to: '/statistics', label: '月报', icon: PieChart }
-    ]
-  },
-  {
-    label: '我们家',
-    items: [
-      { to: '/family', label: '家庭', icon: Building2 },
-      { to: '/members', label: '家人', icon: Users },
-      { to: '/approval', label: '审批', icon: BadgeCheck },
-      { to: '/notifications', label: '提醒', icon: Bell }
-    ]
-  }
+  { id: 'reward', label: '奖励', to: '/reward', match: ['/reward', '/reward-items'] },
+  { id: 'me', label: '我的', to: '/notifications', match: ['/notifications'] }
 ]
 
+const subnav: Record<string, SubItem[]> = {
+  work: [
+    { to: '/dashboard', label: '概览' },
+    { to: '/workbench', label: '今日安排' }
+  ],
+  family: [
+    { to: '/members', label: '成员' },
+    { to: '/family', label: '家庭账号' }
+  ],
+  plan: [
+    { to: '/life-plan', label: '生活' },
+    { to: '/growth-plan', label: '成长' }
+  ],
+  money: [
+    { to: '/expense', label: '支出' },
+    { to: '/income', label: '收入' },
+    { to: '/fixed-expense', label: '固定账单' },
+    { to: '/budget', label: '预算' },
+    { to: '/approval', label: '审批' },
+    { to: '/statistics', label: '月报' }
+  ],
+  reward: [
+    { to: '/reward', label: '奖励' },
+    { to: '/reward-items', label: '活动方案' }
+  ],
+  me: [{ to: '/notifications', label: '通知' }]
+}
+
 const titles: Record<string, string> = {
-  '/dashboard': '今天',
-  '/workbench': '今日安排',
-  '/income': '收入',
-  '/expense': '支出',
-  '/fixed-expense': '固定账单',
-  '/budget': '预算',
-  '/life-plan': '想做的事',
-  '/growth-plan': '成长计划',
-  '/reward': '奖励小店',
-  '/reward-items': '活动方案',
-  '/approval': '审批',
+  '/dashboard': '工作台',
+  '/workbench': '工作台',
+  '/income': '钱',
+  '/expense': '钱',
+  '/fixed-expense': '钱',
+  '/budget': '钱',
+  '/statistics': '钱',
+  '/approval': '钱',
+  '/life-plan': '计划',
+  '/growth-plan': '计划',
+  '/reward': '奖励',
+  '/reward-items': '奖励',
   '/family': '家庭',
-  '/members': '家人',
-  '/statistics': '月报',
-  '/notifications': '提醒'
+  '/members': '家庭',
+  '/notifications': '我的'
 }
 
 const kickers: Record<string, string> = {
@@ -182,7 +178,7 @@ const kickers: Record<string, string> = {
   '/budget': '这个月打算怎么花',
   '/life-plan': '家电、旅行，慢慢攒',
   '/growth-plan': '短期一件事，长期一个方向',
-  '/reward': '额度像零花钱，花在你们约定的事上',
+  '/reward': '额度花在你们约好的事上',
   '/reward-items': '先定规则，再让孩子来兑',
   '/approval': '大额支出，家长过一眼',
   '/family': '这个家的名字和账号',
@@ -196,11 +192,8 @@ const router = useRouter()
 const userStore = useUserStore()
 const memberStore = useMemberStore()
 
-const activeMenu = computed(() => route.path)
-const isNarrow = ref(false)
-const syncNarrow = () => {
-  isNarrow.value = window.innerWidth < 992
-}
+const sectionId = computed(() => primary.find((item) => item.match.includes(route.path))?.id || 'work')
+const subs = computed(() => subnav[sectionId.value] || [])
 
 const currentMember = computed(() =>
   memberStore.members.find((x) => x.id === memberStore.currentMemberId)
@@ -215,9 +208,9 @@ const avatarStyle = (id?: number | null) => {
   return { background: tone.bg, color: tone.ink }
 }
 
-const switchMember = async (memberId: string | number) => {
+const switchMember = (memberId: string | number) => {
   memberStore.setCurrentMember(Number(memberId))
-  ElMessage.success('已换成这位家人来看今天')
+  ElMessage.success('已换成这位家人')
   window.location.reload()
 }
 
@@ -225,6 +218,10 @@ const currentPageTitle = computed(() => titles[route.path] || '家庭成长')
 const currentPageKicker = computed(() => kickers[route.path] || '陪这个家慢慢长大')
 
 const handleCommand = async (command: string) => {
+  if (command === 'account') {
+    router.push('/family')
+    return
+  }
   if (command === 'logout') {
     try {
       await ElMessageBox.confirm('确定要退出登录吗?', '提示', {
@@ -239,183 +236,114 @@ const handleCommand = async (command: string) => {
     } catch {
       // 取消退出
     }
-  } else if (command === 'profile') {
-    router.push('/family')
   }
 }
 
 onMounted(() => {
-  syncNarrow()
-  window.addEventListener('resize', syncNarrow)
   memberStore.ensureLoaded().catch(() => {})
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', syncNarrow)
 })
 </script>
 
 <style scoped>
-.layout-container {
-  height: 100%;
-  background: transparent;
-}
-
-.layout-aside {
+.shell {
+  min-height: 100%;
   display: flex;
   flex-direction: column;
-  background: rgba(255, 252, 248, 0.78);
-  border-right: 1px solid var(--border-soft);
-  overflow: hidden;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 18px 32px 14px;
+  background: rgba(243, 238, 228, 0.9);
   backdrop-filter: blur(16px);
 }
 
-.logo-container {
+.brand {
   display: flex;
   align-items: center;
-  gap: 12px;
-  height: 76px;
-  padding: 0 20px;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text-strong);
   flex-shrink: 0;
-}
-
-.logo-container.narrow {
-  justify-content: center;
-  padding: 0;
 }
 
 .logo-mark {
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
   color: #fffdf8;
   background: var(--grass-700);
-  flex-shrink: 0;
 }
 
-.logo-word {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.2;
-}
-
-.logo-word strong {
+.brand-name {
   font-family: var(--font-display);
   font-size: 18px;
   font-weight: 600;
-  color: var(--text-strong);
 }
 
-.logo-word em {
-  font-style: normal;
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.rail {
-  flex: 1;
-  overflow-y: auto;
-  padding: 4px 12px 28px;
-}
-
-.rail-section + .rail-section {
-  margin-top: 16px;
-}
-
-.section-label {
-  margin: 0 10px 6px;
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #9a9184;
-}
-
-.rail-link {
+.primary {
   display: flex;
   align-items: center;
-  gap: 10px;
-  height: 40px;
-  margin: 2px 0;
-  padding: 0 12px;
-  border-radius: 12px;
+  gap: 6px;
+  min-width: 0;
+}
+
+.primary-link {
+  padding: 8px 14px;
+  border-radius: 999px;
   color: var(--text-body);
   text-decoration: none;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 600;
 }
 
-.narrow .rail-link {
-  justify-content: center;
-  padding: 0;
-}
-
-.rail-link:hover {
-  background: var(--surface-2);
+.primary-link:hover {
+  background: rgba(255, 252, 248, 0.7);
   color: var(--text-strong);
 }
 
-.rail-link.active {
+.primary-link.active {
   background: var(--grass-700);
   color: #fffdf8;
-  font-weight: 600;
 }
 
-.layout-body {
-  min-width: 0;
-  background: transparent;
-}
-
-.layout-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 76px;
-  padding: 0 28px;
-  background: transparent;
-  border-bottom: none;
-}
-
-.page-title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 26px;
-  font-weight: 600;
-  color: var(--text-strong);
-  line-height: 1.15;
-}
-
-.page-kicker {
-  margin: 4px 0 0;
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-.header-right {
+.tools {
+  margin-left: auto;
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
 }
 
 .member-info,
 .user-info {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
   padding: 6px 12px 6px 6px;
   border-radius: 999px;
   background: var(--surface);
   border: 1px solid var(--border-soft);
-  box-shadow: var(--shadow-1);
   cursor: pointer;
   outline: none;
+}
+
+.user-info {
+  padding: 8px 12px;
 }
 
 .member-avatar {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   font-size: 13px;
   font-weight: 700;
@@ -424,7 +352,7 @@ onBeforeUnmount(() => {
 .member-text {
   display: flex;
   flex-direction: column;
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
 .member-text em {
@@ -436,8 +364,8 @@ onBeforeUnmount(() => {
 .member-text strong,
 .username {
   font-size: 13px;
-  color: var(--text-strong);
   font-weight: 600;
+  color: var(--text-strong);
 }
 
 .menu-dot {
@@ -448,9 +376,49 @@ onBeforeUnmount(() => {
   border-radius: 50%;
 }
 
-.layout-main {
-  padding: 0 28px 36px;
-  overflow-y: auto;
+.page-intro {
+  padding: 8px 32px 0;
+}
+
+.page-intro h1 {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.page-intro p {
+  margin: 6px 0 0;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.subnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 16px 32px 0;
+}
+
+.sub-link {
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-body);
+  text-decoration: none;
+  font-size: 13px;
+  border: 1px solid transparent;
+}
+
+.sub-link.active {
+  background: var(--surface);
+  border-color: var(--border-soft);
+  color: var(--text-strong);
+  font-weight: 600;
+}
+
+.shell-main {
+  padding: 18px 32px 48px;
 }
 
 .page-enter-active {
@@ -470,23 +438,31 @@ onBeforeUnmount(() => {
   opacity: 0;
 }
 
-@media (max-width: 768px) {
-  .layout-main {
-    padding: 0 14px 24px;
+@media (max-width: 980px) {
+  .topbar {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px 16px 10px;
   }
 
-  .layout-header {
-    height: auto;
-    padding: 16px 14px 8px;
-    align-items: flex-start;
+  .primary {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
   }
 
-  .page-title {
-    font-size: 22px;
+  .page-intro,
+  .subnav,
+  .shell-main {
+    padding-left: 16px;
+    padding-right: 16px;
   }
 
-  .member-text em,
-  .username {
+  .page-intro h1 {
+    font-size: 28px;
+  }
+
+  .member-text em {
     display: none;
   }
 }
