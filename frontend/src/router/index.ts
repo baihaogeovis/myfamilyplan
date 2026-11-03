@@ -73,6 +73,12 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '预算规划', requiresAuth: true }
       },
       {
+        path: 'fund-allocation',
+        name: 'FundAllocation',
+        component: () => import('@/views/FundAllocation.vue'),
+        meta: { title: '资金分配', requiresAuth: true }
+      },
+      {
         path: 'approval',
         name: 'Approval',
         component: () => import('@/views/Approval.vue'),

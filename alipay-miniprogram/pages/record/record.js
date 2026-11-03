@@ -180,6 +180,10 @@ Page({
     } catch (e) { /* 错误已提示 */ }
   },
 
+  goAllocation() {
+    my.navigateTo({ url: '/pages/fundAllocation/fundAllocation' })
+  },
+
   removeItem(e) {
     const item = e.currentTarget.dataset.item
     const { type } = this.data

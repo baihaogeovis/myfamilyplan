@@ -40,7 +40,7 @@
         <el-table-column prop="content" label="内容" show-overflow-tooltip />
         <el-table-column prop="type" label="类型" width="120">
           <template #default="{ row }">
-            <el-tag v-if="row.type" size="small" effect="plain">{{ row.type }}</el-tag>
+            <el-tag v-if="row.type" size="small" effect="plain">{{ typeLabel(row.type) }}</el-tag>
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -94,6 +94,16 @@ const unread = ref(0)
 const page = ref(1)
 const size = ref(10)
 const filterRead = ref<string>('all')
+
+const TYPE_LABELS: Record<string, string> = {
+  BILL: '缴费',
+  BUDGET: '预算',
+  APPROVAL: '审批',
+  SYSTEM: '系统',
+  TASK: '任务'
+}
+
+const typeLabel = (type?: string) => (type ? TYPE_LABELS[type] || type : '-')
 
 const load = async () => {
   loading.value = true

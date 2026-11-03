@@ -219,12 +219,34 @@ npm run dev
 - 新增分组菜单：每日工作台、资金管理(收入/支出/固定支出/预算/统计)、美好生活、儿童成长、系统管理
 - 新增路由：`/workbench`、`/fixed-expense`、`/life-plan`、`/growth-plan`
 
+## M2：资金分配、Excel 导出、固定支出缴费提醒
+
+### 1. 资金分配
+- 表：`fund_allocation`（原表，未改结构）
+- 后端：`FundAllocationController / IFundAllocationService / FundAllocationServiceImpl / FundAllocationMapper`
+- 规则：单条比例大于 0 且不超过 100，同一成员同一周期（月或年）合计不超过 100%；同一周期不能重复分类
+- Web：钱 → 分配（`/fund-allocation`），珊瑚/青绿比例条
+- 小程序：钱页进入「资金怎么分」，微信与支付宝各一页，不增加底部 Tab
+
+### 2. Excel 导出
+- 库：项目里已有的 Apache POI（`poi-ooxml`），接口都是新增的，原有 JSON 接口不变
+- `GET /export/income`、`/export/expense`、`/export/budget`、`/export/statistics`
+- Web 收入、支出、预算、月报页有「导出 Excel」，导出范围跟当前筛选一致
+
+### 3. 固定支出缴费提醒
+- `notification.biz_key`：`FE:{账单ID}:{yyyyMM}`，同一家庭同一账单同一账期只有一条
+- 升级脚本：`database/upgrade_v4_m2.sql`（也写进了 `init.sql`，启动时 `DataInitializer` 会幂等补列）
+- 什么时候生成：
+  1. 打开提醒列表，或刷新未读数时，按当前家庭马上生成。提醒中心因此能直接看到到期账单。
+  2. 每天 08:10（`Asia/Shanghai`）定时再扫全部家庭。cron、时区、提前天数在 `application.yml` 的 `familyplan.reminder`。
+- 默认提前 3 天（不含到期当天）写「即将缴费」，当天改为「今天缴费」，过了缴费日且仍在当月改为「缴费已逾期」。未读通知只改文案；已读或已删除的不再新建。
+
 ## 📝 后续可优化项
 
 ### 优先级4 - 优化和完善
-1. 添加数据导出功能(Excel)
-2. 资金分配(fund_allocation)模块的前后端实现
-3. 固定支出到账提醒（与提醒中心联动，自动生成缴费提醒）
+1. ~~添加数据导出功能(Excel)~~（M2 已完成）
+2. ~~资金分配(fund_allocation)模块的前后端实现~~（M2 已完成）
+3. ~~固定支出到账提醒（与提醒中心联动，自动生成缴费提醒）~~（M2 已完成）
 4. 优化用户体验与移动端适配
 5. 添加单元测试
 6. 性能优化 / 缓存仪表盘数据

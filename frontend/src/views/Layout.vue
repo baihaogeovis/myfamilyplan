@@ -117,7 +117,7 @@ const primary: PrimaryItem[] = [
     id: 'money',
     label: '钱',
     to: '/expense',
-    match: ['/income', '/expense', '/fixed-expense', '/budget', '/statistics', '/approval']
+    match: ['/income', '/expense', '/fixed-expense', '/budget', '/fund-allocation', '/statistics', '/approval']
   },
   { id: 'reward', label: '奖励', to: '/reward', match: ['/reward', '/reward-items'] },
   { id: 'me', label: '我的', to: '/notifications', match: ['/notifications'] }
@@ -141,6 +141,7 @@ const subnav: Record<string, SubItem[]> = {
     { to: '/income', label: '收入' },
     { to: '/fixed-expense', label: '固定账单' },
     { to: '/budget', label: '预算' },
+    { to: '/fund-allocation', label: '分配' },
     { to: '/approval', label: '审批' },
     { to: '/statistics', label: '月报' }
   ],
@@ -158,6 +159,7 @@ const titles: Record<string, string> = {
   '/expense': '钱',
   '/fixed-expense': '钱',
   '/budget': '钱',
+  '/fund-allocation': '钱',
   '/statistics': '钱',
   '/approval': '钱',
   '/life-plan': '计划',
@@ -176,6 +178,7 @@ const kickers: Record<string, string> = {
   '/expense': '钱出去的记录',
   '/fixed-expense': '每个月都会来的账单',
   '/budget': '这个月打算怎么花',
+  '/fund-allocation': '收入按分类分一份',
   '/life-plan': '家电、旅行，慢慢攒',
   '/growth-plan': '短期一件事，长期一个方向',
   '/reward': '额度花在你们约好的事上',

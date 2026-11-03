@@ -1,0 +1,60 @@
+<view class="page-container">
+  <view class="card">
+    <view class="period-tabs">
+      <view class="period-tab {{period === 'MONTH' ? 'active' : ''}}" onTap="switchPeriod" data-period="MONTH">月度</view>
+      <view class="period-tab {{period === 'YEAR' ? 'active' : ''}}" onTap="switchPeriod" data-period="YEAR">年度</view>
+    </view>
+    <view class="pickers">
+      <picker mode="selector" range="{{years}}" value="{{year - years[0]}}" onChange="onYearChange">
+        <view class="picker-chip">{{year}}年</view>
+      </picker>
+      <picker a:if="{{period === 'MONTH'}}" mode="selector" range="{{months}}" value="{{month - 1}}" onChange="onMonthChange">
+        <view class="picker-chip">{{month}}月</view>
+      </picker>
+    </view>
+    <view class="total {{complete ? 'done' : ''}}">已分配 {{totalText}}%</view>
+    <view class="remain">{{complete ? '这个周期已经分完' : '还剩 ' + remainText + '%'}}</view>
+    <view class="split">
+      <view class="slice" a:for="{{bar}}" a:key="key" style="width: {{item.width}}; background: {{item.color}};"></view>
+    </view>
+  </view>
+
+  <view a:if="{{items.length === 0}}" class="empty-state">
+    <view class="empty-icon">🥧</view>
+    <view class="empty-text">还没分配。选一个分类，写下它占多少。</view>
+  </view>
+
+  <view class="card alloc-item" a:for="{{items}}" a:key="id" onTap="openEdit" data-item="{{item}}">
+    <view class="alloc-main">
+      <view class="alloc-name">{{item.label}}</view>
+      <view class="row-bar"><view class="row-fill" style="width: {{item.width}}; background: {{item.color}};"></view></view>
+    </view>
+    <view class="alloc-right">
+      <view class="alloc-percent">{{item.percentText}}%</view>
+      <view class="alloc-del" catchTap="removeItem" data-item="{{item}}">删除</view>
+    </view>
+  </view>
+
+  <view class="fab" onTap="openAdd">+</view>
+
+  <view class="modal-mask {{showForm ? '' : 'is-closing'}}" a:if="{{showForm || modalHold}}" catchTap="closeForm">
+    <view class="modal-body" a:if="{{showForm}}" catchTap="noop">
+      <view class="modal-title">{{formMode === 'add' ? '新增' : '编辑'}}分配</view>
+      <view class="form-item">
+        <text class="form-label">分类</text>
+        <view class="category-row">
+          <view class="category-chip {{form.category === item.value ? 'active' : ''}}"
+            a:for="{{categories}}" a:key="value" a:for-item="item"
+            onTap="chooseCategory" data-cat="{{item.value}}">{{item.label}}</view>
+        </view>
+      </view>
+      <view class="form-item">
+        <text class="form-label">比例 %</text>
+        <input class="form-input" type="digit" placeholder="例如 30" placeholder-class="form-placeholder"
+          value="{{form.percentage}}" onInput="onPercent" />
+      </view>
+      <view class="period-note">记入 {{year}}年{{period === 'MONTH' ? month + '月' : ''}}</view>
+      <button class="btn-primary modal-btn" onTap="submitForm">保存</button>
+    </view>
+  </view>
+</view>

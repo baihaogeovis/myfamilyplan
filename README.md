@@ -66,8 +66,10 @@ myfamilyplan/
 - ✅ 支出管理(后端 CRUD + 前端页面)
 - ✅ 预算规划(后端 CRUD + 前端页面)
 - ✅ 资金审批(申请/通过/驳回 + 前端双 Tab 页面)
-- ✅ 通知提醒(后端 + 前端提醒中心)
+- ✅ 通知提醒(后端 + 前端提醒中心；固定支出按缴费日自动生成，不重复)
 - ✅ 统计报表(后端汇总接口 + 前端图表页面)
+- ✅ 资金分配(按成员/周期的分类比例，合计不超过 100%)
+- ✅ Excel 导出(收入、支出、预算、收支统计)
 - ✅ 仪表盘(真实数据 + ECharts 趋势图)
 - ✅ 数据库表设计
 - ✅ 登录页面
@@ -83,6 +85,8 @@ myfamilyplan/
 - `GET/PUT /notification/*` 通知(列表/未读计数/标记已读)
 - `GET /dashboard/overview|trend|recent` 仪表盘数据
 - `GET /statistics/category|monthly` 统计汇总
+- `GET/POST/PUT/DELETE /fund-allocation/*` 资金分配
+- `GET /export/income|expense|budget|statistics` 导出 Excel
 
 ## 快速开始
 
@@ -149,7 +153,7 @@ npm run dev
 - `budget_plan` - 预算计划表
 - `approval_record` - 资金审批表
 - `fund_allocation` - 资金分配表
-- `notification` - 通知提醒表
+- `notification` - 通知提醒表（`biz_key` 用于固定支出提醒去重，见 `database/upgrade_v4_m2.sql`）
 
 ## 许可证
 

@@ -17,7 +17,10 @@
             />
             <el-button @click="resetFilters">重置</el-button>
           </div>
-          <el-button type="primary" :icon="Plus" @click="openAdd">新增预算</el-button>
+          <div class="actions">
+            <el-button :icon="Download" :loading="exporting" @click="doExport">导出 Excel</el-button>
+            <el-button type="primary" :icon="Plus" @click="openAdd">新增预算</el-button>
+          </div>
         </div>
       </template>
 
@@ -108,12 +111,13 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
-import { Plus } from 'lucide-vue-next'
+import { Download, Plus } from 'lucide-vue-next'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getBudgetPage, addBudget, updateBudget, deleteBudget, type BudgetPlan } from '@/api/budget'
 import { useMemberStore } from '@/stores/member'
 import { formatMoney } from '@/utils/format'
 import { BUDGET_CATEGORIES as categories } from '@/constants/categories'
+import { exportBudget } from '@/api/export'
 
 const memberStore = useMemberStore()
 const loading = ref(false)
@@ -129,6 +133,7 @@ const filters = reactive({
   yearMonth: null as null | string
 })
 
+const exporting = ref(false)
 const dialogVisible = ref(false)
 const form = reactive<BudgetPlan>({
   memberId: 0,
@@ -225,6 +230,29 @@ const submit = async () => {
   }
 }
 
+const doExport = async () => {
+  await memberStore.ensureLoaded()
+  if (!memberStore.currentMemberId) {
+    ElMessage.warning('请先在「成员管理」中添加家庭成员')
+    return
+  }
+  exporting.value = true
+  try {
+    const params: Record<string, unknown> = {
+      memberId: memberStore.currentMemberId,
+      periodType: filters.periodType || undefined
+    }
+    if (filters.yearMonth) {
+      const [y, m] = filters.yearMonth.split('-')
+      params.year = Number(y)
+      params.month = Number(m)
+    }
+    await exportBudget(params)
+  } finally {
+    exporting.value = false
+  }
+}
+
 const remove = async (row: BudgetPlan) => {
   try {
     await ElMessageBox.confirm('确定删除该预算?', '提示', { type: 'warning' })
@@ -252,7 +280,8 @@ onMounted(load)
   flex-wrap: wrap;
   gap: 12px;
 }
-.filters {
+.filters,
+.actions {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;

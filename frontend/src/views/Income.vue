@@ -18,7 +18,10 @@
             />
             <el-button @click="resetFilters">重置</el-button>
           </div>
-          <el-button type="primary" :icon="Plus" @click="openAdd">新增收入</el-button>
+          <div class="actions">
+            <el-button :icon="Download" :loading="exporting" @click="doExport">导出 Excel</el-button>
+            <el-button type="primary" :icon="Plus" @click="openAdd">新增收入</el-button>
+          </div>
         </div>
       </template>
 
@@ -84,7 +87,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
-import { Plus } from 'lucide-vue-next'
+import { Download, Plus } from 'lucide-vue-next'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   getIncomePage,
@@ -96,6 +99,7 @@ import {
 import { useMemberStore } from '@/stores/member'
 import { formatMoney } from '@/utils/format'
 import { INCOME_CATEGORIES as categories } from '@/constants/categories'
+import { exportIncome } from '@/api/export'
 const categoryMap = Object.fromEntries(categories.map((c) => [c.value, c.label]))
 
 const memberStore = useMemberStore()
@@ -109,6 +113,7 @@ const filters = reactive({
   dateRange: null as null | [string, string]
 })
 
+const exporting = ref(false)
 const dialogVisible = ref(false)
 const form = reactive<IncomeRecord>({
   memberId: 0,
@@ -189,6 +194,25 @@ const submit = async () => {
   }
 }
 
+const doExport = async () => {
+  await memberStore.ensureLoaded()
+  if (!memberStore.currentMemberId) {
+    ElMessage.warning('请先在「成员管理」中添加家庭成员')
+    return
+  }
+  exporting.value = true
+  try {
+    await exportIncome({
+      memberId: memberStore.currentMemberId,
+      category: filters.category || undefined,
+      startDate: filters.dateRange?.[0],
+      endDate: filters.dateRange?.[1]
+    })
+  } finally {
+    exporting.value = false
+  }
+}
+
 const remove = async (row: IncomeRecord) => {
   try {
     await ElMessageBox.confirm('确定删除该收入记录?', '提示', { type: 'warning' })
@@ -216,7 +240,8 @@ onMounted(load)
   flex-wrap: wrap;
   gap: 12px;
 }
-.filters {
+.filters,
+.actions {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
