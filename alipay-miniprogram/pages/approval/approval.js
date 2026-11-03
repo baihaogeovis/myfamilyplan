@@ -1,3 +1,4 @@
+const modal = require('../../utils/modal')
 const api = require('../../utils/api')
 const util = require('../../utils/util')
 
@@ -26,6 +27,7 @@ Page({
     hasMore: true,
     loading: false,
     showForm: false,
+    modalHold: false,
     form: {
       amount: '',
       purpose: '',
@@ -101,10 +103,11 @@ Page({
   },
 
   openAdd() {
+    if (!modal.canOpen(this)) return
     this.setData({ showForm: true, form: { amount: '', purpose: '', remark: '' } })
   },
 
-  closeForm() { this.setData({ showForm: false }) },
+  closeForm() { modal.closeModal(this, { showForm: false }) },
   noop() {},
   onFormAmount(e) { this.setData({ 'form.amount': e.detail.value }) },
   onFormPurpose(e) { this.setData({ 'form.purpose': e.detail.value }) },
@@ -132,7 +135,7 @@ Page({
         purpose: form.purpose,
         remark: form.remark
       })
-      this.setData({ showForm: false })
+      modal.closeModal(this, { showForm: false })
       my.showToast({ type: 'success', content: '提交成功' })
       this.reload()
     } catch (e) { /* 错误已提示 */ }

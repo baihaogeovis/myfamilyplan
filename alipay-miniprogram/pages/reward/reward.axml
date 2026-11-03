@@ -242,8 +242,8 @@
   </block>
 
   <!-- 活动方案表单 -->
-  <view class="modal-mask" a:if="{{showItemForm}}" onTap="closeItemForm">
-    <view class="modal-body" catchTap="noop">
+  <view class="modal-mask {{showItemForm ? '' : 'is-closing'}}" a:if="{{showItemForm || modalHold}}" catchTap="closeItemForm">
+    <view class="modal-body" a:if="{{showItemForm}}" catchTap="noop">
       <view class="modal-title">{{itemFormMode === 'add' ? '新增' : '编辑'}}活动方案</view>
 
       <view class="form-item">

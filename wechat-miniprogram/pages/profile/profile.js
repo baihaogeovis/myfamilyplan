@@ -1,3 +1,4 @@
+const modal = require('../../utils/modal')
 const api = require('../../utils/api')
 const util = require('../../utils/util')
 
@@ -9,6 +10,7 @@ Page({
     currentMemberName: '',
     // 修改密码弹窗
     showPwd: false,
+    modalHold: false,
     pwdForm: { oldPassword: '', newPassword: '' }
   },
 
@@ -51,10 +53,11 @@ Page({
 
   // 修改密码
   openPwd() {
+    if (!modal.canOpen(this)) return
     this.setData({ showPwd: true, pwdForm: { oldPassword: '', newPassword: '' } })
   },
 
-  closePwd() { this.setData({ showPwd: false }) },
+  closePwd() { modal.closeModal(this, { showPwd: false }) },
   noop() {},
   onOldPwd(e) { this.setData({ 'pwdForm.oldPassword': e.detail.value }) },
   onNewPwd(e) { this.setData({ 'pwdForm.newPassword': e.detail.value }) },
@@ -67,7 +70,7 @@ Page({
     }
     try {
       await api.family.changePassword({ oldPassword, newPassword })
-      this.setData({ showPwd: false })
+      modal.closeModal(this, { showPwd: false })
       wx.showToast({ title: '密码修改成功', icon: 'success' })
     } catch (e) { /* 错误已提示 */ }
   },

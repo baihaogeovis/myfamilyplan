@@ -1,3 +1,4 @@
+const modal = require('../../utils/modal')
 const api = require('../../utils/api')
 const util = require('../../utils/util')
 
@@ -22,6 +23,7 @@ Page({
     months: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     periodTypeIndex: 0,
     showForm: false,
+    modalHold: false,
     formMode: 'add',
     form: {
       id: null,
@@ -75,6 +77,7 @@ Page({
   },
 
   openAdd() {
+    if (!modal.canOpen(this)) return
     const now = new Date()
     const periodType = this.data.periodType
     this.setData({
@@ -94,6 +97,7 @@ Page({
   },
 
   openEdit(e) {
+    if (!modal.canOpen(this)) return
     const item = e.currentTarget.dataset.item
     const periodType = item.periodType || 'MONTHLY'
     this.setData({
@@ -117,7 +121,7 @@ Page({
     return idx === -1 ? 0 : idx
   },
 
-  closeForm() { this.setData({ showForm: false }) },
+  closeForm() { modal.closeModal(this, { showForm: false }) },
   noop() {},
   categoryLabel(v) { return util.categoryLabel(v) },
 
@@ -170,7 +174,7 @@ Page({
       } else {
         await api.budget.update({ ...payload, id: form.id })
       }
-      this.setData({ showForm: false })
+      modal.closeModal(this, { showForm: false })
       wx.showToast({ title: '保存成功', icon: 'success' })
       this.reload()
     } catch (e) { /* 错误已提示 */ }

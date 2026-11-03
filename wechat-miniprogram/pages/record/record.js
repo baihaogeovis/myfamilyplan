@@ -1,3 +1,4 @@
+const modal = require('../../utils/modal')
 const api = require('../../utils/api')
 const util = require('../../utils/util')
 
@@ -13,6 +14,7 @@ Page({
     loading: false,
     // 弹窗表单
     showForm: false,
+    modalHold: false,
     formMode: 'add', // add | edit
     form: {
       id: null,
@@ -107,6 +109,7 @@ Page({
 
   // ---------- 新增 / 编辑 ----------
   openAdd() {
+    if (!modal.canOpen(this)) return
     this.setData({
       showForm: true,
       formMode: 'add',
@@ -122,6 +125,7 @@ Page({
   },
 
   openEdit(e) {
+    if (!modal.canOpen(this)) return
     const item = e.currentTarget.dataset.item
     this.setData({
       showForm: true,
@@ -138,7 +142,7 @@ Page({
   },
 
   closeForm() {
-    this.setData({ showForm: false })
+    modal.closeModal(this, { showForm: false })
   },
 
   noop() {},
@@ -190,7 +194,7 @@ Page({
       } else {
         await api[type].update({ ...payload, id: form.id })
       }
-      this.setData({ showForm: false })
+      modal.closeModal(this, { showForm: false })
       wx.showToast({ title: '保存成功', icon: 'success' })
       this.reload()
     } catch (e) { /* 错误已提示 */ }

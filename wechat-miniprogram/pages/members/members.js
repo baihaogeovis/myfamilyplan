@@ -1,3 +1,4 @@
+const modal = require('../../utils/modal')
 const api = require('../../utils/api')
 const util = require('../../utils/util')
 
@@ -9,6 +10,7 @@ Page({
     list: [],
     currentId: null,
     showForm: false,
+    modalHold: false,
     formMode: 'add',
     form: {
       id: null,
@@ -45,6 +47,7 @@ Page({
   },
 
   openAdd() {
+    if (!modal.canOpen(this)) return
     this.setData({
       showForm: true,
       formMode: 'add',
@@ -53,6 +56,7 @@ Page({
   },
 
   openEdit(e) {
+    if (!modal.canOpen(this)) return
     const item = e.currentTarget.dataset.item
     this.setData({
       showForm: true,
@@ -67,7 +71,7 @@ Page({
     })
   },
 
-  closeForm() { this.setData({ showForm: false }) },
+  closeForm() { modal.closeModal(this, { showForm: false }) },
   noop() {},
   onName(e) { this.setData({ 'form.memberName': e.detail.value }) },
   onPhone(e) { this.setData({ 'form.phone': e.detail.value }) },
@@ -92,7 +96,7 @@ Page({
       } else {
         await api.member.update({ ...payload, id: form.id })
       }
-      this.setData({ showForm: false })
+      modal.closeModal(this, { showForm: false })
       wx.showToast({ title: '保存成功', icon: 'success' })
       this.loadList()
     } catch (e) { /* 错误已提示 */ }
