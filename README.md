@@ -70,7 +70,8 @@ myfamilyplan/
 - ✅ 统计报表(后端汇总接口 + 前端图表页面)
 - ✅ 资金分配(按成员/周期的分类比例，合计不超过 100%)
 - ✅ Excel 导出(收入、支出、预算、收支统计)
-- ✅ 仪表盘(真实数据 + ECharts 趋势图)
+- ✅ 仪表盘(真实数据 + ECharts 趋势图，汇总结果短时缓存)
+- ✅ 窄屏底部导航（与小程序五个入口一致）
 - ✅ 数据库表设计
 - ✅ 登录页面
 - ✅ 主布局组件
@@ -127,6 +128,16 @@ npm run dev
 
 默认账号: `admin`
 默认密码: `admin123`
+
+## 测试
+
+```bash
+cd backend && mvn test
+cd frontend && npm test
+node scripts/modal-guard.test.js
+```
+
+仪表盘、月报和固定支出总览有一份进程内缓存，配置在 `familyplan.summary-cache.ttl-seconds`（默认 30 秒）。相关写入成功后缓存马上失效。重启后端即清空，不需要数据库迁移。
 
 ## 开发说明
 

@@ -84,13 +84,26 @@
         </transition>
       </router-view>
     </main>
+
+    <nav class="tabbar" aria-label="底部导航">
+      <router-link
+        v-for="item in mobileTabs"
+        :key="item.id"
+        :to="item.to"
+        class="tab-link"
+        :class="{ active: mobileSectionId === item.id }"
+      >
+        <component :is="item.icon" :size="20" />
+        <span>{{ item.label }}</span>
+      </router-link>
+    </nav>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ArrowDown, Sprout } from 'lucide-vue-next'
+import { ArrowDown, Calendar, Gift, Home, Sprout, UserRound, Wallet } from 'lucide-vue-next'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import { useMemberStore } from '@/stores/member'
@@ -109,6 +122,13 @@ interface SubItem {
   label: string
 }
 
+interface MobileTab {
+  id: string
+  label: string
+  to: string
+  icon: typeof Home
+}
+
 const primary: PrimaryItem[] = [
   { id: 'work', label: '工作台', to: '/dashboard', match: ['/dashboard', '/workbench'] },
   { id: 'family', label: '家庭', to: '/members', match: ['/members', '/family'] },
@@ -121,6 +141,20 @@ const primary: PrimaryItem[] = [
   },
   { id: 'reward', label: '奖励', to: '/reward', match: ['/reward', '/reward-items'] },
   { id: 'me', label: '我的', to: '/notifications', match: ['/notifications'] }
+]
+
+const mobileTabs: MobileTab[] = [
+  { id: 'work', label: '工作台', to: '/dashboard', icon: Home },
+  { id: 'plan', label: '计划', to: '/life-plan', icon: Calendar },
+  { id: 'money', label: '钱', to: '/expense', icon: Wallet },
+  { id: 'reward', label: '奖励', to: '/reward', icon: Gift },
+  { id: 'me', label: '我的', to: '/notifications', icon: UserRound }
+]
+
+const mobileMeSubs: SubItem[] = [
+  { to: '/notifications', label: '通知' },
+  { to: '/members', label: '成员' },
+  { to: '/family', label: '家庭账号' }
 ]
 
 const subnav: Record<string, SubItem[]> = {
@@ -194,9 +228,16 @@ const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 const memberStore = useMemberStore()
+const isNarrow = ref(typeof window !== 'undefined' && window.matchMedia('(max-width: 860px)').matches)
 
 const sectionId = computed(() => primary.find((item) => item.match.includes(route.path))?.id || 'work')
-const subs = computed(() => subnav[sectionId.value] || [])
+const mobileSectionId = computed(() => (sectionId.value === 'family' ? 'me' : sectionId.value))
+const subs = computed(() => {
+  if (isNarrow.value && (sectionId.value === 'me' || sectionId.value === 'family')) {
+    return mobileMeSubs
+  }
+  return subnav[sectionId.value] || []
+})
 
 const currentMember = computed(() =>
   memberStore.members.find((x) => x.id === memberStore.currentMemberId)
@@ -242,9 +283,20 @@ const handleCommand = async (command: string) => {
   }
 }
 
+let stopMedia: (() => void) | undefined
+
 onMounted(() => {
   memberStore.ensureLoaded().catch(() => {})
+  const media = window.matchMedia('(max-width: 860px)')
+  const apply = () => {
+    isNarrow.value = media.matches
+  }
+  apply()
+  media.addEventListener('change', apply)
+  stopMedia = () => media.removeEventListener('change', apply)
 })
+
+onUnmounted(() => stopMedia?.())
 </script>
 
 <style scoped>
@@ -261,7 +313,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 28px;
-  padding: 18px 32px 14px;
+  padding: calc(18px + env(safe-area-inset-top)) 32px 14px;
   background: rgba(243, 238, 228, 0.9);
   backdrop-filter: blur(16px);
 }
@@ -369,6 +421,10 @@ onMounted(() => {
   font-size: 13px;
   font-weight: 600;
   color: var(--text-strong);
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .menu-dot {
@@ -401,6 +457,10 @@ onMounted(() => {
   flex-wrap: wrap;
   gap: 8px;
   padding: 16px 32px 0;
+}
+
+.tabbar {
+  display: none;
 }
 
 .sub-link {
@@ -445,7 +505,7 @@ onMounted(() => {
   .topbar {
     flex-wrap: wrap;
     gap: 12px;
-    padding: 14px 16px 10px;
+    padding: calc(14px + env(safe-area-inset-top)) 16px 10px;
   }
 
   .primary {
@@ -467,6 +527,79 @@ onMounted(() => {
 
   .member-text em {
     display: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .primary {
+    display: none;
+  }
+
+  .topbar {
+    flex-wrap: nowrap;
+  }
+
+  .subnav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .sub-link {
+    flex: 0 0 auto;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .shell-main {
+    padding-bottom: calc(88px + env(safe-area-inset-bottom));
+  }
+
+  .tabbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    display: flex;
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+    background: rgba(255, 252, 248, 0.96);
+    border-top: 1px solid var(--border-soft);
+    backdrop-filter: blur(16px);
+  }
+
+  .tab-link {
+    flex: 1;
+    min-height: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    border-radius: 14px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .tab-link.active {
+    color: #E85D4C;
+    background: var(--coral-soft);
+  }
+}
+
+@media (max-width: 520px) {
+  .username,
+  .member-text {
+    display: none;
+  }
+
+  .page-intro h1 {
+    font-size: 26px;
   }
 }
 </style>

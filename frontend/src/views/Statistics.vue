@@ -32,19 +32,19 @@
 
     <!-- 年度汇总卡片 -->
     <el-row :gutter="20" class="stat-row">
-      <el-col :span="6">
+      <el-col :xs="12" :sm="12" :md="6">
         <el-card class="mini-card income">
           <div class="mini-label">年度总收入</div>
           <div class="mini-value">¥{{ formatMoney(annualIncome) }}</div>
         </el-card>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="12" :md="6">
         <el-card class="mini-card expense">
           <div class="mini-label">年度总支出</div>
           <div class="mini-value">¥{{ formatMoney(annualExpense) }}</div>
         </el-card>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="12" :md="6">
         <el-card class="mini-card balance">
           <div class="mini-label">年度结余</div>
           <div class="mini-value" :class="annualBalance >= 0 ? 'positive' : 'negative'">
@@ -52,7 +52,7 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="12" :sm="12" :md="6">
         <el-card class="mini-card avg">
           <div class="mini-label">月均结余</div>
           <div class="mini-value">¥{{ formatMoney(annualBalance / 12) }}</div>
@@ -70,7 +70,7 @@
 
     <!-- 分类占比 -->
     <el-row :gutter="20" style="margin-top: 20px">
-      <el-col :span="12">
+      <el-col :xs="24" :md="12">
         <el-card class="chart-card">
           <template #header>
             <span class="card-title">{{ month }} 支出分类占比</span>
@@ -78,7 +78,7 @@
           <div ref="expensePie" class="chart"></div>
         </el-card>
       </el-col>
-      <el-col :span="12">
+      <el-col :xs="24" :md="12">
         <el-card class="chart-card">
           <template #header>
             <span class="card-title">{{ month }} 收入分类占比</span>
@@ -92,6 +92,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
+import { clearSummaryCache, onSummaryInvalidated } from '@/utils/summaryCache'
 import { echarts, type ECharts } from '@/utils/echarts'
 import { Download, RefreshCw } from 'lucide-vue-next'
 import { ElMessage } from 'element-plus'
@@ -216,6 +217,7 @@ const loadCategory = async () => {
 }
 
 const loadAll = () => {
+  clearSummaryCache()
   loadMonthly()
   loadCategory()
 }
@@ -238,12 +240,19 @@ const handleResize = () => {
   iChart?.resize()
 }
 
+const stopSummaryRefresh = onSummaryInvalidated(() => {
+  loadMonthly()
+  loadCategory()
+})
+
 onMounted(() => {
-  loadAll()
+  loadMonthly()
+  loadCategory()
   window.addEventListener('resize', handleResize)
 })
 
 onBeforeUnmount(() => {
+  stopSummaryRefresh()
   window.removeEventListener('resize', handleResize)
   mChart?.dispose()
   eChart?.dispose()
@@ -318,5 +327,31 @@ watch(year, loadMonthly)
 }
 .chart {
   height: 360px;
+}
+
+@media (max-width: 760px) {
+  .filter-item {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .label {
+    white-space: nowrap;
+  }
+
+  .stat-row :deep(.el-col) {
+    margin-bottom: 12px;
+  }
+
+  .mini-value {
+    font-size: 18px;
+    overflow-wrap: anywhere;
+  }
+
+  .chart {
+    height: 260px;
+  }
 }
 </style>

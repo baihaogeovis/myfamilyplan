@@ -10,6 +10,7 @@ import com.familyplan.mapper.ExpenseMapper;
 import com.familyplan.mapper.FixedExpenseMapper;
 import com.familyplan.mapper.IncomeMapper;
 import com.familyplan.service.IFixedExpenseService;
+import com.familyplan.support.MoneyRollup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,12 +66,7 @@ public class FixedExpenseServiceImpl extends ServiceImpl<FixedExpenseMapper, Fix
         // 启用中的固定支出
         List<FixedExpense> fixedExpenses = listAll(memberId);
         vo.setFixedExpenses(fixedExpenses);
-        BigDecimal monthFixedTotal = fixedExpenses.stream()
-                .filter(f -> f.getActive() != null && f.getActive() == 1)
-                .map(FixedExpense::getAmount)
-                .filter(Objects::nonNull)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        vo.setMonthFixedTotal(monthFixedTotal);
+        vo.setMonthFixedTotal(MoneyRollup.activeFixedTotal(fixedExpenses));
 
         log.info("资金总览统计成功: memberId={}, 累计结余={}", memberId, vo.getTotalBalance());
         return vo;

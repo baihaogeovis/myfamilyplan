@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --experimental-strip-types --test src/utils/planProgress.test.ts src/utils/summaryCache.test.ts"
   },
   "dependencies": {
     "vue": "^3.4.15",

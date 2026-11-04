@@ -140,7 +140,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { Plus, Info, LineChart, Coins, Wallet, PiggyBank } from 'lucide-vue-next'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
@@ -153,6 +153,7 @@ import {
 } from '@/api/fixedExpense'
 import { useMemberStore } from '@/stores/member'
 import { formatMoney } from '@/utils/format'
+import { onSummaryInvalidated } from '@/utils/summaryCache'
 import { FIXED_EXPENSE_CATEGORIES as categories, categoryLabel } from '@/constants/categories'
 
 const memberStore = useMemberStore()
@@ -281,7 +282,9 @@ const remove = async (row: FixedExpense) => {
   }
 }
 
+const stopSummaryRefresh = onSummaryInvalidated(load)
 onMounted(load)
+onUnmounted(stopSummaryRefresh)
 </script>
 
 <style scoped>
@@ -324,6 +327,22 @@ onMounted(load)
 @media (max-width: 1100px) {
   .stat-cards {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .stat-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .toolbar-tip {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .stat-value,
+  .stat-sub {
+    overflow-wrap: anywhere;
   }
 }
 
