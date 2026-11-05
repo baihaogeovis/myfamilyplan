@@ -48,11 +48,17 @@ knife4j:
   setting:
     language: zh_cn
 
-# 固定支出缴费提醒
+# familyplan.summary-cache：仪表盘、月报、固定支出总览的进程内缓存（秒）。
+# 收入、支出、预算、审批、成员、固定支出写入成功后，这一户的缓存马上失效。
+# 每个进程一份，重启即清空。不需要数据库迁移。
+#
+# familyplan.reminder：固定支出缴费提醒
 # 1. 打开提醒列表或刷新未读数时，按当前家庭即时生成（主路径）
 # 2. 每天定时再扫一遍全部家庭，避免当天没人打开应用就漏掉
 # 同一账单同一账期只写一条（notification.biz_key = FE:{账单ID}:{yyyyMM}）
 familyplan:
+  summary-cache:
+    ttl-seconds: 30
   reminder:
     lead-days: 3
     cron: "0 10 8 * * ?"

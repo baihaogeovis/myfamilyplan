@@ -51,11 +51,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useMemberStore } from '@/stores/member'
 import { formatMoney } from '@/utils/format'
 import { greetingForHour } from '@/utils/family'
+import { summarizePlans } from '@/utils/planProgress'
+import { onSummaryInvalidated } from '@/utils/summaryCache'
 import { getDashboardOverview, type DashboardOverview } from '@/api/dashboard'
 import { getApprovalPage, type ApprovalRecord } from '@/api/approval'
 import { getUnreadCount, getNotificationList, type Notification } from '@/api/notification'
@@ -98,8 +100,6 @@ const planHint = computed(() =>
 
 const go = (path: string) => router.push(path)
 
-const openStatus = (status?: string) => status !== 'COMPLETED' && status !== 'CANCELLED'
-
 const load = async () => {
   await memberStore.ensureLoaded().catch(() => {})
   const memberId = memberStore.currentMemberId
@@ -120,22 +120,9 @@ const load = async () => {
 
   const life = (lifeRes || []) as LifePlan[]
   const growth = (growthRes || []) as GrowthPlan[]
-  const scored: number[] = []
-  let open = 0
-  life.forEach((plan) => {
-    if (plan.status === 'CANCELLED') return
-    scored.push(plan.status === 'COMPLETED' ? 100 : plan.status === 'IN_PROGRESS' ? 50 : 0)
-    if (openStatus(plan.status)) open += 1
-  })
-  growth.forEach((plan) => {
-    if (plan.status === 'CANCELLED') return
-    scored.push(plan.status === 'COMPLETED' ? 100 : Number(plan.progress || 0))
-    if (openStatus(plan.status)) open += 1
-  })
-  planProgress.value = scored.length
-    ? Math.round(scored.reduce((sum, n) => sum + n, 0) / scored.length)
-    : 0
-  openPlanCount.value = open
+  const summary = summarizePlans(life, growth)
+  planProgress.value = summary.progress
+  openPlanCount.value = summary.openCount
 
   const items: NextItem[] = []
   const approvals = ((approvalRes as { records?: ApprovalRecord[] } | null)?.records || [])
@@ -158,7 +145,7 @@ const load = async () => {
       to: '/notifications'
     })
   })
-  life.filter((plan) => openStatus(plan.status)).slice(0, 3).forEach((plan) => {
+  life.filter((plan) => plan.status !== 'COMPLETED' && plan.status !== 'CANCELLED').slice(0, 3).forEach((plan) => {
     items.push({
       key: `life-${plan.id}`,
       kind: '生活',
@@ -167,7 +154,7 @@ const load = async () => {
       to: '/life-plan'
     })
   })
-  growth.filter((plan) => openStatus(plan.status)).slice(0, 3).forEach((plan) => {
+  growth.filter((plan) => plan.status !== 'COMPLETED' && plan.status !== 'CANCELLED').slice(0, 3).forEach((plan) => {
     items.push({
       key: `growth-${plan.id}`,
       kind: '成长',
@@ -179,7 +166,9 @@ const load = async () => {
   nextItems.value = items.slice(0, 6)
 }
 
+const stopSummaryRefresh = onSummaryInvalidated(load)
 onMounted(load)
+onUnmounted(stopSummaryRefresh)
 </script>
 
 <style scoped>
@@ -230,11 +219,13 @@ onMounted(load)
 
 .stat strong {
   font-family: var(--font-display);
-  font-size: 32px;
+  font-size: clamp(22px, 6vw, 32px);
   font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--text-strong);
   font-variant-numeric: tabular-nums;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .stat em {
@@ -314,24 +305,43 @@ onMounted(load)
 .next li strong {
   font-size: 16px;
   color: var(--text-strong);
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .next li span {
   font-size: 13px;
   color: var(--text-muted);
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 @media (max-width: 900px) {
+  .hello {
+    font-size: 24px;
+  }
+
   .stats {
     grid-template-columns: 1fr 1fr;
   }
 
+  .stat {
+    min-height: 120px;
+    padding: 16px 14px;
+  }
+
   .next li button {
-    grid-template-columns: 52px 1fr;
+    grid-template-columns: 52px minmax(0, 1fr);
   }
 
   .next li span {
     grid-column: 2;
+  }
+}
+
+@media (max-width: 420px) {
+  .stats {
+    gap: 10px;
   }
 }
 </style>

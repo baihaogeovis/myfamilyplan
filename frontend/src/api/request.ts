@@ -1,5 +1,12 @@
 import axios, { type AxiosRequestConfig } from 'axios'
 import { ElMessage } from 'element-plus'
+import {
+  clearSummaryCache,
+  installSummaryRefresh,
+  isCachedSummaryGet,
+  summaryCacheKey,
+  summaryMemory
+} from '@/utils/summaryCache'
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
@@ -30,6 +37,10 @@ instance.interceptors.response.use(
   response => {
     const res = response.data
     if (res.code === 200) {
+      const method = String(response.config.method || 'get').toLowerCase()
+      if (method !== 'get' && method !== 'head') {
+        clearSummaryCache()
+      }
       return res.data
     } else {
       ElMessage.error(res.message || '请求失败')
@@ -43,6 +54,7 @@ instance.interceptors.response.use(
       return Promise.reject(error)
     }
     if (status === 401 || status === 403) {
+      clearSummaryCache()
       localStorage.removeItem('token')
       localStorage.removeItem('userInfo')
       localStorage.removeItem('currentMemberId')
@@ -61,7 +73,16 @@ instance.interceptors.response.use(
  */
 const request = {
   get<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    return instance.get(url, config) as Promise<T>
+    if (!canCacheSummary(url, config)) {
+      return instance.get(url, config) as Promise<T>
+    }
+    const key = summaryCacheKey({
+      token: localStorage.getItem('token'),
+      memberId: localStorage.getItem('currentMemberId'),
+      url,
+      params: config?.params
+    })
+    return summaryMemory.get(key, () => instance.get(url, config) as Promise<T>)
   },
   post<T = any>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
     return instance.post(url, data, config) as Promise<T>
@@ -74,11 +95,19 @@ const request = {
   }
 }
 
+function canCacheSummary(url: string, config?: AxiosRequestConfig): boolean {
+  if (!isCachedSummaryGet(url)) return false
+  const responseType = config?.responseType
+  return responseType == null || responseType === 'json'
+}
+
 function isMemberWrite(config?: { url?: string; method?: string }): boolean {
   const method = String(config?.method || '').toLowerCase()
   if (method !== 'post' && method !== 'put') return false
   const path = String(config?.url || '').split('?')[0]
   return /\/member\/?$/.test(path)
 }
+
+installSummaryRefresh()
 
 export default request

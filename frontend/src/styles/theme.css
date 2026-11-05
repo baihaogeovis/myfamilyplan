@@ -515,3 +515,62 @@ h1 {
     transform: none;
   }
 }
+
+/* 窄屏：弹层、筛选条和宽表格跟视口走，避免整页横向撑开 */
+@media (max-width: 760px) {
+  .el-dialog {
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px);
+    margin-top: 8vh !important;
+  }
+
+  .el-dialog__body {
+    max-height: calc(100vh - 180px);
+    overflow-y: auto;
+  }
+
+  .el-message-box {
+    width: calc(100vw - 32px) !important;
+    max-width: calc(100vw - 32px);
+  }
+
+  .el-pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 8px;
+  }
+
+  .el-card__body {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .header-bar,
+  .filter-bar,
+  .toolbar {
+    align-items: stretch !important;
+  }
+
+  .header-bar .filters,
+  .header-bar .actions,
+  .filter-bar,
+  .toolbar {
+    width: 100%;
+  }
+
+  .header-bar .filters .el-select,
+  .header-bar .filters .el-date-editor,
+  .filter-bar .el-date-editor,
+  .toolbar .el-date-editor,
+  .el-date-editor--daterange.el-input__wrapper,
+  .el-range-editor.el-input__wrapper {
+    width: 100% !important;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .header-bar .actions .el-button,
+  .toolbar > .el-button {
+    flex: 1 1 140px;
+  }
+}

@@ -3,7 +3,9 @@ package com.familyplan.controller;
 import com.familyplan.common.Result;
 import com.familyplan.dto.FinanceOverview;
 import com.familyplan.entity.FixedExpense;
+import com.familyplan.security.SecurityUtil;
 import com.familyplan.service.IFixedExpenseService;
+import com.familyplan.support.FamilySummaryCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,8 @@ public class FixedExpenseController {
 
     @Autowired
     private IFixedExpenseService fixedExpenseService;
+    @Autowired
+    private FamilySummaryCache summaryCache;
 
     /**
      * 查询固定支出配置列表
@@ -36,7 +40,11 @@ public class FixedExpenseController {
     public Result<FinanceOverview> overview(@RequestParam Long memberId,
                                             @RequestParam Integer year,
                                             @RequestParam Integer month) {
-        return Result.success(fixedExpenseService.overview(memberId, year, month));
+        Long familyId = SecurityUtil.getRequiredFamilyId();
+        String key = "fixed-overview:" + memberId + ":" + year + ":" + month;
+        FinanceOverview overview = summaryCache.get(familyId, key,
+                () -> fixedExpenseService.overview(memberId, year, month));
+        return Result.success(overview);
     }
 
     /**
